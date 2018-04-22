@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import './App.css'
 
+import store from "./store/index";
+import { addArticle } from "./actions/index";
+
 import Header from './components/Header'
 import MainBlock from "./components/MainBlock";
 import Sidebar from './components/Sidebar'
