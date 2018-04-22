@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import './App.css'
 
-import store from "./store/index";
-import { addArticle } from "./actions/index";
+// import store from "./store/index";
+// import { addArticle } from "./actions/index";
 
 import Header from './components/Header'
 import MainBlock from "./components/MainBlock";
 import Sidebar from './components/Sidebar'
 import Footer from './components/Footer'
 
-import { Navbar, Jumbotron, Button } from 'react-bootstrap';
+// import { Navbar, Jumbotron, Button } from 'react-bootstrap';
 
 class App extends Component {
   render() {
