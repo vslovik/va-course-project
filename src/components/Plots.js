@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import * as d3 from 'd3'
-import {request, csv} from 'd3-request';
+import {csvParseRows} from 'd3'
+import { select } from 'd3'
+import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
 
 let dataset;
@@ -29,7 +30,7 @@ export default class Plots extends Component {
             .get(function(response) {
                 console.log(response);
 
-                let rows = d3.csvParseRows(response.responseText);
+                let rows = csvParseRows(response.responseText);
 
                 const chem = {
                     1: [], 2: [], 3: [], 4: []
@@ -55,7 +56,26 @@ export default class Plots extends Component {
                     })
                 }
 
-                console.log(dataset);
+                let dd = dataset[1][1];
+                let start = dd[0].dt;
+                let svg = select("td.plot1")
+                    .append("svg")
+                    .attr("width", 400)
+                    .attr("height", 300);
+
+                svg.selectAll("circle")
+                    .data(dd)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function(d, i) {
+                        let t = (d.dt.getTime() - start.getTime())/1000/3600;
+                        console.log(t);
+                        return t;
+                    })
+                    .attr("cy", function(d) {
+                        return d.val * 100;
+                    })
+                    .attr("r", 1 );
 
             });
 
