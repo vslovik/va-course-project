@@ -585,3 +585,9 @@ article, aside, footer, header, hgroup, main, nav, section {
 
 .list-style-none {
   list-style: none !important; }
+
+div.bar {
+  display: inline-block;
+  width: 20px;
+  height: 75px;
+  background-color: teal; }
