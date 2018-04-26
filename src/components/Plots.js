@@ -28,7 +28,6 @@ export default class Plots extends Component {
         request(dataCsv)
             .mimeType("text/csv")
             .get(function(response) {
-                console.log(response);
 
                 let rows = csvParseRows(response.responseText);
 
@@ -64,11 +63,11 @@ export default class Plots extends Component {
 
                 let xScale = scaleLinear()
                     .domain([dd[0].dt, max(dd, function(d) { return d.dt; })])
-                    .range([0, w]);
+                    .range([w, 0]);
 
                 let yScale = scaleLinear()
                     .domain([min(dd, function(d) { return d.val; }), max(dd, function(d) { return d.val; })])
-                    .range([0, h]);
+                    .range([h, 0]);
 
                 let svg = select("td.plot1")
                     .append("svg")
@@ -95,7 +94,7 @@ export default class Plots extends Component {
         <table>
             <tbody>
             <tr valign="top">
-                <td className="plot1" width="85%">Plot</td>
+                <td className="plot1" width="85%"/>
                 <td width="5%">Plot</td>
                 <td width="5%">Plot</td>
                 <td width="5%">Plot</td>
