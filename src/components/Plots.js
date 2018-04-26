@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {csvParseRows} from 'd3'
-import { select } from 'd3'
+import { select, scaleLinear, min, max } from 'd3'
 import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
 
@@ -47,7 +47,7 @@ export default class Plots extends Component {
                 for (let i = 1; i < rows.length; i++) {
                     che = chemicals[rows[i][0]];
                     mon = parseInt(rows[i][1]);
-                    dt  = new Date(rows[i][2]);
+                    dt  = (new Date(rows[i][2])).getTime()/1000;
                     val = parseFloat(rows[i][3].replace(',', '.'));
 
                     dataset[mon][che].push({
@@ -58,24 +58,34 @@ export default class Plots extends Component {
 
                 let dd = dataset[1][1];
                 let start = dd[0].dt;
+
+                let w = 400;
+                let h = 300;
+
+                let xScale = scaleLinear()
+                    .domain([dd[0].dt, max(dd, function(d) { return d.dt; })])
+                    .range([0, w]);
+
+                let yScale = scaleLinear()
+                    .domain([min(dd, function(d) { return d.val; }), max(dd, function(d) { return d.val; })])
+                    .range([0, h]);
+
                 let svg = select("td.plot1")
                     .append("svg")
-                    .attr("width", 400)
-                    .attr("height", 300);
+                    .attr("width", w)
+                    .attr("height", h);
 
                 svg.selectAll("circle")
                     .data(dd)
                     .enter()
                     .append("circle")
                     .attr("cx", function(d, i) {
-                        let t = (d.dt.getTime() - start.getTime())/1000/3600;
-                        console.log(t);
-                        return t;
+                        return xScale(d.dt);
                     })
                     .attr("cy", function(d) {
-                        return d.val * 100;
+                        return yScale(d.val);
                     })
-                    .attr("r", 1 );
+                    .attr("r", 1);
 
             });
 
