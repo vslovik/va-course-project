@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {csvParseRows} from 'd3'
-import { select, scaleLinear, min, max } from 'd3'
+import { select, scaleLinear, scaleLog, scaleQuantile, scaleQuantize, scaleTime, scaleSqrt, min, max } from 'd3'
 import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
 
@@ -42,16 +42,18 @@ export default class Plots extends Component {
                 }
 
                 // Chemical,Monitor,DateTime,Reading
-                let che, mon, dt, val;
+                let che, mon, dt, val, t;
                 for (let i = 1; i < rows.length; i++) {
                     che = chemicals[rows[i][0]];
                     mon = parseInt(rows[i][1]);
                     dt  = (new Date(rows[i][2])).getTime()/1000;
                     val = parseFloat(rows[i][3].replace(',', '.'));
+                    t = (new Date(rows[i][2]))
 
                     dataset[mon][che].push({
                         dt: dt,
-                        val: val
+                        val: val,
+                        t: t
                     })
                 }
 
@@ -60,14 +62,21 @@ export default class Plots extends Component {
 
                 let w = 400;
                 let h = 300;
+                let padding = 20;
 
-                let xScale = scaleLinear()
-                    .domain([dd[0].dt, max(dd, function(d) { return d.dt; })])
-                    .range([w, 0]);
+                let xScale = scaleTime()
+                    .domain([dd[0].t, max(dd, function(d) { return d.t; })])
+                    .rangeRound([w - padding*2, padding])
+                    .nice();
 
-                let yScale = scaleLinear()
+                let yScale = scaleTime()
                     .domain([min(dd, function(d) { return d.val; }), max(dd, function(d) { return d.val; })])
-                    .range([h, 0]);
+                    .rangeRound([h - padding*2, padding])
+                    .nice();
+
+                let aScale = scaleSqrt()
+                    .domain([0, max(dd, function(d) { return d.val; })])
+                    .range([0, 5]);
 
                 let svg = select("td.plot1")
                     .append("svg")
@@ -79,12 +88,14 @@ export default class Plots extends Component {
                     .enter()
                     .append("circle")
                     .attr("cx", function(d, i) {
-                        return xScale(d.dt);
+                        return xScale(d.t);
                     })
                     .attr("cy", function(d) {
                         return yScale(d.val);
                     })
-                    .attr("r", 1);
+                    .attr("r", function(d) {
+                        return aScale(d.val);
+                    });
 
             });
 
