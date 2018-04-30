@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {csvParseRows, timeParse} from 'd3'
+import {csvParseRows, timeParse, timeFormat, axisBottom} from 'd3'
 import { select, scaleLinear, scaleLog, scaleQuantile, scaleQuantize, scaleTime, scaleSqrt, min, max } from 'd3'
 import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
@@ -43,6 +43,8 @@ export default class Plots extends Component {
 
                 let parseTime = timeParse("%Y/%m/%d");
 
+                let formatTime = timeFormat("%b %e");
+
                 // Chemical,Monitor,DateTime,Reading
                 let che, mon, val, t;
                 for (let i = 1; i < rows.length; i++) {
@@ -69,6 +71,8 @@ export default class Plots extends Component {
                     .rangeRound([w - padding*2, padding])
                     .nice();
 
+                console.log(xScale.domain());
+
                 let yScale = scaleTime()
                     .domain([min(dd, function(d) { return d.val; }), max(dd, function(d) { return d.val; })])
                     .rangeRound([h - padding*2, padding])
@@ -77,6 +81,9 @@ export default class Plots extends Component {
                 let aScale = scaleSqrt()
                     .domain([0, max(dd, function(d) { return d.val; })])
                     .range([0, 5]);
+
+                let xAxis = axisBottom()
+                    .scale(xScale);
 
                 let svg = select("td.plot1")
                     .append("svg")
@@ -96,6 +103,9 @@ export default class Plots extends Component {
                     .attr("r", function(d) {
                         return aScale(d.val);
                     });
+
+                svg.append("g")
+                    .call(xAxis);
 
             });
 
