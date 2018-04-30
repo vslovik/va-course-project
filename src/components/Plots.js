@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {csvParseRows} from 'd3'
+import {csvParseRows, timeParse} from 'd3'
 import { select, scaleLinear, scaleLog, scaleQuantile, scaleQuantize, scaleTime, scaleSqrt, min, max } from 'd3'
 import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
@@ -41,24 +41,24 @@ export default class Plots extends Component {
                     dataset[i] = chem;
                 }
 
+                let parseTime = timeParse("%Y/%m/%d");
+
                 // Chemical,Monitor,DateTime,Reading
-                let che, mon, dt, val, t;
+                let che, mon, val, t;
                 for (let i = 1; i < rows.length; i++) {
                     che = chemicals[rows[i][0]];
                     mon = parseInt(rows[i][1]);
-                    dt  = (new Date(rows[i][2])).getTime()/1000;
+
                     val = parseFloat(rows[i][3].replace(',', '.'));
-                    t = (new Date(rows[i][2]))
+                    t = parseTime(rows[i][2]);
 
                     dataset[mon][che].push({
-                        dt: dt,
                         val: val,
                         t: t
                     })
                 }
 
                 let dd = dataset[1][1];
-                let start = dd[0].dt;
 
                 let w = 400;
                 let h = 300;
