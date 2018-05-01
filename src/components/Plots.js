@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import {csvParseRows, timeParse, timeFormat, axisBottom, axisLeft} from 'd3'
-import { select, scaleLinear, scaleLog, scaleQuantile, scaleQuantize, scaleTime, scaleSqrt, min, max } from 'd3'
+import { select, scaleLinear, scaleTime, scaleSqrt, min, max } from 'd3'
 import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
-
-let dataset;
 
 export default class Plots extends Component {
     state = {
@@ -25,67 +23,70 @@ export default class Plots extends Component {
             "AGOC-3A": AGO
         };
 
+        let getDataset = (rows) => {
+            let dataset = {};
+
+            let sensors = Array.from(Array(9).keys());
+
+            // Chemical,Monitor,DateTime,Reading
+            let che, sen, val, t, rt, mon;
+            for (let i = 1; i < rows.length; i++) {
+
+                sen = parseInt(rows[i][1]);
+                che = chemicals[rows[i][0]];
+                val = parseFloat(rows[i][3].replace(',', '.'));
+
+                let parseDateTime;
+
+                if(rows[i][2].length === '2016/01/01'.length){
+                    parseDateTime = timeParse("%Y/%m/%d");
+                } else if(rows[i][2].length === "2016/04/01 08:00:00".length) {
+                    parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
+                }
+
+                t = parseDateTime(rows[i][2]);
+
+                if(null === t) {
+                    console.log('DateTime parse error' + rows[i][2])
+                }
+
+                mon = t.getMonth();
+
+                if(dataset[sen]) {
+                    if(dataset[sen][mon]) {
+                        if(dataset[sen][mon][che]){
+                            dataset[sen][mon][che].push({
+                                val: val,
+                                t: t
+                            })
+                        } else {
+                            dataset[sen][mon][che] = [];
+                        }
+                    } else {
+                        dataset[sen][mon] = {};
+                    }
+                } else {
+                    dataset[sen] = {};
+                }
+            }
+
+            return dataset;
+        };
+
         request(dataCsv)
             .mimeType("text/csv")
             .get(function(response) {
 
                 let rows = csvParseRows(response.responseText);
 
-                dataset = {};
-
-                let sensors = Array.from(Array(9).keys());
-
-                // Chemical,Monitor,DateTime,Reading
-                let che, sen, val, t, rt, mon;
-                for (let i = 1; i < rows.length; i++) {
-
-                    sen = parseInt(rows[i][1]);
-                    che = chemicals[rows[i][0]];
-                    val = parseFloat(rows[i][3].replace(',', '.'));
-
-                    if(rows[i][2].length === '2016/01/01'.length){
-                        let parseDate = timeParse("%Y/%m/%d");
-                        t = parseDate(rows[i][2]);
-
-                    } else if(rows[i][2].length === "2016/04/01 08:00:00".length) {
-                        let parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
-                        t = parseDateTime(rows[i][2]);
-                    }
-
-                    if(null === t) {
-                        console.log('DateTime parse error' + rows[i][2])
-                    }
-
-                    mon = t.getMonth();
-
-                    rt = rows[i][2];
-
-                    if(dataset[sen]) {
-                        if(dataset[sen][mon]) {
-                            if(dataset[sen][mon][che]){
-                                dataset[sen][mon][che].push({
-                                    val: val,
-                                    t: t,
-                                    rt: rt,
-                                    mon: mon
-                                })
-                            } else {
-                                dataset[sen][mon][che] = [];
-                            }
-                        } else {
-                            dataset[sen][mon] = {};
-                        }
-                    } else {
-                        dataset[sen] = {};
-                    }
-                }
+                let dataset = getDataset(rows);
 
                 console.log(dataset);
 
                 let dd = dataset[1][3][1]; // 7, 11
 
-                let w = 800;
-                let h = 600;
+                let w       = 800;
+                let h       = 600;
                 let padding = 40;
 
                 let xScale = scaleTime()
