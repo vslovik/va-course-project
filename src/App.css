@@ -591,3 +591,14 @@ div.bar {
   width: 20px;
   height: 75px;
   background-color: teal; }
+
+.axis path,
+.axis line {
+  stroke: teal;
+  shape-rendering: crispEdges; }
+
+.axis text {
+  font-family: Optima, Futura, sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  fill: teal; }

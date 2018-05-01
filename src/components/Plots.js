@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {csvParseRows, timeParse, timeFormat, axisBottom} from 'd3'
+import {csvParseRows, timeParse, timeFormat, axisBottom, axisLeft} from 'd3'
 import { select, scaleLinear, scaleLog, scaleQuantile, scaleQuantize, scaleTime, scaleSqrt, min, max } from 'd3'
 import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
@@ -31,59 +31,92 @@ export default class Plots extends Component {
 
                 let rows = csvParseRows(response.responseText);
 
-                const chem = {
-                    1: [], 2: [], 3: [], 4: []
-                };
-
                 dataset = {};
 
-                for(let i = 1; i <= 9; i++){
-                    dataset[i] = chem;
-                }
-
-                let parseTime = timeParse("%Y/%m/%d");
-
-                let formatTime = timeFormat("%b %e");
+                let sensors = Array.from(Array(9).keys());
 
                 // Chemical,Monitor,DateTime,Reading
-                let che, mon, val, t;
+                let che, sen, val, t, rt, mon;
                 for (let i = 1; i < rows.length; i++) {
+
+                    sen = parseInt(rows[i][1]);
                     che = chemicals[rows[i][0]];
-                    mon = parseInt(rows[i][1]);
-
                     val = parseFloat(rows[i][3].replace(',', '.'));
-                    t = parseTime(rows[i][2]);
 
-                    dataset[mon][che].push({
-                        val: val,
-                        t: t
-                    })
+                    if(rows[i][2].length === '2016/01/01'.length){
+                        let parseDate = timeParse("%Y/%m/%d");
+                        t = parseDate(rows[i][2]);
+
+                    } else if(rows[i][2].length === "2016/04/01 08:00:00".length) {
+                        let parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
+                        t = parseDateTime(rows[i][2]);
+                    }
+
+                    if(null === t) {
+                        console.log('DateTime parse error' + rows[i][2])
+                    }
+
+                    mon = t.getMonth();
+
+                    rt = rows[i][2];
+
+                    if(dataset[sen]) {
+                        if(dataset[sen][mon]) {
+                            if(dataset[sen][mon][che]){
+                                dataset[sen][mon][che].push({
+                                    val: val,
+                                    t: t,
+                                    rt: rt,
+                                    mon: mon
+                                })
+                            } else {
+                                dataset[sen][mon][che] = [];
+                            }
+                        } else {
+                            dataset[sen][mon] = {};
+                        }
+                    } else {
+                        dataset[sen] = {};
+                    }
                 }
 
-                let dd = dataset[1][1];
+                console.log(dataset);
 
-                let w = 400;
-                let h = 300;
-                let padding = 20;
+                let dd = dataset[1][3][1]; // 7, 11
+
+                let w = 800;
+                let h = 600;
+                let padding = 40;
 
                 let xScale = scaleTime()
-                    .domain([dd[0].t, max(dd, function(d) { return d.t; })])
-                    .rangeRound([w - padding*2, padding])
+                    .domain([min(dd, function(d) { return d.t; }), max(dd, function(d) { return d.t; })])
+                    .range([padding, w - padding])
                     .nice();
 
                 console.log(xScale.domain());
 
-                let yScale = scaleTime()
+                let yScale = scaleLinear()
                     .domain([min(dd, function(d) { return d.val; }), max(dd, function(d) { return d.val; })])
-                    .rangeRound([h - padding*2, padding])
+                    .rangeRound([h - padding, padding])
                     .nice();
+
+                console.log(yScale.domain());
 
                 let aScale = scaleSqrt()
                     .domain([0, max(dd, function(d) { return d.val; })])
                     .range([0, 5]);
 
+                let yAxis = axisLeft()
+                    .scale(yScale)
+                    .ticks(10);
+
+                let formatTime = timeFormat("%e");
+
                 let xAxis = axisBottom()
-                    .scale(xScale);
+                    .scale(xScale)
+                    .tickFormat(formatTime)
+                    // .ticks(10)
+                ;
 
                 let svg = select("td.plot1")
                     .append("svg")
@@ -105,8 +138,14 @@ export default class Plots extends Component {
                     });
 
                 svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(0," + (h - padding) + ")")
                     .call(xAxis);
 
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(" + padding + ",0)")
+                    .call(yAxis);
             });
 
     }
