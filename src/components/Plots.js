@@ -23,7 +23,7 @@ export default class Plots extends Component {
             "AGOC-3A": AGO
         };
 
-        let getDataset = (rows) => {
+        let getDatasetSenMonChe = (rows) => {
             let dataset = {};
 
             let sensors = Array.from(Array(9).keys());
@@ -52,9 +52,9 @@ export default class Plots extends Component {
 
                 mon = t.getMonth();
 
-                if(dataset[sen]) {
-                    if(dataset[sen][mon]) {
-                        if(dataset[sen][mon][che]){
+                if (dataset[sen]) {
+                    if (dataset[sen][mon]) {
+                        if (dataset[sen][mon][che]) {
                             dataset[sen][mon][che].push({
                                 val: val,
                                 t: t
@@ -73,17 +73,66 @@ export default class Plots extends Component {
             return dataset;
         };
 
+        let getDatasetSenMon = (rows) => {
+            let dataset = {};
+
+            let sensors = Array.from(Array(9).keys());
+
+            // Chemical,Monitor,DateTime,Reading
+            let che, sen, val, t, rt, mon;
+            for (let i = 1; i < rows.length; i++) {
+
+                sen = parseInt(rows[i][1]);
+                che = chemicals[rows[i][0]];
+                val = parseFloat(rows[i][3].replace(',', '.'));
+
+                let parseDateTime;
+
+                if(rows[i][2].length === '2016/01/01'.length){
+                    parseDateTime = timeParse("%Y/%m/%d");
+                } else if(rows[i][2].length === "2016/04/01 08:00:00".length) {
+                    parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
+                }
+
+                t = parseDateTime(rows[i][2]);
+
+                if(null === t) {
+                    console.log('DateTime parse error' + rows[i][2])
+                }
+
+                mon = t.getMonth();
+
+                if (dataset[sen]) {
+                    if (dataset[sen][mon]) {
+                        dataset[sen][mon].push({
+                            val: val,
+                            t: t,
+                            che: che
+                        })
+                    } else {
+                        dataset[sen][mon] = [];
+                    }
+                } else {
+                    dataset[sen] = {};
+                }
+            }
+
+            return dataset;
+        };
+
         request(dataCsv)
             .mimeType("text/csv")
             .get(function(response) {
 
                 let rows = csvParseRows(response.responseText);
 
-                let dataset = getDataset(rows);
+                // let dataset = getDatasetSenMonChe(rows);
+                // let dd = dataset[1][3][1]; // 7, 11
+
+                let dataset = getDatasetSenMon(rows);
+                let dd = dataset[1][3]; // 7, 11
 
                 console.log(dataset);
-
-                let dd = dataset[1][3][1]; // 7, 11
 
                 let w       = 800;
                 let h       = 600;
