@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {csvParseRows, timeParse, timeFormat, axisBottom, axisLeft} from 'd3'
+import {csvParseRows, timeParse, timeFormat, axisBottom, axisLeft, range, radialLine} from 'd3'
 import { select, scaleLinear, scaleTime, scaleSqrt, min, max } from 'd3'
 import {request} from 'd3-request';
 import dataCsv from '../data/ch2/SensorData.csv';
@@ -10,6 +10,68 @@ export default class Plots extends Component {
     };
 
     componentDidMount(state) {
+        let data = range(0, 2 * Math.PI, .01).map(function(t) {
+            return [t, Math.sin(2 * t) * Math.cos(2 * t)];
+        });
+
+        let width = 800,
+            height = 600,
+            radius = Math.min(width, height) / 2 - 30;
+
+        let r = scaleLinear()
+            .domain([0, .5])
+            .range([0, radius]);
+
+        let line = radialLine()
+            .radius(function(d) { return r(d[1]); })
+            .angle(function(d) { return -d[0] + Math.PI / 2; });
+
+        let svg = select("td.plot1")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        let gr = svg.append("g")
+            .attr("class", "r axis")
+            .selectAll("g")
+            .data(r.ticks(5).slice(1))
+            .enter().append("g");
+
+        gr.append("circle")
+            .attr("r", r);
+
+        gr.append("text")
+            .attr("y", function(d) { return -r(d) - 4; })
+            .attr("transform", "rotate(15)")
+            .style("text-anchor", "middle")
+            .text(function(d) { return d; });
+
+        let ga = svg.append("g")
+            .attr("class", "a axis")
+            .selectAll("g")
+            .data(range(0, 360, 30))
+            .enter().append("g")
+            .attr("transform", function(d) { return "rotate(" + -d + ")"; });
+
+        ga.append("line")
+            .attr("x2", radius);
+
+        ga.append("text")
+            .attr("x", radius + 6)
+            .attr("dy", ".35em")
+            .style("text-anchor", function(d) { return d < 270 && d > 90 ? "end" : null; })
+            .attr("transform", function(d) { return d < 270 && d > 90 ? "rotate(180 " + (radius + 6) + ",0)" : null; })
+            .text(function(d) { return d + "°"; });
+
+        svg.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line);
+    }
+
+    componentDidMount_(state) {
 
         const APP = 1;
         const CHL = 2;
