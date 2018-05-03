@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import {csvParseRows, timeParse, timeFormat, axisBottom, axisLeft, range, radialLine} from 'd3'
 import { select, scaleLinear, scaleTime, scaleSqrt, min, max } from 'd3'
 import {request} from 'd3-request';
-import dataCsv from '../data/ch2/SensorData.csv';
+import sensorCsv from '../data/ch2/SensorData.csv';
+import meteoCsv from '../data/ch2/MeteorologicalData.csv';
 
 export default class Plots extends Component {
     state = {
@@ -10,9 +11,51 @@ export default class Plots extends Component {
     };
 
     componentDidMount(state) {
+
+        request(meteoCsv)
+            .mimeType("text/csv")
+            .get(function(response) {
+
+                //Date,"Wind Direction","Wind Speed (m/s)"
+                let dt, angle, speed, max = 0.0;
+                let windData = [];
+                let rows = csvParseRows(response.responseText);
+                for (let i = 1; i < rows.length; i++) {
+
+                    angle = parseFloat(rows[i][1].replace(',', '.'));
+                    speed = parseFloat(rows[i][2].replace(',', '.'));
+                    if(max < speed) {
+                        max = speed;
+                    }
+
+                    let parseDateTime;
+
+                    if(rows[i][2].length === '2016/01/01'.length){
+                        parseDateTime = timeParse("%Y/%m/%d");
+                    } else if(rows[i][2].length === "2016/04/01 08:00:00".length) {
+                        parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
+                    }
+
+                    dt = parseDateTime(rows[i][0]);
+
+                    if(null === dt) {
+                        console.log('DateTime parse error' + rows[i][0])
+                    }
+
+                    windData.push([angle/360, speed/max])
+
+                }
+
+                console.log(windData);
+
+            });
+
+
         let data = range(0, 2 * Math.PI, .01).map(function(t) {
             return [t, Math.sin(2 * t) * Math.cos(2 * t)];
-        });
+        })
+
+        console.log(data)
 
         let width = 800,
             height = 600,
@@ -152,7 +195,7 @@ export default class Plots extends Component {
             return dataset;
         };
 
-        request(dataCsv)
+        request(sensorCsv)
             .mimeType("text/csv")
             .get(function(response) {
 
