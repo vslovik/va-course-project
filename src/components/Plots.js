@@ -12,13 +12,15 @@ export default class Plots extends Component {
 
     componentDidMount(state) {
 
+        let windData = [];
+
         request(meteoCsv)
             .mimeType("text/csv")
             .get(function(response) {
 
                 //Date,"Wind Direction","Wind Speed (m/s)"
                 let dt, angle, speed, max = 0.0;
-                let windData = [];
+
                 let rows = csvParseRows(response.responseText);
                 for (let i = 1; i < rows.length; i++) {
 
@@ -30,32 +32,36 @@ export default class Plots extends Component {
 
                     let parseDateTime;
 
-                    if(rows[i][2].length === '2016/01/01'.length){
+                    if(rows[i][0].length === '2016/01/01'.length){
                         parseDateTime = timeParse("%Y/%m/%d");
-                    } else if(rows[i][2].length === "2016/04/01 08:00:00".length) {
+                        dt = parseDateTime(rows[i][0]);
+                    } else if(rows[i][0].length === "2016/04/01 08:00:00".length) {
                         parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
+                        dt = parseDateTime(rows[i][0]);
+                    } else {
+                        console.log('Value: "' + rows[i][0] + '" is not a date')
+                        continue
                     }
-
-                    dt = parseDateTime(rows[i][0]);
 
                     if(null === dt) {
                         console.log('DateTime parse error' + rows[i][0])
                     }
 
-                    windData.push([angle/360, speed/max])
+                    windData.push([Math.PI * angle/180, speed/max])
 
                 }
 
-                console.log(windData);
+                console.log('winData', windData);
 
             });
 
+        let data = windData
 
-        let data = range(0, 2 * Math.PI, .01).map(function(t) {
-            return [t, Math.sin(2 * t) * Math.cos(2 * t)];
-        })
+        // let data = range(0, 2 * Math.PI, .01).map(function(t) {
+        //     return [t, Math.sin(2 * t) * Math.cos(2 * t)];
+        // })
 
-        console.log(data)
+        console.log('data', data)
 
         let width = 800,
             height = 600,
@@ -147,6 +153,8 @@ export default class Plots extends Component {
                     parseDateTime = timeParse("%Y/%m/%d");
                 } else if(rows[i][2].length === "2016/04/01 08:00:00".length) {
                     parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
+                } else {
+                    throw 'Value: "' + rows[i][0] + '" is not a date'
                 }
 
                 t = parseDateTime(rows[i][2]);
