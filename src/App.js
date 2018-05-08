@@ -4,10 +4,10 @@ import './App.css'
 // import store from "./store/index";
 // import { addArticle } from "./actions/index";
 
-import Header from './components/Header'
-import MainBlock from "./components/MainBlock";
-import Sidebar from './components/Sidebar'
-import Footer from './components/Footer'
+import Header from './components/header'
+import MainBlock from "./components/main-block";
+import Sidebar from './components/sidebar'
+import Footer from './components/footer'
 
 // import { Navbar, Jumbotron, Button } from 'react-bootstrap';
 

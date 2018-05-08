@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
-import Menu from './Menu'
-import PathLinks from './PathLinks'
-import Tabs from './Tabs'
+import Menu from './../menu'
+import PathLinks from './../path-links'
+import Tabs from './../tabs'
 
 export default class Footer extends Component {
     render = () => (

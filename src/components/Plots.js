@@ -10,13 +10,13 @@ export default class Plots extends Component {
         data: []
     };
 
-    componentDidMount_(state) {
+    componentDidMount(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(polarChart);
     }
 
-    componentDidMount(state) {
+    componentDidMount_(state) {
         request(sensorCsv)
             .mimeType("text/csv")
             .get(scatterChart);

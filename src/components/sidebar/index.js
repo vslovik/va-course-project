@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
-import Status from './Status'
-import Input from './Input'
+import Status from './../Status'
+import Input from './../Input'
 
 export default class Sidebar extends Component {
     render = () => (
