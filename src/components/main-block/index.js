@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-
-import Plots from './../Plots'
-import References from './../References'
+import Plots from './../plots'
+import References from './../references'
 
 export default class MainBlock extends Component {
     render = () => (

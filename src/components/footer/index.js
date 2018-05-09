@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 export default class Footer extends Component {
     render = () => (
         <div className="footer container-lg px-3" role="contentinfo">

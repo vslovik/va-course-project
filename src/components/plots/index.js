@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import {request} from 'd3-request';
-import sensorCsv from '../data/ch2/SensorData.csv';
-import meteoCsv from '../data/ch2/MeteorologicalData.csv';
-import polarChart from '../polar-chart'
-import scatterChart from '../scatter-chart'
+import sensorCsv from '../../data/ch2/SensorData.csv';
+import meteoCsv from '../../data/ch2/MeteorologicalData.csv';
+import polarChart from '../../polar-chart'
+import scatterChart from '../../scatter-chart'
 
 export default class Plots extends Component {
     state = {

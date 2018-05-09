@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import Menu from './../menu'
 import PathLinks from './../path-links'
 import Tabs from './../tabs'
