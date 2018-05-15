@@ -4,13 +4,15 @@ import sensorCsv from '../../data/ch2/SensorData.csv';
 import meteoCsv from '../../data/ch2/MeteorologicalData.csv';
 import polarChart from '../../polar-chart'
 import scatterChart from '../../scatter-chart'
+import multiChart from '../../multi-chart'
+import multiGroup from '../../multi-group'
 
 export default class Plots extends Component {
     state = {
         data: []
     };
 
-    componentDidMount(state) {
+    componentDidMount_(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(polarChart);
@@ -20,6 +22,18 @@ export default class Plots extends Component {
         request(sensorCsv)
             .mimeType("text/csv")
             .get(scatterChart);
+    }
+
+    componentDidMount_(state) {
+        request(meteoCsv)
+            .mimeType("text/csv")
+            .get(multiChart);
+    }
+
+    componentDidMount(state) {
+        request(meteoCsv)
+            .mimeType("text/csv")
+            .get(multiGroup);
     }
 
     render = () => (
