@@ -36,7 +36,6 @@ export default function multiChart(response)
         windData.push([Math.PI * angle/180, speed/max])
     }
 
-    console.log('winData', windData);
     let data = windData;
     let width = 200,
         height = 150,
