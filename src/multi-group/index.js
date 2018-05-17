@@ -133,11 +133,10 @@ export default function multiGroup(response)
             const centerX = parseFloat(data3[0][0]);
             const centerY = parseFloat(data3[0][1]);
 
-            let c = coors.split(',');
-            let xx, yy = coors.split(',');
+            const [xx, yy] = coors.split(',');
 
-            const x = parseFloat(c[0]) + xxScale(centerX) + (chairWidth/2);
-            const y = parseFloat(c[1]) + yyScale(centerY) + (chairWidth/2);
+            const x = parseFloat(xx) + xxScale(centerX) + (chairWidth/2);
+            const y = parseFloat(yy) + yyScale(centerY) + (chairWidth/2);
 
             return "translate(" + x + ',' + y + ")"
         })
