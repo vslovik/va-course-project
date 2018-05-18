@@ -6,6 +6,7 @@ import polarChart from '../../polar-chart'
 import scatterChart from '../../scatter-chart'
 import multiChart from '../../multi-chart'
 import multiGroup from '../../multi-group'
+import temperatureChart from '../../temperature-chart'
 
 export default class Plots extends Component {
     state = {
@@ -30,10 +31,16 @@ export default class Plots extends Component {
             .get(multiChart);
     }
 
-    componentDidMount(state) {
+    componentDidMount_(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(multiGroup);
+    }
+
+    componentDidMount(state) {
+        request(meteoCsv)
+            .mimeType("text/csv")
+            .get(temperatureChart);
     }
 
     render = () => (
