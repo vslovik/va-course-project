@@ -121,29 +121,31 @@ export default function multiGroup(response)
     //     .attr("stroke", "blue")
     //     .attr("class", "rect2")
 
-    svg.selectAll("point")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("class", "point")
-        .attr("transform", function(d) {
+    data3.forEach(function(entry) {
+        svg.selectAll("point")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "point")
+            .attr("transform", function (d) {
 
-            const coors = line([d]).slice(1).slice(0, -1);
+                const coors = line([d]).slice(1).slice(0, -1);
 
-            const centerX = parseFloat(data3[0][0]);
-            const centerY = parseFloat(data3[0][1]);
+                const centerX = parseFloat(entry[0]);
+                const centerY = parseFloat(entry[1]);
 
-            const [xx, yy] = coors.split(',');
+                const [xx, yy] = coors.split(',');
 
-            const x = parseFloat(xx) + xxScale(centerX) + (chairWidth/2);
-            const y = parseFloat(yy) + yyScale(centerY) + (chairWidth/2);
+                const x = parseFloat(xx) + xxScale(centerX) + (chairWidth / 2);
+                const y = parseFloat(yy) + yyScale(centerY) + (chairWidth / 2);
 
-            return "translate(" + x + ',' + y + ")"
-        })
-        .attr("r", 2)
-        .attr("fill",function(d,i){
-            return 'black'//color(i);
-        });
+                return "translate(" + x + ',' + y + ")"
+            })
+            .attr("r", 2)
+            .attr("fill", function (d, i) {
+                return 'black'//color(i);
+            });
+    });
 
 
     // https://spin.atomicobject.com/2015/06/12/objects-around-svg-circle-d3-js/
