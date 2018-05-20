@@ -6,7 +6,7 @@ import polarChart from '../../polar-chart'
 import scatterChart from '../../scatter-chart'
 import multiChart from '../../multi-chart'
 import multiGroup from '../../multi-group'
-import temperatureChart from '../../temperature-chart'
+import windChart from '../../wind-chart'
 
 export default class Plots extends Component {
     state = {
@@ -40,7 +40,7 @@ export default class Plots extends Component {
     componentDidMount(state) {
         request(meteoCsv)
             .mimeType("text/csv")
-            .get(temperatureChart);
+            .get(windChart);
     }
 
     render = () => (
