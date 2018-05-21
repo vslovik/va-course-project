@@ -690,3 +690,13 @@ path {
 #chart3 .labels {
   fill: #555;
 }
+
+/* Example chart */
+.line {
+  fill: none;
+  stroke-width: 4px;
+}
+.axis path, .tick line {
+  fill: none;
+  stroke: #333;
+}
