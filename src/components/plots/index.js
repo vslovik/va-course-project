@@ -7,6 +7,7 @@ import scatterChart from '../../scatter-chart'
 import multiChart from '../../multi-chart'
 import multiGroup from '../../multi-group'
 import windChart from '../../wind-chart'
+import exampleChart from '../../example-chart'
 
 export default class Plots extends Component {
     state = {
@@ -37,10 +38,16 @@ export default class Plots extends Component {
             .get(multiGroup);
     }
 
-    componentDidMount(state) {
+    componentDidMount_(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(windChart);
+    }
+
+    componentDidMount(state) {
+        request(meteoCsv)
+            .mimeType("text/csv")
+            .get(exampleChart);
     }
 
     render = () => (
