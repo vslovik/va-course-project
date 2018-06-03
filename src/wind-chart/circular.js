@@ -5,7 +5,7 @@ import {select, extent, arc, selectAll, scaleLinear} from 'd3'
 export default function circularHeatChart() {
     let margin = {top: 20, right: 20, bottom: 20, left: 20},
         innerRadius = 50,
-        numSegments = 24,
+        numSegments = 36,
         segmentHeight = 20,
         domain = null,
         range = ["white", "red"],
