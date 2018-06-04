@@ -127,16 +127,11 @@ export default function windChart(response) {
 
     let wcd = new WindChartData();
 
-    let chart = circularHeatChart()
-        .innerRadius(20)
-        .range(["white", "steelblue"])
-        .radialLabels(wcd.getRadialLabels())
-        .segmentLabels(wcd.getSegmentLabels());
+    let chart = new circularHeatChart([wcd.getData(response, DECEMBER)]);
+        // .innerRadius(20)
+        // .range(["white", "steelblue"])
+        // .radialLabels(wcd.getRadialLabels())
+        // .segmentLabels(wcd.getSegmentLabels());
 
-    select('td.plot1')
-        .selectAll('svg')
-        .data([wcd.getData(response, DECEMBER)])
-        .enter()
-        .append('svg')
-        .call(chart);
+
 }
