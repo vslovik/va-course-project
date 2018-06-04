@@ -3,6 +3,7 @@
 import {select, extent, arc, selectAll, scaleLinear} from 'd3'
 
 export default function circularHeatChart() {
+
     let margin = {top: 20, right: 20, bottom: 20, left: 20},
         innerRadius = 50,
         numSegments = 36,
@@ -13,14 +14,13 @@ export default function circularHeatChart() {
         let radialLabels = [];
         let segmentLabels = [];
 
+
     function chart(selection) {
         selection.each(function(data) {
+
             let svg = select(this);
 
             let offset = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
-            let g = svg.append("g")
-                .classed("circular-heat", true)
-                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
             let autoDomain = false;
             if (domain === null) {
@@ -31,18 +31,29 @@ export default function circularHeatChart() {
             if(autoDomain)
                 domain = null;
 
-            g.selectAll("path").data(data)
+
+            svg.append("g")
+                .classed("circular-heat", true)
+                .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")")
+                .selectAll("path").data(data)
                 .enter().append("path")
                 .attr("d", arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
                 .attr("fill", function(d) {return color(accessor(d));});
 
 
-            // Unique id so that the text path defs are unique - is there a better way to do this?
-            //let id = selectAll(".circular-heat")[0].length;
+            createLabels(svg, offset, data);
 
+        });
+
+        function createLabels(svg, offset, data) {
             let id = Math.random().toString(36).substr(2, 9);
 
-            //Radial labels
+            let labels = createRadialLabels(id, svg, offset, data);
+
+            createSegmentLabels(labels, id, svg, offset, data)
+        }
+
+        function createRadialLabels(id, svg, offset, data) {
             let lsa = 0.01; //Label start angle
             let labels = svg.append("g")
                 .classed("labels", true)
@@ -68,9 +79,14 @@ export default function circularHeatChart() {
                 .style("font-size", 0.6 * segmentHeight + 'px')
                 .text(function(d) {return d;});
 
-            //Segment labels
+            return labels;
+        }
+
+        function createSegmentLabels(labels, id, svg, offset, data) {
+
             let segmentLabelOffset = 2;
             let r = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight + segmentLabelOffset;
+
             labels = svg.append("g")
                 .classed("labels", true)
                 .classed("segment", true)
@@ -88,23 +104,27 @@ export default function circularHeatChart() {
                 .attr("xlink:href", "#segment-label-path-"+id)
                 .attr("startOffset", function(d, i) {return i * 100 / numSegments + "%";})
                 .text(function(d) {return d;});
-        });
+        }
 
     }
 
     /* Arc functions */
     let ir = function(d, i) {
         return innerRadius + Math.floor(i/numSegments) * segmentHeight;
-    }
+    };
+
     let or = function(d, i) {
         return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight;
-    }
+    };
+
     let sa = function(d, i) {
         return (i * 2 * Math.PI) / numSegments;
-    }
+    };
+
     let ea = function(d, i) {
         return ((i + 1) * 2 * Math.PI) / numSegments;
-    }
+    };
+
 
     /* Configuration getters/setters */
     chart.margin = function(_) {
