@@ -1,22 +1,18 @@
 import circularHeatChart from "./circular.js";
 import {csvParseRows, select, timeParse} from 'd3'
 
-export default function windChart(response) {
 
-    let rows = csvParseRows(response.responseText).slice(1);
+function getMixMaxMeasure(rows)
+{
+    const
+        mIndex = 2;
 
-    // 0.1 6.8
-    let i, max = 0, min = Number.POSITIVE_INFINITY, measure, aSegments = 36, aSegment, angleStep = 10.0, mSegment, mSegments = 7, mStep = 1.0;
-
-    let ddd = {};
-    [...Array(aSegments*mSegments).keys()].forEach(function(i) {
-        ddd[i] = 0;
-    });
+    let max = 0,
+        min = Number.POSITIVE_INFINITY,
+        measure;
 
     rows.forEach(function(row) {
-        let dt, angle, value;
-        [dt, angle, value] = row;
-        measure = parseFloat(value.replace(',','.'));
+        measure = parseFloat(row[mIndex].replace(',','.'));
         if(measure < min) {
             min = measure;
         }
@@ -25,56 +21,90 @@ export default function windChart(response) {
         }
     });
 
-    // ToDo Remove magic constants
-    let mMax = 0, parseDateTime, t;
+    return [min, max];
+}
+
+function parseMeasureDate(dt)
+{
+    let parser;
+    if (dt.length === '2016/01/01'.length) {
+        parser = timeParse("%Y/%m/%d");
+        return parser(dt)
+    }
+
+    if (dt.length === "2016/04/01 08:00:00".length) {
+       parser = timeParse("%Y/%m/%d %H:%M:%S");
+       return parser(dt)
+    }
+
+    throw 'Value: "' + dt + '" is not a date'
+}
+
+function getCellIndex(angle, value)
+{
+    const
+        aSegments = 36,
+        angleStep = 10.0,
+        mStep     = 1.0;
+
+    angle = parseFloat(angle.replace(',', '.'));
+    let measure = parseFloat(value.replace(',', '.'));
+
+    let aSegment = Math.ceil(angle / angleStep) - 1;
+    let mSegment = Math.ceil(measure / mStep) - 1;
+
+    // Get i - segment index: i = <angle segment index> * <number of measure segments> + <measure segment index>
+    return Math.ceil(mSegment * aSegments + aSegment) - 1;
+}
+
+export default function windChart(response) {
+
+    let rows = csvParseRows(response.responseText).slice(1);
+
+    let i;
+
+    const
+        aSegments = 36,
+        angleStep = 10.0,
+        mSegments = 7;
+
+    const cells = aSegments * mSegments;
+
+    const APRIL    = 3,
+          AUGUST   = 7,
+          DECEMBER = 11;
+
+    let dataMap = {};
+    [...Array(cells).keys()].forEach(function(i) {
+        dataMap[i] = 0;
+    });
+
+    let mMax = 0, t;
     rows.forEach(function (row) {
-        let dt, angle, value;
-        [dt, angle, value] = row;
+
+        let [dt, angle, value] = row;
         if (dt !== '' && angle !== '' && value !== '') {
 
-            if (dt.length === '2016/01/01'.length) {
-                parseDateTime = timeParse("%Y/%m/%d");
-            } else if (dt.length === "2016/04/01 08:00:00".length) {
-                parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
-            } else {
-                throw 'Value: "' + dt + '" is not a date'
-            }
+            t = parseMeasureDate(dt);
 
-            t = parseDateTime(dt);
+            if (t.getMonth() === DECEMBER) { //&& t.getDate() === 2
 
-            if (t.getMonth() === 11) { //&& t.getDate() === 2
+                i = getCellIndex(angle, value);
 
-                angle = parseFloat(angle.replace(',', '.'));
-                measure = parseFloat(value.replace(',', '.'));
-
-                aSegment = Math.floor(angle / angleStep);
-                if (aSegment === 36) aSegment = 35;
-
-                mSegment = Math.floor(measure / mStep);
-                if (mSegment === 7) mSegment = 6;
-
-                // Get i - segment index: i = <angle segment index> * <number of measure segments> + <measure segment index>
-                i = mSegment * aSegments + aSegment;
-                if (i === 252) i = 251;
-
-                ddd[i] += 1;
-                if (ddd[i] > mMax) {
-                    mMax = ddd[i];
+                dataMap[i] += 1;
+                if (dataMap[i] > mMax) {
+                    mMax = dataMap[i];
                 }
             }
         }
     });
 
-    for(let i = 0; i < 252; i++) ddd[i] = ddd[i] / mMax;
+    for(let i = 0; i < cells; i++) dataMap[i] = dataMap[i] / mMax;
 
-    let data = Object.values(ddd);
+    let data = Object.values(dataMap); //ToDo getData method
 
-    /* Random data */
-    // let data = [];
-    // for(let i = 0; i < 252; i++) data[i] = Math.random();
-
-    let radialLabels  =  [...Array(7).keys()];
-    let segmentLabels = [...Array(36).keys()].map(function(x) { return x * 10 });
+    let radialLabels  =  [...Array(mSegments).keys()];
+    let segmentLabels = [...Array(aSegments).keys()].map(function(x) { return x * angleStep });
 
     let chart = circularHeatChart()
         .innerRadius(20)
