@@ -125,13 +125,12 @@ export default function windChart(response) {
           AUGUST   = 7,
           DECEMBER = 11;
 
-    let wcd = new WindChartData();
+    let wcd = (new WindChartData());
 
-    let chart = new circularHeatChart([wcd.getData(response, DECEMBER)]);
-        // .innerRadius(20)
-        // .range(["white", "steelblue"])
-        // .radialLabels(wcd.getRadialLabels())
-        // .segmentLabels(wcd.getSegmentLabels());
-
-
+    let chart = new circularHeatChart([wcd.getData(response, DECEMBER)])
+        .setInnerRadius(20)
+        .setRange(["white", "steelblue"])
+        .setRadialLabels(wcd.getRadialLabels())
+        .setSegmentLabels(wcd.getSegmentLabels())
+        .draw();
 }

@@ -2,21 +2,12 @@
 // http://prcweb.co.uk/lab/circularheat/
 import {select, extent, arc, selectAll, scaleLinear} from 'd3'
 
-
-
-    let margin = {top: 20, right: 20, bottom: 20, left: 20},
-        innerRadius = 50,
-        numSegments = 36,
-        segmentHeight = 20,
-        range = ["white", "red"],
-        accessor = function(d) {return d;};
-        let radialLabels = [];
-        let segmentLabels = [];
-
-
 export default class circularHeatChart {
+
     constructor(data)
     {
+        this.data = data;
+
         this.margin = {
             top: 20,
             right: 20,
@@ -31,47 +22,73 @@ export default class circularHeatChart {
 
         this.radialLabels = [];
         this.segmentLabels = [];
-
         this.domain = null;
 
+    }
+
+    draw() {
         let chart = this;
 
-        let svg = select('td.plot1')
+        select('td.plot1')
             .selectAll('svg')
-            .data(data)
+            .data(chart.data)
             .enter()
             .append('svg')
             .call(function(selection) { return chart.chart(selection)} );
     }
 
-    static accessor(d) {return d;};
+    setInnerRadius(innerRadius){
+        this.innerRadius = innerRadius;
+
+        return this;
+    };
+
+    setRange(range){
+        this.range = range;
+
+        return this;
+    };
+
+    setRadialLabels(radialLabels){
+        this.radialLabels = radialLabels;
+
+        return this;
+    };
+
+    setSegmentLabels(segmentLabels) {
+        this.segmentLabels = segmentLabels;
+
+        return this;
+    };
 
     ir(d, i) {
 
-        return this.innerRadius + Math.floor(i/numSegments) * segmentHeight;
+        return this.innerRadius + Math.floor(i/this.numSegments) * this.segmentHeight;
     };
 
     or(d, i) {
-        return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight;
+        return this.innerRadius
+            + this.segmentHeight
+            + Math.floor(i/this.numSegments) * this.segmentHeight;
     };
 
     sa(d, i) {
-        return (i * 2 * Math.PI) / numSegments;
+        return (i * 2 * Math.PI) / this.numSegments;
     };
 
     ea(d, i) {
-        return ((i + 1) * 2 * Math.PI) / numSegments;
+        return ((i + 1) * 2 * Math.PI) / this.numSegments;
     };
 
     getColorCallback(data)
     {
         this.autoDomain = false;
         if (this.domain === null) {
-            this.domain = extent(data, accessor);
+            this.domain = extent(data, function(d){return d;});
             this.autoDomain = true;
         }
 
-        let color = scaleLinear().domain(this.domain).range(range);
+        let color = scaleLinear().domain(this.domain).range(this.range);
 
         if(this.autoDomain)
             this.domain = null;
@@ -79,7 +96,7 @@ export default class circularHeatChart {
         return color;
     }
 
-    draw(svg, offset, data) {
+    createSegments(svg, offset, data) {
 
         let color = this.getColorCallback(data);
 
@@ -87,13 +104,17 @@ export default class circularHeatChart {
 
         svg.append("g")
             .classed("circular-heat", true)
-            .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")")
+            .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")")
             .selectAll("path").data(data)
             .enter().append("path")
-            .attr("d", arc().innerRadius(function(d, i){return chart.ir(d, i)}).outerRadius(this.or).startAngle(this.sa).endAngle(this.ea))
-            .attr("fill", function(d) {return color(accessor(d));});
+            .attr("d", arc()
+                .innerRadius(function(d, i){return chart.ir(d, i)})
+                .outerRadius(function(d, i){return chart.or(d, i)})
+                .startAngle(function(d, i){return chart.sa(d, i)})
+                .endAngle(function(d, i){return chart.ea(d, i)}))
+            .attr("fill", function(d) {return color(d);});
 
-        this.createLabels(svg, offset, data);
+        return this;
     }
 
     chart(selection) {
@@ -104,9 +125,10 @@ export default class circularHeatChart {
 
             let svg = select(this);
 
-            let offset = chart.innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
+            let offset = chart.innerRadius + Math.ceil(data.length / chart.numSegments) * chart.segmentHeight;
 
-            chart.draw(svg, offset, data)
+            chart.createSegments(svg, offset, data)
+                .createLabels(svg, offset, data)
         });
     }
 
@@ -119,29 +141,31 @@ export default class circularHeatChart {
     }
 
     createRadialLabels(id, svg, offset, data) {
+        let chart = this;
+
         let lsa = 0.01; //Label start angle
         let labels = svg.append("g")
             .classed("labels", true)
             .classed("radial", true)
-            .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
+            .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
 
         labels.selectAll("def")
-            .data(radialLabels).enter()
+            .data(this.radialLabels).enter()
             .append("def")
             .append("path")
             .attr("id", function(d, i) {return "radial-label-path-"+id+"-"+i;})
             .attr("d", function(d, i) {
-                let r = innerRadius + ((i + 0.2) * segmentHeight);
+                let r = chart.innerRadius + ((i + 0.2) * chart.segmentHeight);
                 return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) +
                     " a" + r + " " + r + " 0 1 1 -1 0";
             });
 
         labels.selectAll("text")
-            .data(radialLabels).enter()
+            .data(this.radialLabels).enter()
             .append("text")
             .append("textPath")
             .attr("xlink:href", function(d, i) {return "#radial-label-path-"+id+"-"+i;})
-            .style("font-size", 0.6 * segmentHeight + 'px')
+            .style("font-size", 0.6 * this.segmentHeight + 'px')
             .text(function(d) {return d;});
 
         return labels;
@@ -149,13 +173,15 @@ export default class circularHeatChart {
 
     createSegmentLabels(labels, id, svg, offset, data) {
 
+        let chart = this;
+
         let segmentLabelOffset = 2;
-        let r = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight + segmentLabelOffset;
+        let r = this.innerRadius + Math.ceil(data.length / chart.numSegments) * this.segmentHeight + segmentLabelOffset;
 
         labels = svg.append("g")
             .classed("labels", true)
             .classed("segment", true)
-            .attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
+            .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
 
         labels.append("def")
             .append("path")
@@ -163,72 +189,14 @@ export default class circularHeatChart {
             .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
 
         labels.selectAll("text")
-            .data(segmentLabels).enter()
+            .data(this.segmentLabels).enter()
             .append("text")
             .append("textPath")
             .attr("xlink:href", "#segment-label-path-"+id)
-            .attr("startOffset", function(d, i) {return i * 100 / numSegments + "%";})
+            .attr("startOffset", function(d, i) {return i * 100 / chart.numSegments + "%";})
             .text(function(d) {return d;});
     }
-
 }
 
-    //
-    // /* Configuration getters/setters */
-    // chart.margin = function(_) {
-    //     if (!arguments.length) return margin;
-    //     margin = _;
-    //     return chart;
-    // };
-    //
-    // chart.innerRadius = function(_) {
-    //     if (!arguments.length) return innerRadius;
-    //     innerRadius = _;
-    //     return chart;
-    // };
-    //
-    // chart.numSegments = function(_) {
-    //     if (!arguments.length) return numSegments;
-    //     numSegments = _;
-    //     return chart;
-    // };
-    //
-    // chart.segmentHeight = function(_) {
-    //     if (!arguments.length) return segmentHeight;
-    //     segmentHeight = _;
-    //     return chart;
-    // };
-    //
-    // chart.domain = function(_) {
-    //     if (!arguments.length) return domain;
-    //     domain = _;
-    //     return chart;
-    // };
-    //
-    // chart.range = function(_) {
-    //     if (!arguments.length) return range;
-    //     range = _;
-    //     return chart;
-    // };
-    //
-    // chart.radialLabels = function(_) {
-    //     if (!arguments.length) return radialLabels;
-    //     if (_ == null) _ = [];
-    //     radialLabels = _;
-    //     return chart;
-    // };
-    //
-    // chart.segmentLabels = function(_) {
-    //     if (!arguments.length) return segmentLabels;
-    //     if (_ == null) _ = [];
-    //     segmentLabels = _;
-    //     return chart;
-    // };
-    //
-    // chart.accessor = function(_) {
-    //     if (!arguments.length) return accessor;
-    //     accessor = _;
-    //     return chart;
-    // };
 
 
