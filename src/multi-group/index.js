@@ -46,14 +46,15 @@ export default function multiGroup(response)
         .range([0, radius]);
 
     let data3 = [
-        [229, 633],
-        [243, 584],
-        [277, 564],
-        [319, 549],
-        [372, 557],
-        [369, 630],
-        [323, 696],
-        [271, 682]
+        [62,21],
+        [66,35],
+        [76,41],
+        [88,45],
+        [103,43],
+        [102,22],
+        [89,3],
+        [74,7],
+        [119,42]
     ];
 
     let line = radialLine()
@@ -67,16 +68,16 @@ export default function multiGroup(response)
 
 
 
-    const w = 100;
+    const w = 80;
     const h = 100;
 
     var xxScale = scaleLinear()
-        .domain([200, 400])
+        .domain([50, 130])
         .range([0, 800 - 2*w])
 
     var yyScale = scaleLinear()
-        .domain([500,700])
-        .range([0, 800 - 2*h])
+        .domain([0,50])
+        .range([h, 800 - h])
 
     // var rect_type3 =svg.selectAll(".rect3")
     //     .data(data3)
@@ -101,7 +102,7 @@ export default function multiGroup(response)
     const outerCircleRadius = 60
     const chairWidth = 20;
 
-    let circles1 =svg.selectAll(".circle")
+    let circles1 = svg.selectAll(".circle")
         .data(data3)
         .enter().append("circle")
         .attr("cx", function(d){return xxScale(d[0])})

@@ -32,13 +32,13 @@ export default class Plots extends Component {
             .get(multiChart);
     }
 
-    componentDidMount_(state) {
+    componentDidMount(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(multiGroup);
     }
 
-    componentDidMount(state) {
+    componentDidMount_(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(windChart);
