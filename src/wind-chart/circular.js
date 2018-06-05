@@ -4,9 +4,10 @@ import {select, extent, arc, selectAll, scaleLinear} from 'd3'
 
 export default class circularHeatChart {
 
-    constructor(data)
+    constructor(selector, data)
     {
-        this.data = data;
+        this.selector = selector;
+        this.data     = data;
 
         this.margin = {
             top: 20,
@@ -23,18 +24,19 @@ export default class circularHeatChart {
         this.radialLabels = [];
         this.segmentLabels = [];
         this.domain = null;
-
     }
 
     draw() {
         let chart = this;
 
-        select('td.plot1')
+        this.svg = select(this.selector)
             .selectAll('svg')
             .data(chart.data)
             .enter()
-            .append('svg')
-            .call(function(selection) { return chart.chart(selection)} );
+            .append('svg');
+
+        this.svg.call(function(selection) { return chart.chart(selection)} );
+
     }
 
     setInnerRadius(innerRadius){
@@ -96,16 +98,18 @@ export default class circularHeatChart {
         return color;
     }
 
-    createSegments(svg, offset, data) {
-
-        let color = this.getColorCallback(data);
+    createSegments() {
 
         let chart = this;
 
-        svg.append("g")
+        let color = this.getColorCallback(chart.data[0]);
+
+        let offset = chart.innerRadius + Math.ceil(chart.data[0].length / chart.numSegments) * chart.segmentHeight;
+
+        this.svg.append("g")
             .classed("circular-heat", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")")
-            .selectAll("path").data(data)
+            .selectAll("path").data(chart.data[0])
             .enter().append("path")
             .attr("d", arc()
                 .innerRadius(function(d, i){return chart.ir(d, i)})
@@ -121,30 +125,29 @@ export default class circularHeatChart {
 
         let chart = this;
 
-        selection.each(function(data) {
+        selection.each(function() {
 
-            let svg = select(this);
-
-            let offset = chart.innerRadius + Math.ceil(data.length / chart.numSegments) * chart.segmentHeight;
-
-            chart.createSegments(svg, offset, data)
-                .createLabels(svg, offset, data)
+            chart.createSegments()
+                .createLabels()
         });
     }
 
-    createLabels(svg, offset, data) {
+    createLabels() {
+
         let id = Math.random().toString(36).substr(2, 9);
 
-        let labels = this.createRadialLabels(id, svg, offset, data);
+        let labels = this.createRadialLabels(id);
 
-        this.createSegmentLabels(labels, id, svg, offset, data)
+        this.createSegmentLabels(labels, id)
     }
 
-    createRadialLabels(id, svg, offset, data) {
+    createRadialLabels(id) {
         let chart = this;
 
+        let offset = chart.innerRadius + Math.ceil(chart.data[0].length / chart.numSegments) * chart.segmentHeight;
+
         let lsa = 0.01; //Label start angle
-        let labels = svg.append("g")
+        let labels = this.svg.append("g")
             .classed("labels", true)
             .classed("radial", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
@@ -171,14 +174,16 @@ export default class circularHeatChart {
         return labels;
     }
 
-    createSegmentLabels(labels, id, svg, offset, data) {
+    createSegmentLabels(labels, id) {
 
         let chart = this;
 
-        let segmentLabelOffset = 2;
-        let r = this.innerRadius + Math.ceil(data.length / chart.numSegments) * this.segmentHeight + segmentLabelOffset;
+        let offset = chart.innerRadius + Math.ceil(chart.data[0].length / chart.numSegments) * chart.segmentHeight;
 
-        labels = svg.append("g")
+        let segmentLabelOffset = 2;
+        let r = offset + segmentLabelOffset;
+
+        labels = this.svg.append("g")
             .classed("labels", true)
             .classed("segment", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
