@@ -98,6 +98,17 @@ export default class circularHeatChart {
         return color;
     }
 
+    getArc() {
+
+        let chart = this;
+
+        return arc()
+            .innerRadius(function(d, i){return chart.ir(d, i)})
+            .outerRadius(function(d, i){return chart.or(d, i)})
+            .startAngle(function(d, i){return chart.sa(d, i)})
+            .endAngle(function(d, i){return chart.ea(d, i)});
+    }
+
     createSegments() {
 
         let chart = this;
@@ -111,11 +122,7 @@ export default class circularHeatChart {
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")")
             .selectAll("path").data(chart.data[0])
             .enter().append("path")
-            .attr("d", arc()
-                .innerRadius(function(d, i){return chart.ir(d, i)})
-                .outerRadius(function(d, i){return chart.or(d, i)})
-                .startAngle(function(d, i){return chart.sa(d, i)})
-                .endAngle(function(d, i){return chart.ea(d, i)}))
+            .attr("d", this.getArc())
             .attr("fill", function(d) {return color(d);});
 
         return this;
@@ -127,54 +134,48 @@ export default class circularHeatChart {
 
         selection.each(function() {
 
+            this.id = Math.random().toString(36).substr(2, 9);
+
             chart.createSegments()
-                .createLabels()
+                .createRadialLabels()
+                .createSegmentLabels()
         });
     }
 
-    createLabels() {
-
-        let id = Math.random().toString(36).substr(2, 9);
-
-        let labels = this.createRadialLabels(id);
-
-        this.createSegmentLabels(labels, id)
-    }
-
-    createRadialLabels(id) {
+    createRadialLabels() {
         let chart = this;
 
         let offset = chart.innerRadius + Math.ceil(chart.data[0].length / chart.numSegments) * chart.segmentHeight;
 
         let lsa = 0.01; //Label start angle
-        let labels = this.svg.append("g")
+        this.labels = this.svg.append("g")
             .classed("labels", true)
             .classed("radial", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
 
-        labels.selectAll("def")
+        this.labels.selectAll("def")
             .data(this.radialLabels).enter()
             .append("def")
             .append("path")
-            .attr("id", function(d, i) {return "radial-label-path-"+id+"-"+i;})
+            .attr("id", function(d, i) {return "radial-label-path-" + chart.id + "-" + i;})
             .attr("d", function(d, i) {
                 let r = chart.innerRadius + ((i + 0.2) * chart.segmentHeight);
                 return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) +
                     " a" + r + " " + r + " 0 1 1 -1 0";
             });
 
-        labels.selectAll("text")
+        this.labels.selectAll("text")
             .data(this.radialLabels).enter()
             .append("text")
             .append("textPath")
-            .attr("xlink:href", function(d, i) {return "#radial-label-path-"+id+"-"+i;})
+            .attr("xlink:href", function(d, i) {return "#radial-label-path-" + chart.id + "-" + i;})
             .style("font-size", 0.6 * this.segmentHeight + 'px')
             .text(function(d) {return d;});
 
-        return labels;
+        return this;
     }
 
-    createSegmentLabels(labels, id) {
+    createSegmentLabels() {
 
         let chart = this;
 
@@ -183,23 +184,25 @@ export default class circularHeatChart {
         let segmentLabelOffset = 2;
         let r = offset + segmentLabelOffset;
 
-        labels = this.svg.append("g")
+        this.labels = this.svg.append("g")
             .classed("labels", true)
             .classed("segment", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
 
-        labels.append("def")
+        this.labels.append("def")
             .append("path")
-            .attr("id", "segment-label-path-"+id)
+            .attr("id", "segment-label-path-" + this.id)
             .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
 
-        labels.selectAll("text")
+        this.labels.selectAll("text")
             .data(this.segmentLabels).enter()
             .append("text")
             .append("textPath")
-            .attr("xlink:href", "#segment-label-path-"+id)
+            .attr("xlink:href", "#segment-label-path-" + this.id)
             .attr("startOffset", function(d, i) {return i * 100 / chart.numSegments + "%";})
             .text(function(d) {return d;});
+
+        return this;
     }
 }
 
