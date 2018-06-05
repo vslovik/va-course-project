@@ -1,5 +1,5 @@
 import circularHeatChart from "./circular.js";
-import {csvParseRows, select, timeParse} from 'd3'
+import {csvParseRows, timeParse} from 'd3'
 
 class WindChartData {
 
@@ -60,7 +60,7 @@ class WindChartData {
             return parser(dt)
         }
 
-        throw 'Value: "' + dt + '" is not a date'
+        throw new Error('Value: "' + dt + '" is not a date')
     }
 
     getCellIndex(angle, value) {
@@ -127,7 +127,7 @@ export default function windChart(response) {
 
     let wcd = (new WindChartData());
 
-    let chart = new circularHeatChart('td.plot1', [wcd.getData(response, DECEMBER)])
+    new circularHeatChart('td.plot1', [wcd.getData(response, DECEMBER)])
         .setInnerRadius(20)
         .setRange(["white", "steelblue"])
         .setRadialLabels(wcd.getRadialLabels())

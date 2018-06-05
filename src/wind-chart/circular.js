@@ -1,5 +1,9 @@
-//https://raw.githubusercontent.com/prcweb/d3-circularheat/master/js/circularHeatChart.js
-// http://prcweb.co.uk/lab/circularheat/
+/**
+ * https://raw.githubusercontent.com/prcweb/d3-circularheat/master/js/circularHeatChart.js
+ *
+ * http://prcweb.co.uk/lab/circularheat
+ *
+ */
 import {select, extent, arc, selectAll, scaleLinear} from 'd3'
 
 export default class circularHeatChart {
@@ -7,7 +11,7 @@ export default class circularHeatChart {
     constructor(selector, data)
     {
         this.selector = selector;
-        this.data     = data;
+        [this.data]     = data;
 
         this.margin = {
             top: 20,
@@ -16,14 +20,14 @@ export default class circularHeatChart {
             left: 20
         };
 
-        this.innerRadius = 50;
-        this.numSegments = 36;
+        this.innerRadius   = 50;
+        this.numSegments   = 36;
         this.segmentHeight = 20;
-        this.range = ["white", "red"];
+        this.range         = ["white", "red"];
 
-        this.radialLabels = [];
+        this.radialLabels  = [];
         this.segmentLabels = [];
-        this.domain = null;
+        this.domain        = null;
     }
 
     draw() {
@@ -31,12 +35,11 @@ export default class circularHeatChart {
 
         this.svg = select(this.selector)
             .selectAll('svg')
-            .data(chart.data)
+            .data([chart.data])
             .enter()
             .append('svg');
 
         this.svg.call(function(selection) { return chart.chart(selection)} );
-
     }
 
     setInnerRadius(innerRadius){
@@ -113,14 +116,14 @@ export default class circularHeatChart {
 
         let chart = this;
 
-        let color = this.getColorCallback(chart.data[0]);
+        let color = this.getColorCallback(chart.data);
 
-        let offset = chart.innerRadius + Math.ceil(chart.data[0].length / chart.numSegments) * chart.segmentHeight;
+        let offset = chart.innerRadius + Math.ceil(chart.data.length / chart.numSegments) * chart.segmentHeight;
 
         this.svg.append("g")
             .classed("circular-heat", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")")
-            .selectAll("path").data(chart.data[0])
+            .selectAll("path").data(chart.data)
             .enter().append("path")
             .attr("d", this.getArc())
             .attr("fill", function(d) {return color(d);});
@@ -134,7 +137,7 @@ export default class circularHeatChart {
 
         selection.each(function() {
 
-            this.id = Math.random().toString(36).substr(2, 9);
+            chart.id = Math.random().toString(36).substr(2, 9);
 
             chart.createSegments()
                 .createRadialLabels()
@@ -145,7 +148,7 @@ export default class circularHeatChart {
     createRadialLabels() {
         let chart = this;
 
-        let offset = chart.innerRadius + Math.ceil(chart.data[0].length / chart.numSegments) * chart.segmentHeight;
+        let offset = chart.innerRadius + Math.ceil(chart.data.length / chart.numSegments) * chart.segmentHeight;
 
         let lsa = 0.01; //Label start angle
         this.labels = this.svg.append("g")
@@ -179,7 +182,7 @@ export default class circularHeatChart {
 
         let chart = this;
 
-        let offset = chart.innerRadius + Math.ceil(chart.data[0].length / chart.numSegments) * chart.segmentHeight;
+        let offset = chart.innerRadius + Math.ceil(chart.data.length / chart.numSegments) * chart.segmentHeight;
 
         let segmentLabelOffset = 2;
         let r = offset + segmentLabelOffset;
