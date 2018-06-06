@@ -84,6 +84,95 @@ const getDataset = (rows, structure = 'SenMonChe') => {
     return dataset;
 };
 
+class Chart {
+    constructor(selector, data){
+
+        this.data = data;
+
+        this.w       = 800;
+        this.h       = 600;
+        this.padding = 40;
+
+        this.createScales();
+
+        let yAxis = axisLeft()
+            .scale(this.yScale)
+            .ticks(10);
+
+        let formatTime = timeFormat("%e");
+
+        let xAxis = axisBottom()
+                .scale(this.xScale)
+                .tickFormat(formatTime)
+            // .ticks(10)
+        ;
+
+        let svg = select(selector)
+            .append("svg")
+            .attr("width", this.w)
+            .attr("height", this.h);
+
+        let chart = this;
+
+        svg.selectAll("circle")
+            .data(this.data)
+            .enter()
+            .append("circle")
+            .attr("fill", function(d) {
+
+                let color;
+                let colorMap = {};
+                colorMap[APP] = 'red';
+                colorMap[CHL] = 'orange';
+                colorMap[MET] = 'blue';
+                colorMap[AGO] = 'green';
+
+                return colorMap[d.che];
+            })
+            .attr("cx", function(d, i) {
+                return chart.xScale(d.t);
+            })
+            .attr("cy", function(d) {
+                return chart.yScale(d.val);
+            })
+            .attr("r", function(d) {
+                return chart.aScale(d.val);
+            });
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + (this.h - this.padding) + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + this.padding + ",0)")
+            .call(yAxis);
+    }
+
+    createScales() {
+        let chart = this;
+
+        this.xScale = scaleTime()
+            .domain([min(this.data, function(d) { return d.t; }), max(chart.data, function(d) { return d.t; })])
+            .range([this.padding, this.w - this.padding])
+            .nice();
+
+        this.yScale = scaleLinear()
+            .domain([min(this.data, function(d) { return d.val; }), max(chart.data, function(d) { return d.val; })])
+            .rangeRound([this.h - this.padding, this.padding])
+            .nice();
+
+        this.aScale = scaleSqrt()
+            .domain([0, max(this.data, function(d) { return d.val; })])
+            .range([0, 5]);
+
+        return this;
+    }
+
+}
+
+
 export default function scatterChart(response) {
 
     let rows = csvParseRows(response.responseText);
@@ -92,81 +181,7 @@ export default function scatterChart(response) {
     // let dd = dataset[1][3][1]; // 7, 11
 
     let dataset = getDataset(rows, 'SenMon');
-    let dd = dataset[1][3]; // 7, 11
+    let data = dataset[1][3]; // 7, 11
 
-    console.log(dataset);
-
-    let w       = 800;
-    let h       = 600;
-    let padding = 40;
-
-    let xScale = scaleTime()
-        .domain([min(dd, function(d) { return d.t; }), max(dd, function(d) { return d.t; })])
-        .range([padding, w - padding])
-        .nice();
-
-    console.log(xScale.domain());
-
-    let yScale = scaleLinear()
-        .domain([min(dd, function(d) { return d.val; }), max(dd, function(d) { return d.val; })])
-        .rangeRound([h - padding, padding])
-        .nice();
-
-    console.log(yScale.domain());
-
-    let aScale = scaleSqrt()
-        .domain([0, max(dd, function(d) { return d.val; })])
-        .range([0, 5]);
-
-    let yAxis = axisLeft()
-        .scale(yScale)
-        .ticks(10);
-
-    let formatTime = timeFormat("%e");
-
-    let xAxis = axisBottom()
-            .scale(xScale)
-            .tickFormat(formatTime)
-        // .ticks(10)
-    ;
-
-    let svg = select("td.plot1")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
-
-    svg.selectAll("circle")
-        .data(dd)
-        .enter()
-        .append("circle")
-        .attr("fill", function(d) {
-
-            let color;
-            let colorMap = {};
-            colorMap[APP] = 'red';
-            colorMap[CHL] = 'orange';
-            colorMap[MET] = 'blue';
-            colorMap[AGO] = 'green';
-
-            return colorMap[d.che];
-        })
-        .attr("cx", function(d, i) {
-            return xScale(d.t);
-        })
-        .attr("cy", function(d) {
-            return yScale(d.val);
-        })
-        .attr("r", function(d) {
-            return aScale(d.val);
-        });
-
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + (h - padding) + ")")
-        .call(xAxis);
-
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + padding + ",0)")
-        .call(yAxis);
+    new Chart('td.plot1', data);
 }

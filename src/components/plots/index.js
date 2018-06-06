@@ -20,7 +20,7 @@ export default class Plots extends Component {
             .get(polarChart);
     }
 
-    componentDidMount_(state) {
+    componentDidMount(state) {
         request(sensorCsv)
             .mimeType("text/csv")
             .get(scatterChart);
@@ -32,7 +32,7 @@ export default class Plots extends Component {
             .get(multiChart);
     }
 
-    componentDidMount(state) {
+    componentDidMount_(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(multiGroup);
