@@ -1,153 +1,205 @@
 import {csvParseRows, radialLine, scaleLinear, select, timeParse, range, cloudshapes, scaleOrdinal, max, scaleBand} from "d3";
 
-export default function multiGroup(response)
-{
-    let windData = [];
+class MultiChartData {
+    static parseMeasureDate(dt) {
+        let parser;
 
-    //Date,"Wind Direction","Wind Speed (m/s)"
-    let dt, angle, speed, max = 0.0;
-
-    let rows = csvParseRows(response.responseText);
-    for (let i = 1; i < rows.length; i++) {
-
-        angle = parseFloat(rows[i][1].replace(',', '.'));
-        speed = parseFloat(rows[i][2].replace(',', '.'));
-        if(max < speed) {
-            max = speed;
+        if (dt.length === '2016/01/01'.length) {
+            parser = timeParse("%Y/%m/%d");
+            dt = parser(dt)
         }
 
-        let parseDateTime;
-
-        if(rows[i][0].length === '2016/01/01'.length){
-            parseDateTime = timeParse("%Y/%m/%d");
-            dt = parseDateTime(rows[i][0]);
-        } else if(rows[i][0].length === "2016/04/01 08:00:00".length) {
-            parseDateTime = timeParse("%Y/%m/%d %H:%M:%S");
-            dt = parseDateTime(rows[i][0]);
-        } else {
-            console.log('Value: "' + rows[i][0] + '" is not a date')
-            continue
+        if (dt.length === "2016/04/01 08:00:00".length) {
+            parser = timeParse("%Y/%m/%d %H:%M:%S");
+            dt = parser(dt)
         }
 
-        if(null === dt) {
-            console.log('DateTime parse error' + rows[i][0])
-        }
+        if(null === dt)
+            console.log('Value: "' + dt + '" is not a date')
 
-        windData.push([Math.PI * angle/180, speed/max])
+        return dt;
     }
 
-    let data = windData;
-    let width = 200,
-        height = 150,
-        radius = Math.min(width, height) / 2 - 30;
+    static getWindData(response)
+    {
+        //Date,"Wind Direction","Wind Speed (m/s)"
+        let dt, angle, speed, max = 0.0,  data = [];
 
-    let r = scaleLinear()
-        .domain([0, .5])
-        .range([0, radius]);
+        let rows = csvParseRows(response.responseText);
 
-    let data3 = [
-        [62,21],
-        [66,35],
-        [76,41],
-        [88,45],
-        [103,43],
-        [102,22],
-        [89,3],
-        [74,7],
-        [119,42]
-    ];
+        rows.forEach(function (row) {
 
-    let line = radialLine()
-        .radius(function(d) { return r(d[1]); })
-        .angle(function(d) { return -d[0] + Math.PI / 2; });
+            [dt, angle, speed] = row;
 
-    let svg = select("td.plot1")
-        .append("svg")
-        .attr("width", 1000)
-        .attr("height", 800);
+            speed = parseFloat(speed.replace(',', '.'));
 
+            if(max < speed) {
+                max = speed;
+            }
+        });
 
+        rows.forEach(function (row) {
 
-    const w = 80;
-    const h = 100;
+            [dt, angle, speed] = row;
 
-    var xxScale = scaleLinear()
-        .domain([50, 130])
-        .range([0, 800 - 2*w])
+            angle = parseFloat(angle.replace(',', '.'));
+            speed = parseFloat(speed.replace(',', '.'));
+            dt    = MultiChartData.parseMeasureDate(dt);
 
-    var yyScale = scaleLinear()
-        .domain([0,50])
-        .range([h, 800 - h])
+            if(null !== dt)
+                data.push([Math.PI * angle/180, speed/max])
+        });
 
-    // var rect_type3 =svg.selectAll(".rect3")
-    //     .data(data3)
-    //     .enter().append("rect")
-    //     .attr("x", function(d){return xxScale(d[0])})
-    //     .attr("y", function(d){return yyScale(d[1])})
-    //     .attr("width", w)
-    //     .attr("height", h)
-    //     .attr("fill", "pink")
-    //     .attr("fill-opacity", "0.9")
-    //     .attr("class", "rect2")
-    
-    var circles =svg.selectAll(".circle")
-        .data(data3)
-        .enter().append("circle")
-        .attr("cx", function(d){return xxScale(d[0])})
-        .attr("cy", function(d){return yyScale(d[1])})
-        .attr("r", 50)
-        .attr("fill", "pink")
-        .attr("fill-opacity", "0.9")
+        return data;
+    }
+}
 
-    const outerCircleRadius = 60
-    const chairWidth = 20;
+/**
+ *
+ * @see https://spin.atomicobject.com/2015/06/12/objects-around-svg-circle-d3-js/
+ */
+class MultiChart {
+    constructor(selector, data) {
 
-    let circles1 = svg.selectAll(".circle")
-        .data(data3)
-        .enter().append("circle")
-        .attr("cx", function(d){return xxScale(d[0])})
-        .attr("cy", function(d){return yyScale(d[1])})
-        .attr("r", outerCircleRadius)
-        .attr("fill", "pink")
-        .attr("fill-opacity", "0.9")
+        this.data    = data;
 
-    // var circles2 =svg.selectAll(".rect3")
-    //     .data(data3)
-    //     .enter().append("rect")
-    //     .attr("x", function(d){return xxScale(d[0]) + ((outerCircleRadius) * Math.sin(0)) - (chairWidth/2)})
-    //     .attr("y", function(d){return yyScale(d[1]) - ((outerCircleRadius) * Math.cos(0)) - (chairWidth/2)})
-    //     .attr("width", 20)
-    //     .attr("height", 20)
-    //     .attr("fill", "black")
-    //     .attr("stroke", "blue")
-    //     .attr("class", "rect2")
+        this.centers = [
+            [62, 21],
+            [66, 35],
+            [76, 41],
+            [88, 45],
+            [103, 43],
+            [102, 22],
+            [89, 3],
+            [74, 7],
+            [119, 42]
+        ];
 
-    data3.forEach(function(entry) {
-        svg.selectAll("point")
-            .data(data)
-            .enter()
-            .append("circle")
-            .attr("class", "point")
-            .attr("transform", function (d) {
+        this.svg = select(selector)
+            .append("svg")
+            .attr("width", 1000)
+            .attr("height", 800);
 
-                const coors = line([d]).slice(1).slice(0, -1);
+        this.createScales().drawCircles().drawPoints();
+    }
 
-                const centerX = parseFloat(entry[0]);
-                const centerY = parseFloat(entry[1]);
+    createScales() {
+        const w = 80;
+        const h = 100;
 
-                const [xx, yy] = coors.split(',');
+        this.xScale = scaleLinear()
+            .domain([50, 130])
+            .range([0, 800 - 2*w]);
 
-                const x = parseFloat(xx) + xxScale(centerX) + (chairWidth / 2);
-                const y = parseFloat(yy) + yyScale(centerY) + (chairWidth / 2);
+        this.yScale = scaleLinear()
+            .domain([0,50])
+            .range([h, 800 - h]);
 
-                return "translate(" + x + ',' + y + ")"
-            })
-            .attr("r", 2)
-            .attr("fill", function (d, i) {
-                return 'black'//color(i);
-            });
-    });
+        this.drawCircles().drawPoints();
 
+        return this;
+    }
 
-    // https://spin.atomicobject.com/2015/06/12/objects-around-svg-circle-d3-js/
+    drawCircles(){
+        // var rect_type3 =svg.selectAll(".rect3")
+        //     .data(data3)
+        //     .enter().append("rect")
+        //     .attr("x", function(d){return xxScale(d[0])})
+        //     .attr("y", function(d){return yyScale(d[1])})
+        //     .attr("width", w)
+        //     .attr("height", h)
+        //     .attr("fill", "pink")
+        //     .attr("fill-opacity", "0.9")
+        //     .attr("class", "rect2")
+
+        let chart = this;
+
+        this.svg.selectAll(".circle")
+            .data(this.centers)
+            .enter().append("circle")
+            .attr("cx", function(d){return chart.xScale(d[0])})
+            .attr("cy", function(d){return chart.yScale(d[1])})
+            .attr("r", 50)
+            .attr("fill", "pink")
+            .attr("fill-opacity", "0.9");
+
+        this.svg.selectAll(".circle")
+            .data(this.centers)
+            .enter().append("circle")
+            .attr("cx", function(d){return chart.xScale(d[0])})
+            .attr("cy", function(d){return chart.yScale(d[1])})
+            .attr("r", 60)
+            .attr("fill", "pink")
+            .attr("fill-opacity", "0.9");
+
+        return this;
+    }
+
+    drawPoints()
+    {
+        const chairWidth = 20;
+
+        // var circles2 =svg.selectAll(".rect3")
+        //     .data(data3)
+        //     .enter().append("rect")
+        //     .attr("x", function(d){return xxScale(d[0]) + ((outerCircleRadius) * Math.sin(0)) - (chairWidth/2)})
+        //     .attr("y", function(d){return yyScale(d[1]) - ((outerCircleRadius) * Math.cos(0)) - (chairWidth/2)})
+        //     .attr("width", 20)
+        //     .attr("height", 20)
+        //     .attr("fill", "black")
+        //     .attr("stroke", "blue")
+        //     .attr("class", "rect2")
+
+        const width  = 200,
+              height = 150,
+              radius = Math.min(width, height) / 2 - 30;
+
+        const r = scaleLinear()
+            .domain([0, .5])
+            .range([0, radius]);
+
+        const line = radialLine()
+            .radius(function(d) { return r(d[1]); })
+            .angle(function(d) { return -d[0] + Math.PI / 2; });
+
+        let chart = this;
+
+        this.centers.forEach(function(entry) {
+            chart.svg.selectAll("point")
+                .data(chart.data)
+                .enter()
+                .append("circle")
+                .attr("class", "point")
+                .attr("transform", function (d) {
+
+                    const coors = line([d]).slice(1).slice(0, -1);
+
+                    let [centerX, centerY] = entry;
+
+                    centerX = parseFloat(centerX);
+                    centerY = parseFloat(centerY);
+
+                    let [x, y] = coors.split(',');
+
+                    x = parseFloat(x) + chart.xScale(centerX) + (chairWidth / 2);
+                    y = parseFloat(y) + chart.yScale(centerY) + (chairWidth / 2);
+
+                    return "translate(" + x + ',' + y + ")"
+                })
+                .attr("r", 2)
+                .attr("fill", function (d, i) {
+                    return 'black'//color(i);
+                });
+        });
+
+        return this;
+    }
+}
+
+export default function multiGroup(response)
+{
+    new MultiChart(
+        "td.plot1",
+        MultiChartData.getWindData(response)
+    );
 }
