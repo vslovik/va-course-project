@@ -15,14 +15,14 @@ export default class Chart {
             .append("g")
             .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
 
-        this.createRadialScale()
-            .addPoints()
-            .addRadialAxis()
-            .addCircularDots()
-            .addRadialLabels()
-            .addAngleAxis()
-            .addRadialDots()
-            .addAngleLabels();
+        // this.createRadialScale()
+        //     .addPoints()
+        //     .addRadialAxis()
+        //     .addCircularDots()
+        //     .addRadialLabels()
+        //     .addAngleAxis()
+        //     .addRadialDots()
+        //     .addAngleLabels();
     }
 
     addPoints() {
