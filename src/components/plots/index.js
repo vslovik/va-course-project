@@ -14,7 +14,7 @@ export default class Plots extends Component {
         data: []
     };
 
-    componentDidMount_(state) {
+    componentDidMount(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(polarChart);
@@ -38,7 +38,7 @@ export default class Plots extends Component {
             .get(multiGroup);
     }
 
-    componentDidMount(state) {
+    componentDidMount_(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(windChart);

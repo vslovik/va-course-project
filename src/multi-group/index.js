@@ -1,4 +1,3 @@
-import {csvParseRows, radialLine, scaleLinear, select, timeParse, range, cloudshapes, scaleOrdinal, max, scaleBand} from "d3";
 import MultiChartData from './data'
 import MultiChart from './chart'
 
