@@ -11,10 +11,30 @@ import exampleChart from '../../example-chart'
 
 export default class Plots extends Component {
     state = {
-        data: []
+        data: [],
+        windData: [],
+        sensorData: []
     };
 
     componentDidMount(state) {
+        request(meteoCsv)
+            .mimeType("text/csv")
+            .get(function(response){
+                this.setState({
+                    windData: response
+                });
+            });
+
+        request(sensorCsv)
+            .mimeType("text/csv")
+            .get(function(response){
+                this.setState({
+                    sensorData: response
+                });
+            });
+    }
+
+    componentDidMount_(state) {
         request(meteoCsv)
             .mimeType("text/csv")
             .get(polarChart);
