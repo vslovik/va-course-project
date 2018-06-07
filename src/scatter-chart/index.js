@@ -1,4 +1,4 @@
-import {csvParseRows} from "d3";
+import {csvParseRows, timeParse} from "d3";
 import Data from "./data"
 import Chart from "./chart"
 
