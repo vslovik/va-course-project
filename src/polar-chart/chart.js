@@ -1,9 +1,9 @@
 import {radialLine, range, scaleLinear, select} from "d3";
 
 export default class Chart {
-    constructor(selector, data) {
+    constructor(selector, windData, sensorData) {
 
-        this.data =  data;
+        this.windData =  windData;
 
         this.width  = 800;
         this.height = 600;
@@ -15,14 +15,14 @@ export default class Chart {
             .append("g")
             .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
 
-        // this.createRadialScale()
-        //     .addPoints()
-        //     .addRadialAxis()
-        //     .addCircularDots()
-        //     .addRadialLabels()
-        //     .addAngleAxis()
-        //     .addRadialDots()
-        //     .addAngleLabels();
+        this.createRadialScale()
+            .addPoints()
+            .addRadialAxis()
+            .addCircularDots()
+            .addRadialLabels()
+            .addAngleAxis()
+            .addRadialDots()
+            .addAngleLabels();
     }
 
     addPoints() {
@@ -34,7 +34,7 @@ export default class Chart {
             .angle(function(d) { return -d[0] + Math.PI / 2; });
 
         this.svg.selectAll("point")
-            .data(this.data)
+            .data(this.windData)
             .enter()
             .append("circle")
             .attr("class", "point")

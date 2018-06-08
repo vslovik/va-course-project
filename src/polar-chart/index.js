@@ -1,14 +1,11 @@
 import Data from './data'
 import Chart from './chart'
 import {csvParseRows, timeParse} from "d3";
+import {request} from "d3-request";
+import sensorCsv from '../data/ch2/SensorData.csv';
 
-class SensorData
+class WindData
 {
-    constructor(response) {
-        let calendar = this.getCalendar(response);
-        console.log(calendar)
-    }
-
     getCalendar(response) {
         let rows = csvParseRows(response.responseText);
 
@@ -18,7 +15,7 @@ class SensorData
 
             [t, angle, speed] = row;
 
-            dt = SensorData.parseMeasureDate(t);
+            dt = WindData.parseMeasureDate(t);
             if(null != dt) {
 
                 key = [
@@ -60,9 +57,33 @@ class SensorData
 
 }
 
-export default function polarChart(response)
-{
-    new SensorData(response);
+class SensorData {
+    constructor(response, calendar) {
 
-    new Chart("td.plot1", Data.getData(response));
+        let rows = csvParseRows(response.responseText);
+
+        // console.log('rows', rows);
+        console.log('calendar', calendar);
+
+        let che, sen, dt, val, t;
+
+        forEach(function(row) {
+            [che, sen, dt, val] = row;
+            t = WindData.parseMeasureDate(dt)
+        });
+    }
+}
+
+export default function polarChart(windDataResponse)
+{
+    request(sensorCsv)
+        .mimeType("text/csv")
+        .get(function(sensorDataResponse) {
+
+            new SensorData(sensorDataResponse, (new WindData).getCalendar(windDataResponse));
+
+            // new Chart("td.plot1", sd);
+        });
+
+
 }
