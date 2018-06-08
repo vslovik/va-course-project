@@ -1,4 +1,5 @@
 import {csvParseRows, timeParse} from "d3";
+import WindDirectionCalendar from "./direction";
 
 export default class Data {
 
