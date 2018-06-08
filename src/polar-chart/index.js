@@ -6,11 +6,11 @@ import {request} from "d3-request";
 import sensorCsv from '../data/ch2/SensorData.csv';
 
 class SensorData {
-    constructor(response, calendar, sensor) {
+    constructor(response, calendar) {
 
         this.response = response;
         this.calendar = calendar;
-        this.sensor   = sensor;
+        this.data     = [];
 
         const [APP, CHL, MET, AGO] = SensorData.getChemicalsEncoding();
 
@@ -20,10 +20,9 @@ class SensorData {
             "Methylosmolene": MET,
             "AGOC-3A": AGO
         };
-
     }
 
-    getData() {
+    getData(sensor) {
         let rows = csvParseRows(this.response.responseText);
 
         let max = 0.0, _;
@@ -41,9 +40,6 @@ class SensorData {
             [che, sen, dt, val] = rows[i];
 
             sen = parseInt(sen);
-            if(sen !== this.sensor) {
-                continue;
-            }
 
             che = this.chemicals[che];
             val = parseFloat(val.replace(',', '.'));
@@ -53,12 +49,15 @@ class SensorData {
                 continue;
             }
 
-            data.push([Math.PI * angle / 180, val / max])
+            if(!data[sen]) {
+                data[sen] = [];
+            }
+            data[sen].push([Math.PI * angle / 180, val / max])
         }
 
         console.log(data);
 
-        return data;
+        return data[sensor];
     }
 
     static getChemicalsEncoding() {
@@ -74,9 +73,8 @@ export default function polarChart(windDataResponse)
 
             let sd = (new SensorData(
                 sensorDataResponse,
-                (new WindDirectionCalendar).get(windDataResponse),
-                6
-            )).getData();
+                (new WindDirectionCalendar).get(windDataResponse)
+            )).getData(6);
 
             new Chart("td.plot1", sd);
         });
