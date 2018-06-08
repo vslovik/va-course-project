@@ -52,7 +52,13 @@ export default class WindDirectionCalendar
         return null;
     }
 
-    static getWindDirection(t, calendar) {
+    static getWindDirection(dt, calendar) {
+
+        let t = WindDirectionCalendar.parseMeasureDate(dt);
+
+        if(null === t) {
+            return null;
+        }
 
         let key = [
             t.getFullYear(),

@@ -6,31 +6,63 @@ import {request} from "d3-request";
 import sensorCsv from '../data/ch2/SensorData.csv';
 
 class SensorData {
-    constructor(response, calendar) {
+    constructor(response, calendar, sensor) {
 
-        let rows = csvParseRows(response.responseText);
+        this.response = response;
+        this.calendar = calendar;
+        this.sensor   = sensor;
+
+        const [APP, CHL, MET, AGO] = SensorData.getChemicalsEncoding();
+
+        this.chemicals = {
+            "Appluimonia": APP,
+            "Chlorodinine": CHL,
+            "Methylosmolene": MET,
+            "AGOC-3A": AGO
+        };
+
+    }
+
+    getData() {
+        let rows = csvParseRows(this.response.responseText);
+
+        let max = 0.0, _;
+        rows.forEach(function (row) {
+            [_, _, _, val] = row;
+            val = parseFloat(val.replace(',', '.'));
+            if (max < val) {
+                max = val;
+            }
+        });
 
         let che, sen, dt, val;
-
-        let t, key, hour;
         let data = [];
         for(let i = 0; i < rows.length; i++) {
             [che, sen, dt, val] = rows[i];
 
-            t = WindDirectionCalendar.parseMeasureDate(dt);
-
-            if(null === t) {
+            sen = parseInt(sen);
+            if(sen !== this.sensor) {
                 continue;
             }
 
-            let windDir = WindDirectionCalendar.getWindDirection(t, calendar);
+            che = this.chemicals[che];
+            val = parseFloat(val.replace(',', '.'));
 
-            if(null === windDir) {
+            let angle = WindDirectionCalendar.getWindDirection(dt, this.calendar);
+            if(null === angle) {
                 continue;
             }
+
+            data.push([Math.PI * angle / 180, val / max])
         }
 
         console.log(data);
+
+        return data;
+    }
+
+    static getChemicalsEncoding() {
+        return [1, 2, 3, 4];
     }
 }
 
@@ -40,10 +72,12 @@ export default function polarChart(windDataResponse)
         .mimeType("text/csv")
         .get(function(sensorDataResponse) {
 
-            new SensorData(sensorDataResponse, (new WindDirectionCalendar).get(windDataResponse));
+            let sd = (new SensorData(
+                sensorDataResponse,
+                (new WindDirectionCalendar).get(windDataResponse),
+                6
+            )).getData();
 
-            // new Chart("td.plot1", sd);
+            new Chart("td.plot1", sd);
         });
-
-
 }

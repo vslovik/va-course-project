@@ -1,9 +1,9 @@
 import {radialLine, range, scaleLinear, select} from "d3";
 
 export default class Chart {
-    constructor(selector, windData, sensorData) {
+    constructor(selector, data) {
 
-        this.windData =  windData;
+        this.data =  data;
 
         this.width  = 800;
         this.height = 600;
@@ -34,7 +34,7 @@ export default class Chart {
             .angle(function(d) { return -d[0] + Math.PI / 2; });
 
         this.svg.selectAll("point")
-            .data(this.windData)
+            .data(this.data)
             .enter()
             .append("circle")
             .attr("class", "point")
