@@ -60,7 +60,7 @@ export default function multiChart(response)
         [271, 682]
     ];
 
-    let svg = select("td.plot1")
+    let svg = select(".plot1")
         .selectAll("svg")
         .data(d)
         .enter().append("svg")

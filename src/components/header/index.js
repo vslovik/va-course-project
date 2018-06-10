@@ -1,16 +1,13 @@
-import React, { Component } from 'react'
-import Menu from './../menu'
-import PathLinks from './../path-links'
+import React, {Component} from 'react'
 import Tabs from './../tabs'
+import VectorialViewControls from "../vectorial-view-controls";
+import TemporalViewControls from "../temporal-view-controls";
 
 export default class Footer extends Component {
     render = () => (
-        <div className="pagehead repohead instapaper_ignore readability-menu experiment-repo-nav">
-            <div className="repohead-details-container clearfix container">
-                <Menu />
-                <PathLinks />
-            </div>
-            <Tabs />
+        <div>
+            <Tabs/>
+            <VectorialViewControls/>
         </div>
     )
 }

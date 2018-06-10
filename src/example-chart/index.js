@@ -116,7 +116,7 @@ class Chart {
 
 export default function exampleChart(response) {
     const chart = new Chart({
-        element: document.querySelector('td.plot1'),
+        element: document.querySelector('.plot1'),
         data: [
             [new Date(2016,0,1), 10],
             [new Date(2016,1,1), 70],

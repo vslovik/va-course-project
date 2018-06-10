@@ -12,5 +12,5 @@ export default function scatterChart(response) {
     let dataset = (new Data()).getData(rows, 'SenMon');
     let data = dataset[1][3]; // 7, 11
 
-    new Chart('td.plot1', data);
+    new Chart('.plot1', data);
 }

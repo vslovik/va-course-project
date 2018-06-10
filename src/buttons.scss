@@ -1,0 +1,63 @@
+.button {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: #ffffff;
+  &:link {
+    margin-left: 4px;
+    padding: 10px 20px;
+    line-height: 100%;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+    cursor: pointer;
+  }
+  &:hover {
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+  }
+}
+@mixin color($color) {
+  &:link, &:visited, &:active {
+    background-color: $color;
+  }
+  &:hover {
+    background-color: lighten($color, 20);
+  }
+}
+.agog-button {
+  @extend .button;
+  @include color(#ff996b);
+}
+.appl-button {
+  @extend .button;
+  @include color(#ff565f);
+}
+.chlo-button {
+  @extend .button;
+  @include color(#3bafda);
+}
+.meth-button {
+  @extend .button;
+  @include color(#54c2b4);
+}
+.all-button {
+  @extend .button;
+  @include color(#34495e);
+}
+.apr-button {
+  @extend .button;
+  @include color(#b4c791);
+}
+.aug-button {
+  @extend .button;
+  @include color(#85ae79);
+}
+.dec-button {
+  @extend .button;
+  @include color(#7ba0a2);
+}

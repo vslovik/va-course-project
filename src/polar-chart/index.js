@@ -76,6 +76,6 @@ export default function polarChart(windDataResponse)
                 (new WindDirectionCalendar).get(windDataResponse)
             )).getData(6);
 
-            new Chart("td.plot1", sd);
+            new Chart(".plot1", sd);
         });
 }

@@ -9,7 +9,7 @@ export default function windChart(response) {
 
     let wcd = (new WindChartData());
 
-    new circularHeatChart('td.plot1', [wcd.getData(response, DECEMBER)])
+    new circularHeatChart('.plot1', [wcd.getData(response, DECEMBER)])
         .setInnerRadius(20)
         .setRange(["white", "steelblue"])
         .setRadialLabels(wcd.getRadialLabels())

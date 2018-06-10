@@ -51,15 +51,6 @@ export default class Plots extends Component {
     }
 
     render = () => (
-        <table>
-            <tbody>
-            <tr valign="top">
-                <td className="plot1" width="85%"/>
-                <td width="5%">Plot</td>
-                <td width="5%">Plot</td>
-                <td width="5%">Plot</td>
-            </tr>
-            </tbody>
-        </table>
+            <div className="plot1"/>
     )
 }
