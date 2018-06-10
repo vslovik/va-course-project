@@ -1,8 +1,9 @@
 .button {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
+  //-moz-border-radius: 3px;
+  //-webkit-border-radius: 3px;
+  //border-radius: 3px;
   color: #ffffff;
+  border-color: #e36209 #e1e4e8 transparent;
   &:link {
     margin-left: 4px;
     padding: 10px 20px;
@@ -28,6 +29,7 @@
   &:hover {
     background-color: lighten($color, 20);
   }
+  border-color: #e36209 #e1e4e8 transparent;
 }
 .agog-button {
   @extend .button;
@@ -60,4 +62,37 @@
 .dec-button {
   @extend .button;
   @include color(#7ba0a2);
+}
+.controls {
+  margin-left: 20px;
+}
+.reponav-controls {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  margin-top: 0;
+}
+.toggle-button {
+  @extend .button;
+  @include color(#7ba0a2);
+  $radius: 50px 0 0 50px;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+.question-button {
+  @extend .button;
+  @include color(#7ba0a2);
+  $radius: 300px;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+.dot {
+  height: 50px;
+  width: 50px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
 }

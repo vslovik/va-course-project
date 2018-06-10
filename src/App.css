@@ -103,13 +103,7 @@ h5 {
 .reponav {
   position: relative;
   top: 1px;
-  margin-top: -5px; }
-
-.reponav-controls {
-  position: absolute;
-  top: 74px;
-  right: 20px;
-  margin-top: -21px; }
+  margin-top: 17px; }
 
 article, aside, details, figcaption, figure, footer, header, main, menu, nav, section {
   display: block; }
@@ -307,12 +301,10 @@ p a {
   float: left;
   margin: 0 10px 40px 0; }
 
-.button, .agog-button, .appl-button, .chlo-button, .meth-button, .all-button, .apr-button, .aug-button, .dec-button {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  color: #ffffff; }
-  .button:link, .agog-button:link, .appl-button:link, .chlo-button:link, .meth-button:link, .all-button:link, .apr-button:link, .aug-button:link, .dec-button:link {
+.button, .agog-button, .appl-button, .chlo-button, .meth-button, .all-button, .apr-button, .aug-button, .dec-button, .toggle-button, .question-button {
+  color: #ffffff;
+  border-color: #e36209 #e1e4e8 transparent; }
+  .button:link, .agog-button:link, .appl-button:link, .chlo-button:link, .meth-button:link, .all-button:link, .apr-button:link, .aug-button:link, .dec-button:link, .toggle-button:link, .question-button:link {
     margin-left: 4px;
     padding: 10px 20px;
     line-height: 100%;
@@ -322,56 +314,100 @@ p a {
     font-weight: 700;
     display: inline-block;
     cursor: pointer; }
-  .button:hover, .agog-button:hover, .appl-button:hover, .chlo-button:hover, .meth-button:hover, .all-button:hover, .apr-button:hover, .aug-button:hover, .dec-button:hover {
+  .button:hover, .agog-button:hover, .appl-button:hover, .chlo-button:hover, .meth-button:hover, .all-button:hover, .apr-button:hover, .aug-button:hover, .dec-button:hover, .toggle-button:hover, .question-button:hover {
     -webkit-transition: 0.5s;
     -moz-transition: 0.5s;
     -o-transition: 0.5s;
     transition: 0.5s; }
 
-.agog-button:link, .agog-button:visited, .agog-button:active {
-  background-color: #ff996b; }
+.agog-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .agog-button:link, .agog-button:visited, .agog-button:active {
+    background-color: #ff996b; }
+  .agog-button:hover {
+    background-color: #ffdfd1; }
 
-.agog-button:hover {
-  background-color: #ffdfd1; }
+.appl-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .appl-button:link, .appl-button:visited, .appl-button:active {
+    background-color: #ff565f; }
+  .appl-button:hover {
+    background-color: #ffbcc0; }
 
-.appl-button:link, .appl-button:visited, .appl-button:active {
-  background-color: #ff565f; }
+.chlo-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .chlo-button:link, .chlo-button:visited, .chlo-button:active {
+    background-color: #3bafda; }
+  .chlo-button:hover {
+    background-color: #91d2ea; }
 
-.appl-button:hover {
-  background-color: #ffbcc0; }
+.meth-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .meth-button:link, .meth-button:visited, .meth-button:active {
+    background-color: #54c2b4; }
+  .meth-button:hover {
+    background-color: #9fddd5; }
 
-.chlo-button:link, .chlo-button:visited, .chlo-button:active {
-  background-color: #3bafda; }
+.all-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .all-button:link, .all-button:visited, .all-button:active {
+    background-color: #34495e; }
+  .all-button:hover {
+    background-color: #587ca0; }
 
-.chlo-button:hover {
-  background-color: #91d2ea; }
+.apr-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .apr-button:link, .apr-button:visited, .apr-button:active {
+    background-color: #b4c791; }
+  .apr-button:hover {
+    background-color: #e2e9d5; }
 
-.meth-button:link, .meth-button:visited, .meth-button:active {
-  background-color: #54c2b4; }
+.aug-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .aug-button:link, .aug-button:visited, .aug-button:active {
+    background-color: #85ae79; }
+  .aug-button:hover {
+    background-color: #bfd4b9; }
 
-.meth-button:hover {
-  background-color: #9fddd5; }
+.dec-button {
+  border-color: #e36209 #e1e4e8 transparent; }
+  .dec-button:link, .dec-button:visited, .dec-button:active {
+    background-color: #7ba0a2; }
+  .dec-button:hover {
+    background-color: #b7cbcc; }
 
-.all-button:link, .all-button:visited, .all-button:active {
-  background-color: #34495e; }
+.controls {
+  margin-left: 20px; }
 
-.all-button:hover {
-  background-color: #587ca0; }
+.reponav-controls {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  margin-top: 0; }
 
-.apr-button:link, .apr-button:visited, .apr-button:active {
-  background-color: #b4c791; }
+.toggle-button {
+  border-color: #e36209 #e1e4e8 transparent;
+  -moz-border-radius: 50px 0 0 50px;
+  -webkit-border-radius: 50px 0 0 50px;
+  border-radius: 50px 0 0 50px; }
+  .toggle-button:link, .toggle-button:visited, .toggle-button:active {
+    background-color: #7ba0a2; }
+  .toggle-button:hover {
+    background-color: #b7cbcc; }
 
-.apr-button:hover {
-  background-color: #e2e9d5; }
+.question-button {
+  border-color: #e36209 #e1e4e8 transparent;
+  -moz-border-radius: 300px;
+  -webkit-border-radius: 300px;
+  border-radius: 300px; }
+  .question-button:link, .question-button:visited, .question-button:active {
+    background-color: #7ba0a2; }
+  .question-button:hover {
+    background-color: #b7cbcc; }
 
-.aug-button:link, .aug-button:visited, .aug-button:active {
-  background-color: #85ae79; }
-
-.aug-button:hover {
-  background-color: #bfd4b9; }
-
-.dec-button:link, .dec-button:visited, .dec-button:active {
-  background-color: #7ba0a2; }
-
-.dec-button:hover {
-  background-color: #b7cbcc; }
+.dot {
+  height: 50px;
+  width: 50px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block; }
