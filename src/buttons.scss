@@ -1,16 +1,12 @@
 .button {
-  //-moz-border-radius: 3px;
-  //-webkit-border-radius: 3px;
-  //border-radius: 3px;
   color: #ffffff;
-  border-color: #e36209 #e1e4e8 transparent;
   &:link {
-    margin-left: 4px;
-    padding: 10px 20px;
+    margin: 0;
+    padding: 6px 12px;
     line-height: 100%;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 700;
     display: inline-block;
     cursor: pointer;
@@ -25,11 +21,16 @@
 @mixin color($color) {
   &:link, &:visited, &:active {
     background-color: $color;
+
   }
   &:hover {
     background-color: lighten($color, 20);
+    border-color: lighten($color, 20);
   }
-  border-color: #e36209 #e1e4e8 transparent;
+  border-style: solid;
+  border-width: 0 2px 2px;
+  border-color: $color;
+
 }
 .agog-button {
   @extend .button;
@@ -37,7 +38,7 @@
 }
 .appl-button {
   @extend .button;
-  @include color(#ff565f);
+  @include color(lighten(#ff565f, 5));
 }
 .chlo-button {
   @extend .button;
@@ -49,7 +50,7 @@
 }
 .all-button {
   @extend .button;
-  @include color(#34495e);
+  @include color(lighten(#34495e, 30));
 }
 .apr-button {
   @extend .button;
@@ -64,35 +65,48 @@
   @include color(#7ba0a2);
 }
 .controls {
-  margin-left: 20px;
+  margin-left: 12px;
 }
 .reponav-controls {
   position: absolute;
   top: 0;
-  right: 8px;
+  right: 12px;
   margin-top: 0;
 }
-.toggle-button {
+.toggle-button-left {
   @extend .button;
-  @include color(#7ba0a2);
-  $radius: 50px 0 0 50px;
-  -moz-border-radius: $radius;
-  -webkit-border-radius: $radius;
-  border-radius: $radius;
+  $color: #7ba0a2;
+  @include color($color);
+  border-style: solid;
+  border-width: 0 0 2px 2px;
+  border-color: $color;
 }
-.question-button {
+.toggle-button-right {
   @extend .button;
-  @include color(#7ba0a2);
-  $radius: 7%;
-  -moz-border-radius: $radius;
-  -webkit-border-radius: $radius;
-  border-radius: $radius;
+  &:hover {
+    color:  #ff996b;
+  }
+  color: #7ba0a2;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  border-color: #7ba0a2;
 }
-
-.dot {
-  height: 50px;
-  width: 50px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
+.button-sensor {
+  @extend .button;
+  $color: #ff996b;
+  @include color($color);
+  color:darken(#7ba0a2, 20);
+  border-style: solid;
+  border-width: 0 0 2px 2px;
+  border-color: $color;
+}
+.button-question {
+  @extend .button;
+  &:hover {
+    color:  #ff996b;
+  }
+  color: darken(#7ba0a2, 20);
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  border-color:#ff996b;
 }
