@@ -24,7 +24,7 @@ export default class TemporalViewControls extends Component {
 
             <span className="controls">
                 <a href="" className="agog-button_">Sensor 4</a>
-                <a href="" className="dot">?</a>
+                <a href="" className="question-button">?</a>
             </span>
 
             <span className="controls">

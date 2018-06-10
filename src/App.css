@@ -397,9 +397,9 @@ p a {
 
 .question-button {
   border-color: #e36209 #e1e4e8 transparent;
-  -moz-border-radius: 300px;
-  -webkit-border-radius: 300px;
-  border-radius: 300px; }
+  -moz-border-radius: 7%;
+  -webkit-border-radius: 7%;
+  border-radius: 7%; }
   .question-button:link, .question-button:visited, .question-button:active {
     background-color: #7ba0a2; }
   .question-button:hover {

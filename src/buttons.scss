@@ -83,7 +83,7 @@
 .question-button {
   @extend .button;
   @include color(#7ba0a2);
-  $radius: 300px;
+  $radius: 7%;
   -moz-border-radius: $radius;
   -webkit-border-radius: $radius;
   border-radius: $radius;
