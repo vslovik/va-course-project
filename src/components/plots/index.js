@@ -9,9 +9,26 @@ import multiGroup from '../../multi-group'
 import windChart from '../../wind-chart'
 import exampleChart from '../../example-chart'
 
+const VECTORIAL = 'VECTORIAL';
+const TEMPORAL  = 'TEMPORAL';
+
+const AGOG = 'AGOG';
+const APPL = 'APPL';
+const CHLO = 'CHLO';
+const METH = 'METH';
+const ALL  = 'ALL';
+
+const APR = 'APR';
+const AUG = 'AUG';
+const DEC = 'DEC';
+
 export default class Plots extends Component {
     state = {
-        data: []
+        data: [], //?
+        view: TEMPORAL,
+        chemical: ALL,
+        month: ALL,
+        sensor: ALL
     };
 
     componentDidMount(state) {
@@ -51,6 +68,10 @@ export default class Plots extends Component {
     }
 
     render = () => (
-            <div className="plot1"/>
+        <div className="wiki-body gollum-markdown-content instapaper_body">
+            <div className="markdown-body">
+                <div className="plot1"/>
+            </div>
+        </div>
     )
 }
