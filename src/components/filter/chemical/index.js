@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
+import ChemicalButton from '../../buttons/chemical'
 
 export default class ChemicalFilter extends Component {
     render = () => (
         <span className="controls">
-            <a href="" className="agog-button">AGOG</a>
-            <a href="" className="appl-button">APPL</a>
-            <a href="" className="chlo-button">CHLO</a>
-            <a href="" className="meth-button">METH</a>
-
-            <a href="" className="all-button">ALL</a>
+            <ChemicalButton className="agog-button" name="AGOG"/>
+            <ChemicalButton className="appl-button" name="APPL"/>
+            <ChemicalButton className="chlo-button" name="CHLO"/>
+            <ChemicalButton className="meth-button" name="METH"/>
+            <ChemicalButton className="all-button" name="ALL"/>
         </span>
     )
 }

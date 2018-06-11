@@ -11,53 +11,53 @@ import {VECTORIAL, TEMPORAL} from '../../constants'
 import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
 import {APR, AUG, DEC}  from '../../constants';
 
-export default class Header extends Component {
+
+import store from "../../store/index";
+
+class Header extends Component {
 
     constructor() {
         super();
 
         this.state = {
-            data: [], //?
             view: TEMPORAL,
             chemical: ALL,
             month: ALL,
-            sensor: ALL
+            sensor: ALL,
+            daily: true,
+            linearly: true
         };
-
-        // this.nextStep = this.nextStep.bind(this);
     }
 
-    render = () => (
+    render = () => {
+
+        let text = JSON.stringify(
+            {
+                chemical: this.props.chemical,
+                month: this.props.month,
+                daily: this.props.daily,
+                linearly: this.props.linearly
+            }, true, 2);
+
+        return (
         <div>
+            <div>state: {text}
+            </div>
             <Tabs/>
             <TemporalViewControls/>
         </div>
-    )
+    )}
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         profile: state.wizard.profile,
-//         userGroupId: state.wizard.userGroupId,
-//         step: state.wizard.step,
-//         schoolType: state.schoolType.schoolType,
-//         districtName: state.schoolProps.districtName
-//     };
-// };
-//
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         selectProfile: profile => dispatch(selectProfile(profile)),
-//         nextStep: () => dispatch(nextStep()),
-//         selectSchoolName: (schoolName) => dispatch(selectSchoolName(schoolName)),
-//         selectDistrictName: (districtName) => dispatch(selectDistrictName(districtName))
-//     };
-// };
+const mapStateToProps = state => {
+    return {
+        view: state.view,
+        chemical: state.chemical,
+        month: state.month,
+        sensor: state.sensor,
+        daily: state.daily,
+        linearly: state.linearly
+    };
+};
 
-// const Wizard = connect(mapStateToProps, mapDispatchToProps)(ConnectedWizard);
-//
-// ConnectedWizard.propTypes = {
-//     nextStep: PropTypes.func.isRequired
-// };
-//
-// export default Wizard;
+export default connect(mapStateToProps)(Header);

@@ -1,24 +1,19 @@
 import React, { Component } from 'react'
 import ChemicalFilter from '../filter/chemical'
-import MonthFilter from '../filter/month'
+import LogLinearToggle from '../toggle/loglinear'
+import DayHourToggle from '../toggle/dayhour'
 
 export default class TemporalViewControls extends Component {
-    render = () => (
+    render = () => {
+        return (
         <div className="reponav-controls container">
             <span className="controls">
                 <a href="" className="button-sensor">SENSOR 4</a>
                 <a href="" className="button-question">?</a>
             </span>
-            <span className="controls">
-                <a href="" className="toggle-button-left-active">Linear</a>
-                <a href="" className="toggle-button-right">Log</a>
-            </span>
-            <span className="controls">
-                <a href="" className="toggle-button-left-active">Day</a>
-                <a href="" className="toggle-button-right">Hour</a>
-            </span>
-
+            <LogLinearToggle/>
+            <DayHourToggle/>
             <ChemicalFilter/>
         </div>
-    )
+    )}
 }

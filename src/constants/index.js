@@ -10,3 +10,6 @@ export const ALL  = 'ALL';
 export const APR = 'APR';
 export const AUG = 'AUG';
 export const DEC = 'DEC';
+
+export const DAYHOUR   = 'DAYHOUR';
+export const LOGLINEAR = 'LOGLINEAR';

@@ -76,7 +76,10 @@
 .toggle-button-left-active {
   @extend .button;
   $color: #7ba0a2;
-  @include color($color);
+  &:link, &:visited, &:active {
+    background-color: $color;
+
+  }
   border-style: solid;
   border-width: 0 0 2px 2px;
   border-color: $color;

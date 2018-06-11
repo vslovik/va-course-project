@@ -13,14 +13,24 @@ import {VECTORIAL, TEMPORAL} from '../../constants'
 import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
 import {APR, AUG, DEC}  from '../../constants';
 
-export default class Plots extends Component {
-    state = {
-        data: [], //?
-        view: TEMPORAL,
-        chemical: ALL,
-        month: ALL,
-        sensor: ALL
-    };
+import {connect} from 'react-redux'
+import store from "../../store/index";
+
+class Plots extends Component {
+
+    constructor() {
+        super();
+
+        this.state = {
+            data: [], //?
+            view: TEMPORAL,
+            chemical: ALL,
+            month: ALL,
+            sensor: ALL,
+            daily: true,
+            linearly: true
+        };
+    }
 
     componentDidMount(state) {
         request(meteoCsv)
@@ -58,11 +68,35 @@ export default class Plots extends Component {
             .get(exampleChart);
     }
 
-    render = () => (
+    render = () => {
+
+        let text = JSON.stringify(
+            {
+                chemical: this.props.chemical,
+                month: this.props.month,
+                daily: this.props.daily,
+                linearly: this.props.linearly
+            }, true, 2);
+
+        return (
         <div className="wiki-body gollum-markdown-content instapaper_body">
             <div className="markdown-body">
+                <div>state: {text}</div>
                 <div className="plot1"/>
             </div>
         </div>
-    )
+    )}
 }
+
+const mapStateToProps = state => {
+    return {
+        view: state.view,
+        chemical: state.chemical,
+        month: state.month,
+        sensor: state.sensor,
+        daily: state.daily,
+        linearly: state.linearly
+    };
+};
+
+export default connect(mapStateToProps)(Plots);

@@ -1,0 +1,4 @@
+1. responsive page
+2. Fix button size (< A >, A)
+3. remove warnings
+4. optimize css (scss)

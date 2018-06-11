@@ -232,27 +232,6 @@ svg {
   width: 960px;
   height: 800px; }
 
-#energychart svg, #chart3 svg {
-  height: 360px; }
-
-#chart4 svg {
-  height: 470px; }
-
-path {
-  stroke: #777;
-  stroke-width: 0.1px; }
-
-.labels {
-  fill: #aaa;
-  font-weight: 200;
-  letter-spacing: -1px; }
-
-.labels.segment {
-  font-size: 10px; }
-
-#chart3 .labels {
-  fill: #555; }
-
 /* Example chart */
 .line {
   fill: none;
@@ -280,7 +259,6 @@ ul {
 
 body {
   background: #ffffff;
-  color: #ffffff;
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
   font-weight: normal; }
@@ -291,11 +269,6 @@ h1 {
   font-size: 18px;
   font-weight: normal;
   margin: 0 23px 23px 0; }
-
-article {
-  width: 900px;
-  margin: 0 auto;
-  padding-top: 50px; }
 
 p a {
   float: left;
@@ -410,16 +383,10 @@ p a {
 
 .toggle-button-left-active, .toggle-button-right-active {
   border-style: solid;
-  border-width: 0 2px 2px;
-  border-color: #7ba0a2;
-  border-style: solid;
   border-width: 0 0 2px 2px;
   border-color: #7ba0a2; }
   .toggle-button-left-active:link, .toggle-button-right-active:link, .toggle-button-left-active:visited, .toggle-button-right-active:visited, .toggle-button-left-active:active, .toggle-button-right-active:active {
     background-color: #7ba0a2; }
-  .toggle-button-left-active:hover, .toggle-button-right-active:hover {
-    background-color: #b7cbcc;
-    border-color: #b7cbcc; }
 
 .toggle-button-left, .toggle-button-right {
   color: #7ba0a2;

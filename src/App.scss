@@ -243,29 +243,29 @@ svg {
   width: 960px;
   height: 800px;
 }
-#energychart svg, #chart3 svg {
-  height: 360px;
-}
-#chart4 svg {
-  height: 470px;
-}
-path {
-  stroke: #777;
-  stroke-width: 0.1px;
-}
-
-.labels {
-  fill: #aaa;
-  font-weight: 200;
-  letter-spacing: -1px;
-}
-.labels.segment {
-  font-size: 10px;
-}
-
-#chart3 .labels {
-  fill: #555;
-}
+//#energychart svg, #chart3 svg {
+//  height: 360px;
+//}
+//#chart4 svg {
+//  height: 470px;
+//}
+//path {
+//  stroke: #777;
+//  stroke-width: 0.1px;
+//}
+//
+//.labels {
+//  fill: #aaa;
+//  font-weight: 200;
+//  letter-spacing: -1px;
+//}
+//.labels.segment {
+//  font-size: 10px;
+//}
+//
+//#chart3 .labels {
+//  fill: #555;
+//}
 
 /* Example chart */
 .line {
@@ -299,7 +299,6 @@ ul {
 
 body {
   background: #ffffff;
-  color: #ffffff;
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;
   font-weight: normal;
@@ -311,12 +310,6 @@ h1 {
   font-size: 18px;
   font-weight: normal;
   margin: 0 23px 23px 0;
-}
-
-article {
-  width: 900px;
-  margin: 0 auto;
-  padding-top: 50px;
 }
 
 p a {
