@@ -301,9 +301,9 @@ p a {
   float: left;
   margin: 0 10px 40px 0; }
 
-.button, .agog-button, .appl-button, .chlo-button, .meth-button, .all-button, .apr-button, .aug-button, .dec-button, .toggle-button-left, .toggle-button-right, .button-sensor, .button-question {
+.button, .agog-button, .appl-button, .chlo-button, .meth-button, .all-button, .apr-button, .aug-button, .dec-button, .toggle-button-left-active, .toggle-button-right-active, .toggle-button-left, .toggle-button-right, .button-sensor, .button-question {
   color: #ffffff; }
-  .button:link, .agog-button:link, .appl-button:link, .chlo-button:link, .meth-button:link, .all-button:link, .apr-button:link, .aug-button:link, .dec-button:link, .toggle-button-left:link, .toggle-button-right:link, .button-sensor:link, .button-question:link {
+  .button:link, .agog-button:link, .appl-button:link, .chlo-button:link, .meth-button:link, .all-button:link, .apr-button:link, .aug-button:link, .dec-button:link, .toggle-button-left-active:link, .toggle-button-right-active:link, .toggle-button-left:link, .toggle-button-right:link, .button-sensor:link, .button-question:link {
     margin: 0;
     padding: 6px 12px;
     line-height: 100%;
@@ -313,7 +313,7 @@ p a {
     font-weight: 700;
     display: inline-block;
     cursor: pointer; }
-  .button:hover, .agog-button:hover, .appl-button:hover, .chlo-button:hover, .meth-button:hover, .all-button:hover, .apr-button:hover, .aug-button:hover, .dec-button:hover, .toggle-button-left:hover, .toggle-button-right:hover, .button-sensor:hover, .button-question:hover {
+  .button:hover, .agog-button:hover, .appl-button:hover, .chlo-button:hover, .meth-button:hover, .all-button:hover, .apr-button:hover, .aug-button:hover, .dec-button:hover, .toggle-button-left-active:hover, .toggle-button-right-active:hover, .toggle-button-left:hover, .toggle-button-right:hover, .button-sensor:hover, .button-question:hover {
     -webkit-transition: 0.5s;
     -moz-transition: 0.5s;
     -o-transition: 0.5s;
@@ -408,26 +408,32 @@ p a {
   right: 12px;
   margin-top: 0; }
 
-.toggle-button-left {
+.toggle-button-left-active, .toggle-button-right-active {
   border-style: solid;
   border-width: 0 2px 2px;
   border-color: #7ba0a2;
   border-style: solid;
   border-width: 0 0 2px 2px;
   border-color: #7ba0a2; }
-  .toggle-button-left:link, .toggle-button-left:visited, .toggle-button-left:active {
+  .toggle-button-left-active:link, .toggle-button-right-active:link, .toggle-button-left-active:visited, .toggle-button-right-active:visited, .toggle-button-left-active:active, .toggle-button-right-active:active {
     background-color: #7ba0a2; }
-  .toggle-button-left:hover {
+  .toggle-button-left-active:hover, .toggle-button-right-active:hover {
     background-color: #b7cbcc;
     border-color: #b7cbcc; }
 
-.toggle-button-right {
+.toggle-button-left, .toggle-button-right {
   color: #7ba0a2;
   border-style: solid;
-  border-width: 0 2px 2px 0;
+  border-width: 0 0 2px 2px;
   border-color: #7ba0a2; }
-  .toggle-button-right:hover {
+  .toggle-button-left:hover, .toggle-button-right:hover {
     color: #ff996b; }
+
+.toggle-button-right {
+  border-width: 0 2px 2px 0; }
+
+.toggle-button-right-active {
+  border-width: 0 2px 2px 0; }
 
 .button-sensor {
   border-style: solid;

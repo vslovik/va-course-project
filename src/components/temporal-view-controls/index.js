@@ -10,11 +10,11 @@ export default class TemporalViewControls extends Component {
                 <a href="" className="button-question">?</a>
             </span>
             <span className="controls">
-                <a href="" className="toggle-button-left">Linear</a>
+                <a href="" className="toggle-button-left-active">Linear</a>
                 <a href="" className="toggle-button-right">Log</a>
             </span>
             <span className="controls">
-                <a href="" className="toggle-button-left">Day</a>
+                <a href="" className="toggle-button-left-active">Day</a>
                 <a href="" className="toggle-button-right">Hour</a>
             </span>
 

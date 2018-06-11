@@ -73,7 +73,7 @@
   right: 12px;
   margin-top: 0;
 }
-.toggle-button-left {
+.toggle-button-left-active {
   @extend .button;
   $color: #7ba0a2;
   @include color($color);
@@ -81,15 +81,24 @@
   border-width: 0 0 2px 2px;
   border-color: $color;
 }
-.toggle-button-right {
+.toggle-button-left {
   @extend .button;
+  $color: #7ba0a2;
   &:hover {
     color:  #ff996b;
   }
-  color: #7ba0a2;
+  color: $color;
   border-style: solid;
+  border-width: 0 0 2px 2px;
+  border-color: $color;
+}
+.toggle-button-right {
+  @extend .toggle-button-left;
   border-width: 0 2px 2px 0;
-  border-color: #7ba0a2;
+}
+.toggle-button-right-active {
+  @extend .toggle-button-left-active;
+  border-width: 0 2px 2px 0;
 }
 .button-sensor {
   @extend .button;
