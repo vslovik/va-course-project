@@ -9,18 +9,9 @@ import multiGroup from '../../multi-group'
 import windChart from '../../wind-chart'
 import exampleChart from '../../example-chart'
 
-const VECTORIAL = 'VECTORIAL';
-const TEMPORAL  = 'TEMPORAL';
-
-const AGOG = 'AGOG';
-const APPL = 'APPL';
-const CHLO = 'CHLO';
-const METH = 'METH';
-const ALL  = 'ALL';
-
-const APR = 'APR';
-const AUG = 'AUG';
-const DEC = 'DEC';
+import {VECTORIAL, TEMPORAL} from '../../constants'
+import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
+import {APR, AUG, DEC}  from '../../constants';
 
 export default class Plots extends Component {
     state = {
