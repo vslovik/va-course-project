@@ -13,3 +13,12 @@ export const DEC = 'DEC';
 
 export const DAYHOUR   = 'DAYHOUR';
 export const LOGLINEAR = 'LOGLINEAR';
+
+export const APRIL    = 3;
+export const AUGUST   = 7;
+export const DECEMBER = 11;
+
+export const ORANGE = '#ff996b';
+export const RED    = '#ff565f';
+export const BLUE   = '#3bafda';
+export const GREEN  = '#54c2b4';

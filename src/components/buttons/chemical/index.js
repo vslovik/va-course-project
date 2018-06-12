@@ -8,10 +8,6 @@ class ChemicalButton extends Component {
     constructor() {
         super();
 
-        this.state = {
-            chemical: ALL
-        };
-
         this.handleClick = this.handleClick.bind(this);
     }
 

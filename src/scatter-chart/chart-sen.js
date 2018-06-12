@@ -1,5 +1,7 @@
 import {max, min, scaleLinear, scaleSqrt, scaleTime, select,
     timeFormat, axisLeft, axisBottom} from "d3";
+import {APRIL, AUGUST, DECEMBER} from './../constants'
+import {ORANGE, RED, BLUE, GREEN} from './../constants'
 
 import Data from "./data"
 
@@ -15,97 +17,57 @@ export default class ChartSen {
 
         const colorMap = {};
 
-        colorMap[APP] = 'red';
-        colorMap[CHL] = 'orange';
-        colorMap[MET] = 'blue';
-        colorMap[AGO] = 'green';
+        colorMap[AGO] = ORANGE;
+        colorMap[APP] = RED;
+        colorMap[CHL] = BLUE;
+        colorMap[MET] = GREEN;
 
         this.colorMap =  colorMap;
 
-        this.svg3 = select(selector)
-            .append("svg")
-            .attr("width", this.w)
-            .attr("height", this.h);
+        this.svgs = {};
 
+        let chart = this;
 
-        this.svg7 = select(selector)
-            .append("svg")
-            .attr("width", this.w)
-            .attr("height", this.h);
-
-        this.svg11 = select(selector)
-            .append("svg")
-            .attr("width", this.w)
-            .attr("height", this.h);
+        [APRIL, AUGUST, DECEMBER].forEach(function(mon){
+            chart.svgs[mon] = select(selector)
+                .append("svg")
+                .attr("width", chart.w)
+                .attr("height", chart.h);
+        });
 
         this.createScales()
             .drawPoints();
-            // .addAxes();
+            //.addAxes();
     }
 
     createScales() {
         let chart = this;
 
-        this.xScale3 = scaleTime()
-            .domain([
-                min(this.data[3], function(d) { return d.t; }),
-                max(this.data[3], function(d) { return d.t; })
-            ])
-            .range([this.padding, this.w - this.padding])
-            .nice();
+        this.xScales = {};
+        this.yScales = {};
+        this.aScales = {};
 
-        this.yScale3 = scaleLinear()
-            .domain([
-                min(this.data[3], function(d) { return d.val; }),
-                max(chart.data[3], function(d) { return d.val; })
-            ])
-            .rangeRound([this.h - this.padding, this.padding])
-            .nice();
+        [APRIL, AUGUST, DECEMBER].forEach(function(mon){
+            chart.xScales[mon] = scaleTime()
+                .domain([
+                    min(chart.data[mon], function(d) { return d.t; }),
+                    max(chart.data[mon], function(d) { return d.t; })
+                ])
+                .range([chart.padding, chart.w - chart.padding])
+                .nice();
 
-        this.aScale3 = scaleSqrt()
-            .domain([0, max(this.data[3], function(d) { return d.val; })])
-            .range([0, 5]);
+            chart.yScales[mon] = scaleLinear()
+                .domain([
+                    min(chart.data[mon], function(d) { return d.val; }),
+                    max(chart.data[mon], function(d) { return d.val; })
+                ])
+                .rangeRound([chart.h - chart.padding, chart.padding])
+                .nice();
 
-        this.xScale7 = scaleTime()
-            .domain([
-                min(this.data[7], function(d) { return d.t; }),
-                max(this.data[7], function(d) { return d.t; })
-            ])
-            .range([this.padding, this.w - this.padding])
-            .nice();
-
-        this.yScale7 = scaleLinear()
-            .domain([
-                min(this.data[7], function(d) { return d.val; }),
-                max(chart.data[7], function(d) { return d.val; })
-            ])
-            .rangeRound([this.h - this.padding, this.padding])
-            .nice();
-
-        this.aScale7 = scaleSqrt()
-            .domain([0, max(this.data[7], function(d) { return d.val; })])
-            .range([0, 5]);
-
-
-        this.xScale11 = scaleTime()
-            .domain([
-                min(this.data[11], function(d) { return d.t; }),
-                max(this.data[11], function(d) { return d.t; })
-            ])
-            .range([this.padding, this.w - this.padding])
-            .nice();
-
-        this.yScale11 = scaleLinear()
-            .domain([
-                min(this.data[11], function(d) { return d.val; }),
-                max(chart.data[11], function(d) { return d.val; })
-            ])
-            .rangeRound([this.h - this.padding, this.padding])
-            .nice();
-
-        this.aScale11 = scaleSqrt()
-            .domain([0, max(this.data[11], function(d) { return d.val; })])
-            .range([0, 5]);
+            chart.aScales[mon] = scaleSqrt()
+                .domain([0, max(chart.data[mon], function(d) { return d.val; })])
+                .range([0, 2.5]);
+        });
 
         return this;
     }
@@ -113,119 +75,52 @@ export default class ChartSen {
     drawPoints() {
         let chart = this;
 
-        this.svg3.selectAll("circle")
-            .data(this.data[3])
-            .enter()
-            .append("circle")
-            .attr("fill", function (d) {
-                return chart.colorMap[d.che];
-            })
-            .attr("cx", function (d, i) {
-                return chart.xScale3(d.t);
-            })
-            .attr("cy", function (d) {
-                return chart.yScale3(d.val);
-            })
-            .attr("r", function (d) {
-                return chart.aScale3(d.val);
-            });
-
-        this.svg7.selectAll("circle")
-            .data(this.data[7])
-            .enter()
-            .append("circle")
-            .attr("fill", function (d) {
-                return chart.colorMap[d.che];
-            })
-            .attr("cx", function (d, i) {
-                return chart.xScale7(d.t);
-            })
-            .attr("cy", function (d) {
-                return chart.yScale7(d.val);
-            })
-            .attr("r", function (d) {
-                return chart.aScale7(d.val);
-            });
-
-        this.svg11.selectAll("circle")
-            .data(this.data[11])
-            .enter()
-            .append("circle")
-            .attr("fill", function (d) {
-                return chart.colorMap[d.che];
-            })
-            .attr("cx", function (d, i) {
-                return chart.xScale11(d.t);
-            })
-            .attr("cy", function (d) {
-                return chart.yScale11(d.val);
-            })
-            .attr("r", function (d) {
-                return chart.aScale11(d.val);
-            });
+        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+            chart.svgs[mon].selectAll("circle")
+                .data(chart.data[mon])
+                .enter()
+                .append("circle")
+                .attr("fill", function (d) {
+                    return chart.colorMap[d.che];
+                })
+                .attr("cx", function (d) {
+                    return chart.xScales[mon](d.t);
+                })
+                .attr("cy", function (d) {
+                    return chart.yScales[mon](d.val);
+                })
+                .attr("r", function (d) {
+                    return chart.aScales[mon](d.val);
+                });
+        });
 
         return this;
     }
 
     addAxes() {
-        let yAxis3 = axisLeft()
-            .scale(this.yScale3)
-            .ticks(10);
 
-        let xAxis3 = axisBottom()
-            .scale(this.xScale3)
-            .tickFormat(timeFormat("%e"));
-        // .ticks(10)
+        let chart = this;
 
-        this.svg3.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + (this.h - this.padding) + ")")
-            .call(xAxis3);
+        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+            let yAxis = axisLeft()
+                .scale(chart.yScales[mon])
+                .ticks(10);
 
-        this.svg3.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(" + this.padding + ",0)")
-            .call(yAxis3);
+            let xAxis = axisBottom()
+                .scale(chart.xScales[mon])
+                .tickFormat(timeFormat("%e"));
+            // .ticks(10)
 
+            chart.svgs[mon].append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (chart.h - chart.padding) + ")")
+                .call(xAxis);
 
-        let yAxis7 = axisLeft()
-            .scale(this.yScale3)
-            .ticks(10);
-
-        let xAxis7 = axisBottom()
-            .scale(this.xScale3)
-            .tickFormat(timeFormat("%e"));
-        // .ticks(10)
-
-        this.svg7.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + (this.h - this.padding) + ")")
-            .call(xAxis7);
-
-        this.svg7.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(" + this.padding + ",0)")
-            .call(yAxis7);
-
-
-        let yAxis11 = axisLeft()
-            .scale(this.yScale3)
-            .ticks(10);
-
-        let xAxis11 = axisBottom()
-            .scale(this.xScale3)
-            .tickFormat(timeFormat("%e"));
-        // .ticks(10)
-
-        this.svg11.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + (this.h - this.padding) + ")")
-            .call(xAxis11);
-
-        this.svg11.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(" + this.padding + ",0)")
-            .call(yAxis11);
+            chart.svgs[mon].append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + chart.padding + ",0)")
+                .call(yAxis);
+        });
 
         return this;
     }

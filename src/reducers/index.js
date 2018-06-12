@@ -6,7 +6,7 @@ const initialState = {
     view: TEMPORAL,
     chemical: ALL,
     month: ALL,
-    sensor: ALL,
+    sensor: 1,
     daily: true,
     linearly: true
 };

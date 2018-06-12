@@ -15,7 +15,7 @@ import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
 import {APR, AUG, DEC}  from '../../constants';
 
 import {connect} from 'react-redux'
-import store from "../../store/index";
+import SensorControl from './../buttons/sensor'
 
 class Plots extends Component {
 
@@ -42,14 +42,11 @@ class Plots extends Component {
 
     componentDidMount(state) {
 
-        // for(let i = 0; i < 2; i++) {
-        //
-        //     let c = 'plot' + (i + 1)
-        //
-        //     select(".markdown-body")
-        //         .append("td")
-        //         .attr("class", c);
-        // }
+        let tr = select(".nine");
+
+        for(let i = 0; i < 9; i++) {
+            tr.append('td').attr('class', 'plot' + (i + 1));
+        }
 
         request(sensorCsv)
             .mimeType("text/csv")
@@ -87,13 +84,21 @@ class Plots extends Component {
                 chemical: this.props.chemical,
                 month: this.props.month,
                 daily: this.props.daily,
-                linearly: this.props.linearly
+                linearly: this.props.linearly,
+                sensor: this.props.sensor
             }, true, 2);
+
+        let titles = [];
+        for(let i = 0; i < 9; i++) {
+            titles.push(<SensorControl value={i + 1}/>)
+        }
+
         return (
         <div>
-            {/*<div>state: {text}</div>*/}
+            <div>state: {text}</div>
             <div className="markdown-body">
                 <table className="wrapper">
+                    <tbody>
                     <tr>
                         <td>
                             <table className="sensors">
@@ -126,31 +131,14 @@ class Plots extends Component {
                             </table>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
                 <div className="wrapper">
                     <table className="sensors">
-                        <tr>
-                            <th>Sensor 1</th>
-                            <th>Sensor 2</th>
-                            <th>Sensor 3</th>
-                            <th>Sensor 4</th>
-                            <th>Sensor 5</th>
-                            <th>Sensor 6</th>
-                            <th>Sensor 7</th>
-                            <th>Sensor 8</th>
-                            <th>Sensor 9</th>
-                        </tr>
-                        <tr>
-                            <td className="plot1"></td>
-                            <td className="plot2"></td>
-                            <td className="plot3"></td>
-                            <td className="plot4"></td>
-                            <td className="plot5"></td>
-                            <td className="plot6"></td>
-                            <td className="plot7"></td>
-                            <td className="plot8"></td>
-                            <td className="plot9"></td>
-                        </tr>
+                        <tbody>
+                            <tr>{titles}</tr>
+                            <tr className="nine"/>
+                        </tbody>
                     </table>
                 </div>
             </div>

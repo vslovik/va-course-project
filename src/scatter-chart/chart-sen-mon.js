@@ -1,5 +1,6 @@
 import {max, min, scaleLinear, scaleSqrt, scaleTime, select,
     timeFormat, axisLeft, axisBottom} from "d3";
+import {ORANGE, RED, BLUE, GREEN} from './../constants'
 
 import Data from "./data"
 
@@ -15,10 +16,10 @@ export default class ChartSenMon {
 
         const colorMap = {};
 
-        colorMap[APP] = 'red';
-        colorMap[CHL] = 'orange';
-        colorMap[MET] = 'blue';
-        colorMap[AGO] = 'green';
+        colorMap[AGO] = ORANGE;
+        colorMap[APP] = RED;
+        colorMap[CHL] = BLUE;
+        colorMap[MET] = GREEN;
 
         this.colorMap =  colorMap;
 
@@ -29,7 +30,7 @@ export default class ChartSenMon {
 
         this.createScales()
             .drawPoints();
-            // .addAxes();
+            //.addAxes();
     }
 
     createScales() {
