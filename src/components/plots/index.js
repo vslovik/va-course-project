@@ -1,20 +1,25 @@
 import React, { Component } from 'react'
-import {select} from 'd3';
+import {csvParseRows, select, selectAll} from 'd3';
 import {request} from 'd3-request';
 import sensorCsv from '../../data/ch2/SensorData.csv';
 import meteoCsv from '../../data/ch2/MeteorologicalData.csv';
 import polarChart from '../../polar-chart'
-import scatterChart from '../../scatter-chart'
 import multiChart from '../../multi-chart'
 import multiGroup from '../../multi-group'
 import windChart from '../../wind-chart'
 import exampleChart from '../../example-chart'
 
-import {VECTORIAL, TEMPORAL} from '../../constants'
+import {VECTORIAL, TEMPORAL, DECEMBER, APRIL, AUGUST} from '../../constants'
 import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
+import {APR, AUG, DEC} from '../../constants';
+import {LOG, LINEAR} from '../../constants';
 
 import {connect} from 'react-redux'
 import SensorControl from './../buttons/sensor'
+import Data from "../../scatter-chart/data";
+import {loadData} from "../../actions";
+import ChartSenMon from "../../scatter-chart/chart-sen-mon";
+import ChartSen from "../../scatter-chart/chart-sen";
 
 class Plots extends Component {
 
@@ -29,6 +34,76 @@ class Plots extends Component {
             .get(polarChart);
     }
 
+    temporalViewDraw(rows) {
+        let me = this;
+
+        const data = (new Data()).getData(rows, 'SenMon');
+        const scale = this.props.linearly ? LINEAR : LOG;
+
+        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+            new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
+        });
+
+        new ChartSenMon('.plot-stat', data[me.props.sensor][DECEMBER], scale);// ToDo
+
+        for (let i = 0; i < 9; i++) {
+            new ChartSen('.plot' + (i + 1), data[i + 1], scale);
+        }
+    }
+
+    temporalViewUpdate(prevProps) {
+        if (this.props.chemical !== prevProps.chemical
+            || this.props.sensor !== prevProps.sensor
+            || this.props.linearly !== prevProps.linearly
+        ) {
+
+            if(this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly)
+                selectAll("svg").remove();
+
+            if(this.props.sensor !== prevProps.sensor)
+                selectAll("svg.sensor").remove();
+
+            let me = this;
+
+            const scale = this.props.linearly ? LINEAR : LOG;
+
+            if (this.props.chemical === null) {
+
+                const data = (new Data()).getData(this.props.data, 'SenMon');
+
+                [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+                    new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
+                });
+
+                new ChartSenMon('.plot-stat', data[this.props.sensor][DECEMBER], scale);// ToDo
+
+                if (this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
+
+                    for (let i = 0; i < 9; i++) {
+                        new ChartSen('.plot' + (i + 1), data[i + 1], scale);
+                    }
+                }
+
+            } else {
+
+                let data = (new Data()).getData(this.props.data, 'SenCheMon');
+
+                [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+                    new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);
+                });
+
+                new ChartSenMon('.plot-stat', data[this.props.sensor][this.props.chemical][DECEMBER], scale);// ToDo
+
+                if (this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
+
+                    for (let i = 0; i < 9; i++) {
+                        new ChartSen('.plot' + (i + 1), data[i + 1][this.props.chemical], scale);
+                    }
+                }
+            }
+        }
+    }
+
     componentDidMount(state) {
 
         let tr = select(".nine");
@@ -37,9 +112,22 @@ class Plots extends Component {
             tr.append('td').attr('class', 'plot' + (i + 1));
         }
 
+        let me = this;
+
         request(sensorCsv)
             .mimeType("text/csv")
-            .get(scatterChart);
+            .get(function(response) {
+                let rows = csvParseRows(response.responseText);
+
+                me.props.loadData(rows);
+
+                me.temporalViewDraw(rows)
+            });
+    }
+
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        this.temporalViewUpdate(prevProps)
     }
 
     componentDidMount_(state) {
@@ -92,19 +180,19 @@ class Plots extends Component {
                         <td>
                             <table className="sensors">
                                 <tr><th>April</th></tr>
-                                <tr><td className="plot-apr"/></tr>
+                                <tr><td className={'plot-mon-' + (APRIL + 1)}/></tr>
                             </table>
                         </td>
                         <td>
                             <table className="sensors">
                                 <tr><th>August</th></tr>
-                                <tr><td className="plot-aug"/></tr>
+                                <tr><td className={'plot-mon-' + (AUGUST + 1)}/></tr>
                             </table>
                         </td>
                         <td>
                             <table className="sensors">
                                 <tr><th>Decembre</th></tr>
-                                <tr><td className="plot-dec"/></tr>
+                                <tr><td className={'plot-mon-' + (DECEMBER + 1)}/></tr>
                             </table>
                         </td>
                         <td>
@@ -142,8 +230,16 @@ const mapStateToProps = state => {
         month: state.month,
         sensor: state.sensor,
         daily: state.daily,
-        linearly: state.linearly
+        linearly: state.linearly,
+        data: state.data
     };
 };
 
-export default connect(mapStateToProps)(Plots);
+const mapDispatchToProps = dispatch => {
+    return {
+        loadData: data => dispatch(loadData(data))
+    };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Plots);

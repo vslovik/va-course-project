@@ -1,14 +1,14 @@
-import {VIEW, CHEMICAL, MONTH, SENSOR} from './../actions/'
+import {VIEW, CHEMICAL, MONTH, SENSOR, DAYHOUR, LOGLINEAR, DATA} from './../actions/'
 import {ALL, TEMPORAL} from "../constants";
-import {DAYHOUR, LOGLINEAR} from "../constants";
 
 const initialState = {
     view: TEMPORAL,
-    chemical: ALL,
+    chemical: null,
     month: ALL,
     sensor: 1,
     daily: true,
-    linearly: true
+    linearly: true,
+    data: null
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -35,16 +35,19 @@ const rootReducer = (state = initialState, action) => {
                 sensor: action.value,
             };
         case DAYHOUR:
-            console.log('DayHour', action.value);
             return {
                 ...state,
                 daily: action.value,
             };
         case LOGLINEAR:
-            console.log('LogLinear', action.value);
             return {
                 ...state,
                 linearly: action.value,
+            };
+        case DATA:
+            return {
+                ...state,
+                data: action.value,
             };
         default:
             return state;

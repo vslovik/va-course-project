@@ -1,19 +1,18 @@
-import {max, min, scaleLinear, scaleSqrt, scaleTime, select,
+import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
     timeFormat, axisLeft, axisBottom} from "d3";
 import {APRIL, AUGUST, DECEMBER} from './../constants'
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
-
-import Data from "./data"
+import {APP, CHL, MET, AGO} from './../constants'
+import {LOG, LINEAR} from './../constants'
 
 export default class ChartSen {
-    constructor(selector, data){
+    constructor(selector, data, scale = LINEAR){
 
         this.data    = data;
+        this.scale   = scale;
         this.w       = 36;
         this.h       = 240;
         this.padding = 0;
-
-        const [APP, CHL, MET, AGO] = Data.getChemicalsEncoding();
 
         const colorMap = {};
 
@@ -56,7 +55,7 @@ export default class ChartSen {
                 .range([chart.padding, chart.w - chart.padding])
                 .nice();
 
-            chart.yScales[mon] = scaleLinear()
+            chart.yScales[mon] = (chart.scale === LINEAR ? scaleLinear() : scaleLog())
                 .domain([
                     min(chart.data[mon], function(d) { return d.val; }),
                     max(chart.data[mon], function(d) { return d.val; })

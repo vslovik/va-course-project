@@ -1,21 +1,16 @@
 import {timeParse} from "d3";
+import {AGO, APP, CHL, MET} from './../constants'
 
 export default class Data {
 
     constructor()
     {
-        const [APP, CHL, MET, AGO] = Data.getChemicalsEncoding();
-
         this.chemicals = {
             "Appluimonia": APP,
             "Chlorodinine": CHL,
             "Methylosmolene": MET,
             "AGOC-3A": AGO
         };
-    }
-
-    static getChemicalsEncoding() {
-        return [1, 2, 3, 4];
     }
 
     static parseMeasureDate(dt) {
@@ -65,18 +60,18 @@ export default class Data {
             }
         } else {
             if (dataset[sen]) {
-                if (dataset[sen][mon]) {
-                    if (dataset[sen][mon][che]) {
-                        dataset[sen][mon][che].push({
+                if (dataset[sen][che]) {
+                    if (dataset[sen][che][mon]) {
+                        dataset[sen][che][mon].push({
                             val: val,
                             t: t,
                             che: che
                         })
                     } else {
-                        dataset[sen][mon][che] = [];
+                        dataset[sen][che][mon] = [];
                     }
                 } else {
-                    dataset[sen][mon] = {};
+                    dataset[sen][che] = {};
                 }
             } else {
                 dataset[sen] = {};
@@ -84,7 +79,7 @@ export default class Data {
         }
     }
 
-    getData(rows, structure = 'SenMonChe') {
+    getData(rows, structure = 'SenMon') {
 
         let data = {};
 

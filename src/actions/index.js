@@ -4,6 +4,7 @@ export const MONTH = 'MONTH';
 export const SENSOR = 'SENSOR';
 export const DAYHOUR = 'DAYHOUR';
 export const LOGLINEAR = 'LOGLINEAR';
+export const DATA = 'DATA';
 
 export const selectView = (view) => ({
     type: VIEW,
@@ -33,4 +34,9 @@ export const toggleDayHour = (daily) => ({
 export const toggleLogLinear = (linearly) => ({
     type:  LOGLINEAR,
     value: linearly
+});
+
+export const loadData = (data) => ({
+    type:  DATA,
+    value: data
 });

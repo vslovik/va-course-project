@@ -13,7 +13,7 @@ class ChemicalButton extends Component {
 
     handleClick(event) {
         event.preventDefault();
-        this.props.selectChemical(this.props.name);
+        this.props.selectChemical(this.props.value);
     }
 
     render = () => {

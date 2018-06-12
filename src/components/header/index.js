@@ -19,14 +19,14 @@ class Header extends Component {
     constructor() {
         super();
 
-        this.state = {
-            view: TEMPORAL,
-            chemical: ALL,
-            month: ALL,
-            sensor: ALL,
-            daily: true,
-            linearly: true
-        };
+        // this.state = {
+        //     view: TEMPORAL,
+        //     chemical: ALL,
+        //     month: ALL,
+        //     sensor: ALL,
+        //     daily: true,
+        //     linearly: true
+        // };
     }
 
     render = () => {

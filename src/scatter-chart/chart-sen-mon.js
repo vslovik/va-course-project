@@ -1,18 +1,17 @@
-import {max, min, scaleLinear, scaleSqrt, scaleTime, select,
+import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
     timeFormat, axisLeft, axisBottom} from "d3";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
-
-import Data from "./data"
+import {AGO, APP, CHL, MET} from './../constants'
+import {LOG, LINEAR} from './../constants'
 
 export default class ChartSenMon {
-    constructor(selector, data){
+    constructor(selector, data, scale = LINEAR){
 
         this.data    = data;
+        this.scale   = scale;
         this.w       = 240;
         this.h       = 200;
         this.padding = 0;
-
-        const [APP, CHL, MET, AGO] = Data.getChemicalsEncoding();
 
         const colorMap = {};
 
@@ -25,6 +24,7 @@ export default class ChartSenMon {
 
         this.svg = select(selector)
             .append("svg")
+            .attr('class', 'sensor')
             .attr("width", this.w)
             .attr("height", this.h);
 
@@ -44,7 +44,7 @@ export default class ChartSenMon {
             .range([this.padding, this.w - this.padding])
             .nice();
 
-        this.yScale = scaleLinear()
+        this.yScale = (this.scale === LINEAR ? scaleLinear() : scaleLog())
             .domain([
                 min(this.data, function(d) { return d.val; }),
                 max(chart.data, function(d) { return d.val; })
