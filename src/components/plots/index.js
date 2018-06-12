@@ -25,10 +25,6 @@ import MultiChart from "../../multi-group/chart";
 
 class Plots extends Component {
 
-    constructor() {
-        super();
-    }
-
     componentDidMount_(state) {
 
         request(meteoCsv)
@@ -135,10 +131,7 @@ class Plots extends Component {
                         me.props.loadWindData(winds);
 
                         if (me.props.view === VECTORIAL) {
-                            new MultiChart(
-                                ".plot1",
-                                MultiChartData.getWindData(winds)
-                            );
+                            new MultiChart('.plot1', rows, winds);
                         }
                     });
             });
@@ -155,10 +148,7 @@ class Plots extends Component {
         }
 
         if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
-            new MultiChart(
-                ".plot1",
-                MultiChartData.getWindData(this.props.winddata)
-            );
+            // new MultiChart('.plot1', this.props.data, this.props.winddata);
         }
     }
 
