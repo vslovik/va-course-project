@@ -16,35 +16,16 @@ import store from "../../store/index";
 
 class Header extends Component {
 
-    constructor() {
-        super();
-
-        // this.state = {
-        //     view: TEMPORAL,
-        //     chemical: ALL,
-        //     month: ALL,
-        //     sensor: ALL,
-        //     daily: true,
-        //     linearly: true
-        // };
-    }
-
     render = () => {
 
-        // let text = JSON.stringify(
-        //     {
-        //         view: this.props.view,
-        //         chemical: this.props.chemical,
-        //         month: this.props.month,
-        //         daily: this.props.daily,
-        //         linearly: this.props.linearly
-        //     }, true, 2);
+        const controls = this.props.view === VECTORIAL
+            ? <VectorialViewControls/>
+            : <TemporalViewControls/>;
 
         return (
         <div>
-            {/*<div>state: {text}</div>*/}
             <Tabs/>
-            <TemporalViewControls/>
+            {controls}
         </div>
     )}
 }

@@ -10,20 +10,20 @@ export default class MultiChart {
 
         this.centers = [
             [62, 21],
-            [66, 35],
-            [76, 41],
-            [88, 45],
-            [103, 43],
-            [102, 22],
-            [89, 3],
-            [74, 7],
-            [119, 42]
+            // [66, 35],
+            // [76, 41],
+            // [88, 45],
+            // [103, 43],
+            // [102, 22],
+            // [89, 3],
+            // [74, 7],
+            // [119, 42]
         ];
 
         this.svg = select(selector)
             .append("svg")
             .attr("width", 1000)
-            .attr("height", 800);
+            .attr("height",1000);
 
         this.createScales().drawCircles().drawPoints();
     }

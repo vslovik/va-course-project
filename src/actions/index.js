@@ -5,6 +5,7 @@ export const SENSOR = 'SENSOR';
 export const DAYHOUR = 'DAYHOUR';
 export const LOGLINEAR = 'LOGLINEAR';
 export const DATA = 'DATA';
+export const WINDDATA = 'WINDDATA';
 
 export const selectView = (view) => ({
     type: VIEW,
@@ -38,5 +39,10 @@ export const toggleLogLinear = (linearly) => ({
 
 export const loadData = (data) => ({
     type:  DATA,
+    value: data
+});
+
+export const loadWindData = (data) => ({
+    type:  WINDDATA,
     value: data
 });

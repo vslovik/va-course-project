@@ -4,3 +4,9 @@
 4. optimize css (scss)
 5. d3.js v5
 6. type control
+7. publish app on github?
+
+---
+1. axes - same scale
+2. errors
+3. day/hour toggle

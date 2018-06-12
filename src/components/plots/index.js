@@ -17,9 +17,11 @@ import {LOG, LINEAR} from '../../constants';
 import {connect} from 'react-redux'
 import SensorControl from './../buttons/sensor'
 import Data from "../../scatter-chart/data";
-import {loadData} from "../../actions";
+import {loadData, loadWindData} from "../../actions";
 import ChartSenMon from "../../scatter-chart/chart-sen-mon";
 import ChartSen from "../../scatter-chart/chart-sen";
+import MultiChartData from "../../multi-group/data";
+import MultiChart from "../../multi-group/chart";
 
 class Plots extends Component {
 
@@ -35,6 +37,13 @@ class Plots extends Component {
     }
 
     temporalViewDraw(rows) {
+
+        let tr = select(".nine");
+
+        for (let i = 0; i < 9; i++) {
+            tr.append('td').attr('class', 'plot' + (i + 1));
+        }
+
         let me = this;
 
         const data = (new Data()).getData(rows, 'SenMon');
@@ -106,28 +115,51 @@ class Plots extends Component {
 
     componentDidMount(state) {
 
-        let tr = select(".nine");
-
-        for(let i = 0; i < 9; i++) {
-            tr.append('td').attr('class', 'plot' + (i + 1));
-        }
-
         let me = this;
 
         request(sensorCsv)
             .mimeType("text/csv")
-            .get(function(response) {
+            .get(function (response) {
                 let rows = csvParseRows(response.responseText);
 
-                me.props.loadData(rows);
+                if (me.props.view === TEMPORAL) {
+                    me.temporalViewDraw(rows)
+                }
 
-                me.temporalViewDraw(rows)
+                me.props.loadData(rows);
+                // ToDo rewrite with d3 v5 with promises
+                request(meteoCsv)
+                    .mimeType("text/csv")
+                    .get(function (r) {
+                        let winds = csvParseRows(r.responseText);
+                        me.props.loadWindData(winds);
+
+                        if (me.props.view === VECTORIAL) {
+                            new MultiChart(
+                                ".plot1",
+                                MultiChartData.getWindData(winds)
+                            );
+                        }
+                    });
             });
     }
 
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
-        this.temporalViewUpdate(prevProps)
+        if(this.props.view === prevProps.view && this.props.view === TEMPORAL) {
+            this.temporalViewUpdate(prevProps)
+        }
+
+        if(this.props.view !== prevProps.view && this.props.view === TEMPORAL) {
+            this.temporalViewDraw(this.props.data)
+        }
+
+        if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
+            new MultiChart(
+                ".plot1",
+                MultiChartData.getWindData(this.props.winddata)
+            );
+        }
     }
 
     componentDidMount_(state) {
@@ -165,62 +197,96 @@ class Plots extends Component {
                 sensor: this.props.sensor
             }, true, 2);
 
-        let titles = [];
-        for(let i = 0; i < 9; i++) {
-            titles.push(<SensorControl value={i + 1}/>)
+
+        if (this.props.view === TEMPORAL) {
+
+            let titles = [];
+            for(let i = 0; i < 9; i++) {
+                titles.push(<SensorControl value={i + 1}/>)
+            }
+
+            return (
+                <div>
+                    {/*<div>state: {text}</div>*/}
+                    <div className="markdown-body">
+                        <table className="wrapper">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <table className="sensors">
+                                        <tr>
+                                            <th>April</th>
+                                        </tr>
+                                        <tr>
+                                            <td className={'plot-mon-' + (APRIL + 1)}/>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table className="sensors">
+                                        <tr>
+                                            <th>August</th>
+                                        </tr>
+                                        <tr>
+                                            <td className={'plot-mon-' + (AUGUST + 1)}/>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table className="sensors">
+                                        <tr>
+                                            <th>Decembre</th>
+                                        </tr>
+                                        <tr>
+                                            <td className={'plot-mon-' + (DECEMBER + 1)}/>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <th/>
+                                        </tr>
+                                        <tr>
+                                            <td/>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table className="sensors">
+                                        <tr>
+                                            <th>Statistics</th>
+                                        </tr>
+                                        <tr>
+                                            <td className="plot-stat"/>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div className="wrapper">
+                            <table className="sensors">
+                                <tbody>
+                                <tr>{titles}</tr>
+                                <tr className="nine"/>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            )
         }
 
         return (
-        <div>
-            {/*<div>state: {text}</div>*/}
-            <div className="markdown-body">
-                <table className="wrapper">
-                    <tbody>
-                    <tr>
-                        <td>
-                            <table className="sensors">
-                                <tr><th>April</th></tr>
-                                <tr><td className={'plot-mon-' + (APRIL + 1)}/></tr>
-                            </table>
-                        </td>
-                        <td>
-                            <table className="sensors">
-                                <tr><th>August</th></tr>
-                                <tr><td className={'plot-mon-' + (AUGUST + 1)}/></tr>
-                            </table>
-                        </td>
-                        <td>
-                            <table className="sensors">
-                                <tr><th>Decembre</th></tr>
-                                <tr><td className={'plot-mon-' + (DECEMBER + 1)}/></tr>
-                            </table>
-                        </td>
-                        <td>
-                            <table>
-                                <tr><th/></tr>
-                                <tr><td/></tr>
-                            </table>
-                        </td>
-                        <td>
-                            <table className="sensors">
-                                <tr><th>Statistics</th></tr>
-                                <tr><td className="plot-stat"/></tr>
-                            </table>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div className="wrapper">
-                    <table className="sensors">
-                        <tbody>
-                            <tr>{titles}</tr>
-                            <tr className="nine"/>
-                        </tbody>
-                    </table>
+            <div>
+                {/*<div>state: {text}</div>*/}
+                <div className="markdown-body">
+                    <div className="plot1"/>
                 </div>
             </div>
-        </div>
-    )}
+        )
+    }
 }
 
 const mapStateToProps = state => {
@@ -231,13 +297,15 @@ const mapStateToProps = state => {
         sensor: state.sensor,
         daily: state.daily,
         linearly: state.linearly,
-        data: state.data
+        data: state.data,
+        winddata:state.winddata
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        loadData: data => dispatch(loadData(data))
+        loadData: data => dispatch(loadData(data)),
+        loadWindData: data => dispatch(loadWindData(data))
     };
 };
 

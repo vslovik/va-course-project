@@ -18,7 +18,7 @@ class ChemicalButton extends Component {
 
     render = () => {
 
-        const text = this.props.name === this.props.chemical ? '< ' + this.props.name + ' >' : this.props.name;
+        const text = this.props.value === this.props.chemical ? '< ' + this.props.name + ' >' : this.props.name;
 
         return (
             <a href="" className={this.props.className} onClick={this.handleClick}>{text}</a>

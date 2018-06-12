@@ -20,12 +20,10 @@ export default class MultiChartData {
         return dt;
     }
 
-    static getWindData(response)
+    static getWindData(rows)
     {
         //Date,"Wind Direction","Wind Speed (m/s)"
         let dt, angle, speed, max = 0.0,  data = [];
-
-        let rows = csvParseRows(response.responseText);
 
         rows.forEach(function (row) {
 
