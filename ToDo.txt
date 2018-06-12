@@ -2,3 +2,5 @@
 2. Fix button size (< A >, A)
 3. remove warnings
 4. optimize css (scss)
+5. d3.js v5
+6. type control

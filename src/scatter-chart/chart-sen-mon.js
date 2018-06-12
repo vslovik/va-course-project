@@ -3,13 +3,13 @@ import {max, min, scaleLinear, scaleSqrt, scaleTime, select,
 
 import Data from "./data"
 
-export default class Chart {
+export default class ChartSenMon {
     constructor(selector, data){
 
         this.data    = data;
-        this.w       = 800;
-        this.h       = 600;
-        this.padding = 40;
+        this.w       = 240;
+        this.h       = 200;
+        this.padding = 0;
 
         const [APP, CHL, MET, AGO] = Data.getChemicalsEncoding();
 
@@ -28,8 +28,8 @@ export default class Chart {
             .attr("height", this.h);
 
         this.createScales()
-            .drawPoints()
-            .addAxes();
+            .drawPoints();
+            // .addAxes();
     }
 
     createScales() {
