@@ -31,18 +31,18 @@ class Header extends Component {
 
     render = () => {
 
-        let text = JSON.stringify(
-            {
-                chemical: this.props.chemical,
-                month: this.props.month,
-                daily: this.props.daily,
-                linearly: this.props.linearly
-            }, true, 2);
+        // let text = JSON.stringify(
+        //     {
+        //         view: this.props.view,
+        //         chemical: this.props.chemical,
+        //         month: this.props.month,
+        //         daily: this.props.daily,
+        //         linearly: this.props.linearly
+        //     }, true, 2);
 
         return (
         <div>
-            <div>state: {text}
-            </div>
+            {/*<div>state: {text}</div>*/}
             <Tabs/>
             <TemporalViewControls/>
         </div>

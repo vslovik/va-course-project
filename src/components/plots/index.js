@@ -72,6 +72,7 @@ class Plots extends Component {
 
         let text = JSON.stringify(
             {
+                view: this.props.view,
                 chemical: this.props.chemical,
                 month: this.props.month,
                 daily: this.props.daily,
