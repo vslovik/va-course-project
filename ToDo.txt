@@ -10,3 +10,18 @@
 1. axes - same scale
 2. errors
 3. day/hour toggle
+
+---
+1. Factories points
+2. Clicks on factories - rays to sensors
+3. Circle transparency problem
+4. Control point coordinates correctness
+
+-
+
+5. Wind diagram on the right
+6. Sensor legend on the right
+
+---
+
+Scatter + wind diagram for third view

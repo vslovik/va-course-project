@@ -21,6 +21,13 @@ export default class MultiChart {
         this.data     = data;
         this.winddata = winddata;
 
+        this.factories = [
+            [89, 27, 'Roadrunner'],
+            [90, 21, 'Kasios'],
+            [109, 26, 'Radiance'],
+            [120, 22, 'Indigo']
+        ];
+
         this.centers = [
             [62, 21],
             [66, 35],
