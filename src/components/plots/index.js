@@ -12,7 +12,6 @@ import exampleChart from '../../example-chart'
 
 import {VECTORIAL, TEMPORAL} from '../../constants'
 import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
-import {APR, AUG, DEC}  from '../../constants';
 
 import {connect} from 'react-redux'
 import SensorControl from './../buttons/sensor'
@@ -21,16 +20,6 @@ class Plots extends Component {
 
     constructor() {
         super();
-
-        this.state = {
-            data: [], //?
-            view: TEMPORAL,
-            chemical: ALL,
-            month: ALL,
-            sensor: ALL,
-            daily: true,
-            linearly: true
-        };
     }
 
     componentDidMount_(state) {
@@ -95,7 +84,7 @@ class Plots extends Component {
 
         return (
         <div>
-            <div>state: {text}</div>
+            {/*<div>state: {text}</div>*/}
             <div className="markdown-body">
                 <table className="wrapper">
                     <tbody>
