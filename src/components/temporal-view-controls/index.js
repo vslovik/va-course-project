@@ -3,8 +3,8 @@ import ChemicalFilter from '../filter/chemical'
 import LogLinearToggle from '../toggle/loglinear'
 import DayHourToggle from '../toggle/dayhour'
 import {connect} from "react-redux";
-import {selectSensor} from "../../actions";
 import Modal from './../modal'
+import SensorDetails from './../sensor-details'
 
 class TemporalViewControls extends Component {
 
@@ -34,7 +34,7 @@ class TemporalViewControls extends Component {
 
             <Modal show={this.state.isOpen}
                    onClose={this.toggleModal}>
-                Here's some content for the modal
+                   <SensorDetails/>
             </Modal>
 
         </div>
