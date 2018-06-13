@@ -231,8 +231,8 @@ table.sensors td {
 
 svg {
   padding: 0;
-  margin-left: 2px;
-  margin-bottom: -5px;
+  margin-left: 0;
+  margin-bottom: -2px;
   background-color: #fafafa; }
 
 svg.multi_chart {

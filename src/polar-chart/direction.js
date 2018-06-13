@@ -1,5 +1,5 @@
 import {csvParseRows, timeParse} from "d3";
-import sensorCsv from '../data/ch2/SensorData.csv';
+import sensorCsv from '../data/SensorData.csv';
 
 export default class WindDirectionCalendar
 {

@@ -1,17 +1,10 @@
 import React, { Component } from 'react'
 import {csvParseRows, select, selectAll} from 'd3';
 import {request} from 'd3-request';
-import sensorCsv from '../../data/ch2/SensorData.csv';
-import meteoCsv from '../../data/ch2/MeteorologicalData.csv';
-import polarChart from '../../polar-chart'
-import multiChart from '../../multi-chart'
-import multiGroup from '../../multi-group'
-import windChart from '../../wind-chart'
-import exampleChart from '../../example-chart'
+import sensorCsv from '../../data/SensorData.csv';
+import meteoCsv from '../../data/MeteorologicalData.csv';
 
 import {VECTORIAL, TEMPORAL, DECEMBER, APRIL, AUGUST} from '../../constants'
-import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
-import {APR, AUG, DEC} from '../../constants';
 import {LOG, LINEAR} from '../../constants';
 
 import {connect} from 'react-redux'
@@ -20,20 +13,12 @@ import Data from "../../scatter-chart/data";
 import {loadData, loadWindData} from "../../actions";
 import ChartSenMon from "../../scatter-chart/chart-sen-mon";
 import ChartSen from "../../scatter-chart/chart-sen";
-import MultiChartData from "../../multi-group/data";
 import MultiChart from "../../multi-group/chart";
-import circularHeatChart from "../../wind-chart/circular";
 import WindChartData from "../../wind-chart/data";
 import CircularHeatChart from "../../wind-chart/circular";
+import Statistics from "../../statistics";
 
 class Plots extends Component {
-
-    componentDidMount_(state) {
-
-        request(meteoCsv)
-            .mimeType("text/csv")
-            .get(polarChart);
-    }
 
     temporalViewDraw(rows) {
 
@@ -52,11 +37,13 @@ class Plots extends Component {
             new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
         });
 
-        new ChartSenMon('.plot-stat', data[me.props.sensor][DECEMBER], scale);// ToDo
+        // new ChartSenMon('.plot-stat', data[me.props.sensor][DECEMBER], scale);// ToDo
 
         for (let i = 0; i < 9; i++) {
             new ChartSen('.plot' + (i + 1), data[i + 1], scale);
         }
+
+        new Statistics('.plot-stat', rows)
     }
 
     temporalViewUpdate(prevProps) {
@@ -191,30 +178,6 @@ class Plots extends Component {
             selectAll("svg.multi_chart").remove();
             new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
         }
-    }
-
-    componentDidMount_(state) {
-        request(meteoCsv)
-            .mimeType("text/csv")
-            .get(multiChart);
-    }
-
-    componentDidMount_(state) {
-        request(meteoCsv)
-            .mimeType("text/csv")
-            .get(multiGroup);
-    }
-
-    componentDidMount_(state) {
-        request(meteoCsv)
-            .mimeType("text/csv")
-            .get(windChart);
-    }
-
-    componentDidMount_(state) {
-        request(meteoCsv)
-            .mimeType("text/csv")
-            .get(exampleChart);
     }
 
     render = () => {

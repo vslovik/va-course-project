@@ -3,7 +3,7 @@ import Chart from './chart'
 import WindDirectionCalendar from './direction'
 import {csvParseRows, timeParse} from "d3";
 import {request} from "d3-request";
-import sensorCsv from '../data/ch2/SensorData.csv';
+import sensorCsv from '../data/SensorData.csv';
 
 class SensorData {
     constructor(response, calendar) {
