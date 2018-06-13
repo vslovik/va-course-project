@@ -6,6 +6,7 @@ export const DAYHOUR = 'DAYHOUR';
 export const LOGLINEAR = 'LOGLINEAR';
 export const DATA = 'DATA';
 export const WINDDATA = 'WINDDATA';
+export const STATS = 'STATS';
 
 export const selectView = (view) => ({
     type: VIEW,
@@ -44,5 +45,10 @@ export const loadData = (data) => ({
 
 export const loadWindData = (data) => ({
     type:  WINDDATA,
+    value: data
+});
+
+export const saveStats = (data) => ({
+    type:  STATS,
     value: data
 });

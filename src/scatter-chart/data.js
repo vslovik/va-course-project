@@ -1,16 +1,36 @@
 import {timeParse} from "d3";
 import {AGO, APP, CHL, MET} from './../constants'
+import {WEEKDAY, WEEKEND, DAY, NIGHT} from './../constants';
 
 export default class Data {
 
-    constructor()
+    constructor(data)
     {
         this.chemicals = {
+            "AGOC-3A": AGO,
             "Appluimonia": APP,
             "Chlorodinine": CHL,
-            "Methylosmolene": MET,
-            "AGOC-3A": AGO
+            "Methylosmolene": MET
         };
+
+        this.data = data;
+        this.stats = {};
+
+        this.statInit();
+    }
+
+    statInit() {
+        let stat = {};
+
+        stat[WEEKDAY] = {sum: 0, num: 0};
+        stat[WEEKEND] = {sum: 0, num: 0};
+        stat[DAY]     = {sum: 0, num: 0};
+        stat[NIGHT]   = {sum: 0, num: 0};
+
+        this.stats[AGO] = stat;
+        this.stats[APP] = stat;
+        this.stats[CHL] = stat;
+        this.stats[MET] = stat;
     }
 
     static parseMeasureDate(dt) {
@@ -32,6 +52,18 @@ export default class Data {
         return dt;
     }
 
+    collectChemicalTimeStat(che, val, t) {
+        let hours = t.getHours();
+        let slot = (hours > 7 && hours < 23) ? DAY : NIGHT;
+        this.stats[che][slot]['sum'] += val;
+        this.stats[che][slot]['num'] += 1;
+
+        let weekday = t.getDay();
+        slot = (weekday === 0 || weekday === 6)? WEEKEND : WEEKDAY;
+        this.stats[che][slot]['sum'] += val;
+        this.stats[che][slot]['num'] += 1;
+    }
+
     collectStructuredData(row, structure, dataset) {
 
         let [che, sen, dt, val] = row;
@@ -41,6 +73,8 @@ export default class Data {
         val = parseFloat(val.replace(',', '.'));
 
         let t = Data.parseMeasureDate(dt);
+
+        this.collectChemicalTimeStat(che, val, t);
 
         let mon = t.getMonth();
 
@@ -79,14 +113,18 @@ export default class Data {
         }
     }
 
-    getData(rows, structure = 'SenMon') {
+    getData(structure = 'SenMon') {
 
         let data = {};
 
-        for (let i = 1; i < rows.length; i++) {
-            this.collectStructuredData(rows[i], structure, data)
+        for (let i = 1; i < this.data.length; i++) {
+            this.collectStructuredData(this.data[i], structure, data)
         }
 
         return data;
     };
+
+    getStats() {
+        return this.stats;
+    }
 }

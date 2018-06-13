@@ -32,3 +32,8 @@ export const MET = 4;
 
 export const LINEAR = 'LINEAR';
 export const LOG    = 'LOG';
+
+export const WEEKDAY = 1;
+export const WEEKEND = 2;
+export const DAY     = 3;
+export const NIGHT   = 4;

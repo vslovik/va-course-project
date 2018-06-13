@@ -10,7 +10,7 @@ import {LOG, LINEAR} from '../../constants';
 import {connect} from 'react-redux'
 import SensorControl from './../buttons/sensor'
 import Data from "../../scatter-chart/data";
-import {loadData, loadWindData} from "../../actions";
+import {loadData, loadWindData, saveStats} from "../../actions";
 import ChartSenMon from "../../scatter-chart/chart-sen-mon";
 import ChartSen from "../../scatter-chart/chart-sen";
 import MultiChart from "../../multi-group/chart";
@@ -30,20 +30,25 @@ class Plots extends Component {
 
         let me = this;
 
-        const data = (new Data()).getData(rows, 'SenMon');
+        const obj = (new Data(rows));
+        const data = obj.getData('SenMon');
+        const stats = obj.getStats();
+
+        console.log('stats', stats);
+
+        this.props.saveStats(stats); //ToDo I need it?
+
         const scale = this.props.linearly ? LINEAR : LOG;
 
         [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
             new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
         });
 
-        // new ChartSenMon('.plot-stat', data[me.props.sensor][DECEMBER], scale);// ToDo
-
         for (let i = 0; i < 9; i++) {
             new ChartSen('.plot' + (i + 1), data[i + 1], scale);
         }
 
-        new Statistics('.plot-stat', rows)
+        new Statistics('.plot-stat', stats)
     }
 
     temporalViewUpdate(prevProps) {
@@ -64,7 +69,7 @@ class Plots extends Component {
 
             if (this.props.chemical === null) {
 
-                const data = (new Data()).getData(this.props.data, 'SenMon');
+                const data = (new Data(this.props.data)).getData('SenMon');
 
                 [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
                     new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
@@ -81,7 +86,7 @@ class Plots extends Component {
 
             } else {
 
-                let data = (new Data()).getData(this.props.data, 'SenCheMon');
+                let data = (new Data(this.props.data)).getData('SenCheMon');
 
                 [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
                     new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);
@@ -123,7 +128,6 @@ class Plots extends Component {
                         if (me.props.view === VECTORIAL) {
                             new MultiChart('.plot-map', rows, winds);
                         }
-
 
                         let wcd = (new WindChartData());
 
@@ -304,14 +308,16 @@ const mapStateToProps = state => {
         daily: state.daily,
         linearly: state.linearly,
         data: state.data,
-        winddata:state.winddata
+        winddata:state.winddata,
+        stats: state.stats
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         loadData: data => dispatch(loadData(data)),
-        loadWindData: data => dispatch(loadWindData(data))
+        loadWindData: data => dispatch(loadWindData(data)),
+        saveStats: stats => dispatch(saveStats(stats))
     };
 };
 

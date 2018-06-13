@@ -1,4 +1,4 @@
-import {VIEW, CHEMICAL, MONTH, SENSOR, DAYHOUR, LOGLINEAR, DATA, WINDDATA} from './../actions/'
+import {VIEW, CHEMICAL, MONTH, SENSOR, DAYHOUR, LOGLINEAR, DATA, WINDDATA, STATS} from './../actions/'
 import {ALL, TEMPORAL, VECTORIAL} from "../constants";
 
 const initialState = {
@@ -9,7 +9,8 @@ const initialState = {
     daily: true,
     linearly: true,
     data: null,
-    winddata: null
+    winddata: null,
+    stats: null
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -54,6 +55,11 @@ const rootReducer = (state = initialState, action) => {
             return {
                 ...state,
                 winddata: action.value,
+            };
+        case STATS:
+            return {
+                ...state,
+                stats: action.value,
             };
         default:
             return state;

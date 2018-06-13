@@ -100,14 +100,14 @@ class SensorDetails extends Component {
         const scale = this.props.linearly ? LINEAR : LOG;
 
         if(this.props.chemical === null) {
-            const data = (new Data()).getData(this.props.data, 'SenMon');
+            const data = (new Data(this.props.data)).getData('SenMon');
 
             [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
                 new ChartSenMon('.plot-scatter-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
             });
 
         } else {
-            const data = (new Data()).getData(this.props.data, 'SenCheMon');
+            const data = (new Data(this.props.data)).getData('SenCheMon');
 
             [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
                 new ChartSenMon('.plot-scatter-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);

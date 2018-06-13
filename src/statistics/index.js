@@ -4,6 +4,7 @@ import {APRIL, AUGUST, DECEMBER} from './../constants'
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
 import {LOG, LINEAR} from './../constants'
+import {WEEKDAY, WEEKEND, DAY, NIGHT} from "../constants";
 
 export default class Statistics {
     constructor(selector, data){
@@ -38,12 +39,23 @@ export default class Statistics {
             .attr("width", w)
             .attr("height", h);
 
-        let stats = [
-            [1.37, 1.85, 1.78, 1.22],
-            [1.14, 1.12, 1.13, 1.14],
-            [1.20, 1.29, 1.26, 1.20],
-            [1.21, 1.26, 1.14, 1.32]
-        ];
+        // let stats = [
+        //     [1.37, 1.85, 1.78, 1.22],
+        //     [1.14, 1.12, 1.13, 1.14],
+        //     [1.20, 1.29, 1.26, 1.20],
+        //     [1.21, 1.26, 1.14, 1.32]
+        // ];
+
+        let stats = [];
+        [AGO, APP, CHL, MET].forEach(function(che){
+            let s = [], v;
+            [WEEKDAY, WEEKEND, DAY, NIGHT].forEach(function(slot){
+                v = data[che][slot]['sum']/data[che][slot]['num'];
+
+                s.push(Math.round(v * 100) / 100);
+           });
+            stats.push(s);
+        });
 
         let g = svg.append("g");
 
@@ -141,4 +153,5 @@ export default class Statistics {
             .attr("y2", 216);
 
     }
+
 }
