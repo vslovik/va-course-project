@@ -97,8 +97,6 @@ export default class MultiChartData {
             //dataset[sen].push([angle, val / max, che])
         }
 
-        console.log(dataset);
-
         return dataset;
     }
 

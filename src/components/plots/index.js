@@ -148,7 +148,18 @@ class Plots extends Component {
         }
 
         if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
-            // new MultiChart('.plot1', this.props.data, this.props.winddata);
+            selectAll("svg.multi_chart").remove();
+            new MultiChart('.plot1', this.props.data, this.props.winddata);
+        }
+
+        if(this.props.chemical !== prevProps.chemical && this.props.view === VECTORIAL) {
+            selectAll("svg.multi_chart").remove();
+            new MultiChart('.plot1', this.props.data, this.props.winddata, this.props.chemical);
+        }
+
+        if(this.props.month !== prevProps.month && this.props.view === VECTORIAL) {
+            selectAll("svg.multi_chart").remove();
+            new MultiChart('.plot1', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
         }
     }
 

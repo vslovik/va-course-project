@@ -7,7 +7,10 @@ import {APP, CHL, MET, AGO} from './../constants'
  * @see https://spin.atomicobject.com/2015/06/12/objects-around-svg-circle-d3-js/
  */
 export default class MultiChart {
-    constructor(selector, data, winddata) {
+    constructor(selector, data, winddata, chemical = null, month = null) {
+
+        this.chemical = chemical;
+        this.month    = month;
 
         const colorMap = {};
 
@@ -175,13 +178,18 @@ export default class MultiChart {
 
         this.centers.forEach(function(entry, i) {
 
-            console.log('entry', entry, i);
-
-            chart.svg.selectAll("point")
+            let sel = chart.svg.selectAll("point")
                 .data(data[i + 1])
                 .enter()
-                .append("circle")
-                .attr("class", "point")
+                .append("circle");
+
+                if(chart.chemical !== null) {
+                    sel.filter(function(d) {
+                        return d[2] === chart.chemical;
+                    });
+                }
+
+                sel.attr("class", "point")
                 .attr("transform", function (d) {
 
                     const coors = line([d]).slice(1).slice(0, -1);

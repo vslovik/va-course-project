@@ -55,8 +55,6 @@ class SensorData {
             data[sen].push([Math.PI * angle / 180, val / max])
         }
 
-        console.log(data);
-
         return data[sensor];
     }
 
