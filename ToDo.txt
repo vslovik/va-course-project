@@ -51,3 +51,4 @@ use d3 filter!
         })
         .each(update);
 
+8. on click on factory - wind map here

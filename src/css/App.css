@@ -295,3 +295,25 @@ svg.multi_chart {
   color: #999999;
   background-color: #fff;
   border-color: #e36209 #e1e4e8 transparent; }
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 50px; }
+
+.modal {
+  background-color: #fff;
+  border-radius: 5px;
+  max-width: 100%;
+  min-height: 90%;
+  margin: 0 auto;
+  padding: 30px; }
+
+.modal a.close {
+  position: absolute;
+  right: 65px;
+  top: 60px; }

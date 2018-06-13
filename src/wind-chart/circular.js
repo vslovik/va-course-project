@@ -14,10 +14,10 @@ export default class CircularHeatChart {
         [this.data]     = data;
 
         this.margin = {
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20
         };
 
         this.innerRadius   = 50;
@@ -35,10 +35,11 @@ export default class CircularHeatChart {
         let chart = this;
 
         this.svg = select(this.selector)
-            .selectAll('svg')
+            .append('svg')
+            .attr('width', 400)
+            .attr('height', 300)
             .data([chart.data])
-            .enter()
-            .append('svg');
+            ;
 
         this.svg.call(function(selection) { return chart.chart(selection)} );
     }

@@ -149,7 +149,7 @@ class Plots extends Component {
                         let data = Object.values(wcd.data);
 
                         new CircularHeatChart('.plot-wind', [data])
-                            .setInnerRadius(20)
+                            .setInnerRadius(10)
                             .setRange(["white", "steelblue"])
                             .setRadialLabels(wcd.getRadialLabels())
                             .setSegmentLabels(wcd.getSegmentLabels())
