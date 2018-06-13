@@ -24,4 +24,6 @@
 
 ---
 
+7. remove unnessessary code
+
 Scatter + wind diagram for third view

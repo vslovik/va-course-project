@@ -49,7 +49,9 @@ export default class MultiChart {
             .attr("width", this.width)
             .attr("height",this.height);
 
-        this.createScales().drawCircles();
+        this.createScales()
+            .drawCircles()
+            .pointFactories();
             // .drawPoints();
     }
 
@@ -66,6 +68,30 @@ export default class MultiChart {
             .range([this.height, 0]);
 
         this.drawCircles().drawPoints();
+
+        return this;
+    }
+
+    pointFactories() {
+        let chart = this;
+
+        this.svg.selectAll(".circle")
+            .data(this.factories)
+            .enter().append("circle")
+            .attr("cx", function(d){return chart.xScale(d[0])})
+            .attr("cy", function(d){return chart.yScale(d[1])})
+            .attr("r", 4)
+            .attr("fill", "black")
+            .attr("fill-opacity", "0.8");
+
+        this.svg.selectAll(".factory-labels")
+            .data(this.factories)
+            .enter()
+            .append("text")
+            .attr('color', 'grey')
+            .attr('x', function(d){return chart.xScale(d[0]) + 8})
+            .attr('y', function(d){return chart.yScale(d[1]) + 4})
+            .text((d, i)=> d[2]);
 
         return this;
     }
