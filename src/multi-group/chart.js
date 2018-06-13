@@ -53,9 +53,9 @@ export default class MultiChart {
             .attr("height",this.height);
 
         this.createScales()
+            .pointFactories()
             .drawCircles()
-            .pointFactories();
-            // .drawPoints();
+            .drawPoints();
 
         this.connectFactory(this.factories[0]);
     }
@@ -137,7 +137,7 @@ export default class MultiChart {
             .attr("cy", function(d){return chart.yScale(d[1])})
             .attr("r", 45)
             .attr("fill", "white")
-            .attr("fill-opacity", "0.1");
+            .attr("fill-opacity", "0.9");
 
         this.svg.selectAll(".circle")
             .data(this.centers)

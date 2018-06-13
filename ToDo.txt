@@ -13,16 +13,15 @@
 
 ---
 
-1. Circle transparency problem
-2. Month and chemical filters
+2. [Month latest] and chemical filters
 
 
 3. Control point coordinates correctness
 
 -
 
-4. Wind diagram on the right
-5. Sensor legend on the right
+* 4. Wind diagram on the right
+* 5. Sensor legend on the right
 
 ---
 
@@ -31,6 +30,8 @@
 Scatter + wind diagram for third view
 
 -----------------------------------------
+
+7. Slider
 
 use d3 filter!
 
