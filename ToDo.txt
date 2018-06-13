@@ -52,3 +52,7 @@ use d3 filter!
         .each(update);
 
 8. on click on factory - wind map here
+
+9. height width to standard constants
+
+8. ? and other controls (filters) must be clickable, whend data are here

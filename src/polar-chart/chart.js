@@ -1,12 +1,25 @@
 import {radialLine, range, scaleLinear, select} from "d3";
+import {MET, ORANGE, AGO, APP, RED, CHL, BLUE, GREEN} from "../constants";
 
 export default class Chart {
-    constructor(selector, data) {
+    constructor(selector, data, chemical = null, month = null) {
 
-        this.data =  data;
+        this.data     = data;
+        this.chemical = chemical;
+        this.month    = month;
 
-        this.width  = 800;
-        this.height = 600;
+        this.width  = 240; // ToDo -> constants
+        this.height = 200;
+
+        // ToDo put in reusable function
+        const colorMap = {};
+
+        colorMap[AGO] = ORANGE;
+        colorMap[APP] = RED;
+        colorMap[CHL] = BLUE;
+        colorMap[MET] = GREEN;
+
+        this.colorMap =  colorMap;
 
         this.svg = select(selector)
             .append("svg")
@@ -30,21 +43,38 @@ export default class Chart {
         let chart = this;
 
         let line = radialLine()
-            .radius(function(d) { return chart.r(d[1]); })
-            .angle(function(d) { return -d[0] + Math.PI / 2; });
+            .radius(function (d) {
+                return chart.r(d[1]);
+            })
+            .angle(function (d) {
+                return -d[0] + Math.PI / 2;
+            });
 
-        this.svg.selectAll("point")
+        let selection = this.svg.selectAll("point")
             .data(this.data)
             .enter()
-            .append("circle")
-            .attr("class", "point")
-            .attr("transform", function(d) {
+            .append("circle");
+
+        if (chart.chemical !== null) {
+            selection.filter(function (d) {
+                return d[2] === chart.chemical
+            });
+        }
+
+        if (chart.month !== null) {
+            selection.filter(function (d) {
+                return d[3] === chart.month
+            });
+        }
+
+        selection.attr("class", "point")
+            .attr("transform", function (d) {
                 let coors = line([d]).slice(1).slice(0, -1);
                 return "translate(" + coors + ")"
             })
             .attr("r", 2)
-            .attr("fill",function(d,i){
-                return 'black'//color(i);
+            .attr("fill", function (d, i) {
+                return chart.colorMap[d[2]];
             });
 
         return this;
