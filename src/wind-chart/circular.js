@@ -6,7 +6,7 @@
  */
 import {select, extent, arc, selectAll, scaleLinear} from 'd3'
 
-export default class circularHeatChart {
+export default class CircularHeatChart {
 
     constructor(selector, data)
     {
@@ -14,20 +14,21 @@ export default class circularHeatChart {
         [this.data]     = data;
 
         this.margin = {
-            top: 20,
-            right: 20,
-            bottom: 20,
-            left: 20
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
         };
 
         this.innerRadius   = 50;
         this.numSegments   = 36;
-        this.segmentHeight = 20;
+        this.segmentHeight = 10;
         this.range         = ["white", "red"];
 
         this.radialLabels  = [];
         this.segmentLabels = [];
         this.domain        = null;
+
     }
 
     draw() {

@@ -22,6 +22,9 @@ import ChartSenMon from "../../scatter-chart/chart-sen-mon";
 import ChartSen from "../../scatter-chart/chart-sen";
 import MultiChartData from "../../multi-group/data";
 import MultiChart from "../../multi-group/chart";
+import circularHeatChart from "../../wind-chart/circular";
+import WindChartData from "../../wind-chart/data";
+import CircularHeatChart from "../../wind-chart/circular";
 
 class Plots extends Component {
 
@@ -133,6 +136,33 @@ class Plots extends Component {
                         if (me.props.view === VECTORIAL) {
                             new MultiChart('.plot-map', rows, winds);
                         }
+
+
+                        let wcd = (new WindChartData());
+
+                        me.props.winddata.slice(1).forEach(function (row) {
+                            wcd.collectDataItem(row, DECEMBER)
+                        });
+
+                        for (let i = 0; i < wcd.cells; i++) wcd.data[i] = wcd.data[i] / wcd.mMax;
+
+                        let data = Object.values(wcd.data);
+
+                        new CircularHeatChart('.plot-wind', [data])
+                            .setInnerRadius(20)
+                            .setRange(["white", "steelblue"])
+                            .setRadialLabels(wcd.getRadialLabels())
+                            .setSegmentLabels(wcd.getSegmentLabels())
+                            .draw();
+
+                        // ToDo substitute with sensor plot legend
+                        new CircularHeatChart('.plot-sensor', [data])
+                            .setInnerRadius(10)
+                            .setRange(["white", "steelblue"])
+                            .setRadialLabels(wcd.getRadialLabels())
+                            .setSegmentLabels(wcd.getSegmentLabels())
+                            .draw();
+
                     });
             });
     }
