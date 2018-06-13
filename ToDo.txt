@@ -12,19 +12,21 @@
 3. day/hour toggle
 
 ---
-1. Factories points
-2. Clicks on factories - rays to sensors
-3. Circle transparency problem
-4. Control point coordinates correctness
+
+1. Circle transparency problem
+2. Month and chemical filters
+
+
+3. Control point coordinates correctness
 
 -
 
-5. Wind diagram on the right
-6. Sensor legend on the right
+4. Wind diagram on the right
+5. Sensor legend on the right
 
 ---
 
-7. remove unnessessary code
+6. remove unnecessary code (diagrams tried)
 
 Scatter + wind diagram for third view
 
