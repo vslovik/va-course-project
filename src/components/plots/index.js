@@ -131,7 +131,7 @@ class Plots extends Component {
                         me.props.loadWindData(winds);
 
                         if (me.props.view === VECTORIAL) {
-                            new MultiChart('.plot1', rows, winds);
+                            new MultiChart('.plot-map', rows, winds);
                         }
                     });
             });
@@ -149,17 +149,17 @@ class Plots extends Component {
 
         if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
             selectAll("svg.multi_chart").remove();
-            new MultiChart('.plot1', this.props.data, this.props.winddata);
+            new MultiChart('.plot-map', this.props.data, this.props.winddata);
         }
 
         if(this.props.chemical !== prevProps.chemical && this.props.view === VECTORIAL) {
             selectAll("svg.multi_chart").remove();
-            new MultiChart('.plot1', this.props.data, this.props.winddata, this.props.chemical);
+            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical);
         }
 
         if(this.props.month !== prevProps.month && this.props.view === VECTORIAL) {
             selectAll("svg.multi_chart").remove();
-            new MultiChart('.plot1', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
+            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
         }
     }
 
@@ -283,7 +283,19 @@ class Plots extends Component {
             <div>
                 {/*<div>state: {text}</div>*/}
                 <div className="markdown-body">
-                    <div className="plot1"/>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div className="plot-map"/>
+                                </td>
+                                <td>
+                                    <div className="plot-wind"/>
+                                    <div className="plot-sensor"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         )
