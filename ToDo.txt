@@ -27,3 +27,24 @@
 7. remove unnessessary code
 
 Scatter + wind diagram for third view
+
+-----------------------------------------
+
+use d3 filter!
+
+    svg.selectAll("circle")
+        .data(data)
+        .enter().append("circle")
+        .filter(function(d) { return d.year == '2008' })
+        .attr("class", "circle")
+        .attr("r", 4)
+        .attr("cx", function(d) { return x(d.year); })
+        .attr("cy", function(d) { return y(d.avg); })
+        .on("click", function(d) {
+            commentBox.text( function() { return comment; })
+            .style("opacity", 0.8)
+            .style("left", (d3.event.pageX)-0 + "px")
+            .style("top", (d3.event.pageY)-0 + "px");
+        })
+        .each(update);
+

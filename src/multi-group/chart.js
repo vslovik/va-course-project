@@ -1,4 +1,4 @@
-import {radialLine, scaleLinear, select, timeParse, range,scaleOrdinal, max, scaleBand} from "d3";
+import {radialLine, scaleLinear, select, timeParse, range, scaleOrdinal, max, scaleBand, on, selectAll} from "d3";
 import MultiChartData from "./data";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
@@ -53,6 +53,8 @@ export default class MultiChart {
             .drawCircles()
             .pointFactories();
             // .drawPoints();
+
+        this.connectFactory(this.factories[0]);
     }
 
     createScales() {
@@ -72,6 +74,26 @@ export default class MultiChart {
         return this;
     }
 
+    connectFactory(fentry) {
+
+        let [x, y] = fentry;
+
+        let chart = this;
+
+        this.centers.forEach(function(entry) {
+
+            let [centerX, centerY] = entry;
+
+            chart.svg.append("line")
+                .style("stroke", "black")
+                .attr("x1", chart.xScale(parseFloat(x)))
+                .attr("y1", chart.yScale(parseFloat(y)))
+                .attr("x2", chart.xScale(parseFloat(centerX)))
+                .attr("y2", chart.yScale(parseFloat(centerY)));
+        });
+
+    }
+
     pointFactories() {
         let chart = this;
 
@@ -82,7 +104,12 @@ export default class MultiChart {
             .attr("cy", function(d){return chart.yScale(d[1])})
             .attr("r", 4)
             .attr("fill", "black")
-            .attr("fill-opacity", "0.8");
+            .attr("fill-opacity", "0.8")
+            .on("click", function(d) {
+
+                selectAll("line").remove();
+                chart.connectFactory(d);
+            });
 
         this.svg.selectAll(".factory-labels")
             .data(this.factories)
