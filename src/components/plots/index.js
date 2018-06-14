@@ -20,6 +20,35 @@ import Statistics from "../../statistics";
 
 class Plots extends Component {
 
+    vectorialViewDraw(rows, winds) {
+        new MultiChart('.plot-map', rows, winds);
+
+        let wcd = (new WindChartData());
+
+        winds.slice(1).forEach(function (row) {
+            wcd.collectDataItem(row, DECEMBER)
+        });
+
+        for (let i = 0; i < wcd.cells; i++) wcd.data[i] = wcd.data[i] / wcd.mMax;
+
+        let data = Object.values(wcd.data);
+
+        new CircularHeatChart('.plot-wind', [data])
+            .setInnerRadius(10)
+            .setRange(["white", "steelblue"])
+            .setRadialLabels(wcd.getRadialLabels())
+            .setSegmentLabels(wcd.getSegmentLabels())
+            .draw();
+
+        // ToDo substitute with sensor plot legend
+        new CircularHeatChart('.plot-sensor', [data])
+            .setInnerRadius(10)
+            .setRange(["white", "steelblue"])
+            .setRadialLabels(wcd.getRadialLabels())
+            .setSegmentLabels(wcd.getSegmentLabels())
+            .draw();
+    }
+
     temporalViewDraw(rows) {
 
         let tr = select(".nine");
@@ -36,7 +65,7 @@ class Plots extends Component {
 
         console.log('stats', stats);
 
-        this.props.saveStats(stats); //ToDo I need it?
+        this.props.saveStats(stats); //ToDo Do I need it?
 
         const scale = this.props.linearly ? LINEAR : LOG;
 
@@ -126,33 +155,8 @@ class Plots extends Component {
                         me.props.loadWindData(winds);
 
                         if (me.props.view === VECTORIAL) {
-                            new MultiChart('.plot-map', rows, winds);
+                            me.vectorialViewDraw(rows, winds)
                         }
-
-                        let wcd = (new WindChartData());
-
-                        me.props.winddata.slice(1).forEach(function (row) {
-                            wcd.collectDataItem(row, DECEMBER)
-                        });
-
-                        for (let i = 0; i < wcd.cells; i++) wcd.data[i] = wcd.data[i] / wcd.mMax;
-
-                        let data = Object.values(wcd.data);
-
-                        new CircularHeatChart('.plot-wind', [data])
-                            .setInnerRadius(10)
-                            .setRange(["white", "steelblue"])
-                            .setRadialLabels(wcd.getRadialLabels())
-                            .setSegmentLabels(wcd.getSegmentLabels())
-                            .draw();
-
-                        // ToDo substitute with sensor plot legend
-                        new CircularHeatChart('.plot-sensor', [data])
-                            .setInnerRadius(10)
-                            .setRange(["white", "steelblue"])
-                            .setRadialLabels(wcd.getRadialLabels())
-                            .setSegmentLabels(wcd.getSegmentLabels())
-                            .draw();
 
                     });
             });
@@ -160,6 +164,10 @@ class Plots extends Component {
 
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
+        if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
+            this.vectorialViewDraw(this.props.data, this.props.winddata)
+        }
+
         if(this.props.view === prevProps.view && this.props.view === TEMPORAL) {
             this.temporalViewUpdate(prevProps)
         }

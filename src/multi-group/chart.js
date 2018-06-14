@@ -173,7 +173,6 @@ export default class MultiChart {
             .radius(function(d) { return r(d[1]); })
             .angle(function(d) { return Math.PI - d[0]; });
 
-
         let chart = this;
 
         this.centers.forEach(function(entry, i) {
