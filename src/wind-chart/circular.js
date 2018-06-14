@@ -36,8 +36,8 @@ export default class CircularHeatChart {
 
         this.svg = select(this.selector)
             .append('svg')
-            .attr('width', 400)
-            .attr('height', 300)
+            .attr('width', 220)
+            .attr('height', 250)
             .data([chart.data])
             ;
 
@@ -205,7 +205,8 @@ export default class CircularHeatChart {
             .append("textPath")
             .attr("xlink:href", "#segment-label-path-" + this.id)
             .attr("startOffset", function(d, i) {return i * 100 / chart.numSegments + "%";})
-            .text(function(d) {return d;});
+            .text(function(d) {return d;})
+            .attr("font-size", "8px");
 
         return this;
     }

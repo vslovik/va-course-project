@@ -31,23 +31,12 @@
   stroke: red;
   stroke-width: 1.5px; }
 
-/* Circular chart SVG styling https://github.com/prcweb/d3-circularheat */
-/* Example chart */
-.line {
-  fill: none;
-  stroke-width: 4px; }
-
-.axis path, .tick line {
-  fill: none;
-  stroke: #333; }
-
 body {
   background: #ffffff;
   font-family: 'Open Sans', sans-serif;
   font-size: 12px;
   font-weight: 700; }
 
-/*Resets and overrides*/
 html, body, div, h1, h2, h3, h4, h5, h6, p, ul, li, span {
   margin: 0;
   padding: 0;
@@ -236,7 +225,7 @@ svg {
   background-color: #fafafa; }
 
 svg.multi_chart {
-  margin: 0 100px;
+  margin: 0 10px;
   background-color: #f2f2f2; }
 
 .repohead.experiment-repo-nav {

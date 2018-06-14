@@ -34,7 +34,7 @@ class Plots extends Component {
         let data = Object.values(wcd.data);
 
         new CircularHeatChart('.plot-wind', [data])
-            .setInnerRadius(10)
+            .setInnerRadius(20)
             .setRange(["white", "steelblue"])
             .setRadialLabels(wcd.getRadialLabels())
             .setSegmentLabels(wcd.getSegmentLabels())
@@ -42,7 +42,7 @@ class Plots extends Component {
 
         // ToDo substitute with sensor plot legend
         new CircularHeatChart('.plot-sensor', [data])
-            .setInnerRadius(10)
+            .setInnerRadius(20)
             .setRange(["white", "steelblue"])
             .setRadialLabels(wcd.getRadialLabels())
             .setSegmentLabels(wcd.getSegmentLabels())

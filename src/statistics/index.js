@@ -26,7 +26,6 @@ export default class Statistics {
 
         this.colorMap =  colorMap;
 
-        //Width and height
         let w = 160;
         let h = 240;
 
