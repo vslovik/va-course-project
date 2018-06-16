@@ -29,7 +29,7 @@ class TemporalViewControls extends Component {
                 <a href="" className="button-question" onClick={this.toggleModal}>?</a>
             </span>
             <LogLinearToggle/>
-            <DayHourToggle/>
+            {/*<DayHourToggle/>*/}
             <ChemicalFilter/>
 
             <Modal show={this.state.isOpen}
