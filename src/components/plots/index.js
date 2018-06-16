@@ -63,8 +63,6 @@ class Plots extends Component {
         const data = obj.getData('SenMon');
         const stats = obj.getStats();
 
-        console.log('stats', stats);
-
         this.props.saveStats(stats); //ToDo Do I need it?
 
         const scale = this.props.linearly ? LINEAR : LOG;
@@ -104,8 +102,6 @@ class Plots extends Component {
                     new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
                 });
 
-                new ChartSenMon('.plot-stat', data[this.props.sensor][DECEMBER], scale);// ToDo
-
                 if (this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
 
                     for (let i = 0; i < 9; i++) {
@@ -121,7 +117,7 @@ class Plots extends Component {
                     new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);
                 });
 
-                new ChartSenMon('.plot-stat', data[this.props.sensor][this.props.chemical][DECEMBER], scale);// ToDo
+
 
                 if (this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
 
@@ -130,6 +126,8 @@ class Plots extends Component {
                     }
                 }
             }
+
+            new Statistics('.plot-stat', this.props.stats);
         }
     }
 
