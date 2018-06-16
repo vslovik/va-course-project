@@ -1,8 +1,9 @@
 .button {
   color: #ffffff;
   &:link {
+    width:60px;
     margin: 0;
-    padding: 6px 12px;
+    padding: 2px 2px;
     line-height: 100%;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
@@ -21,7 +22,6 @@
 @mixin color($color) {
   &:link, &:visited, &:active {
     background-color: $color;
-
   }
   &:hover {
     background-color: lighten($color, 20);

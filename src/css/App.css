@@ -49,8 +49,9 @@ a, a:link, a:active, a:visited, a:hover {
 .button, .agog-button, .appl-button, .chlo-button, .meth-button, .all-button, .apr-button, .aug-button, .dec-button, .toggle-button-left-active, .toggle-button-right-active, .toggle-button-left, .toggle-button-right, .button-sensor, .button-question {
   color: #ffffff; }
   .button:link, .agog-button:link, .appl-button:link, .chlo-button:link, .meth-button:link, .all-button:link, .apr-button:link, .aug-button:link, .dec-button:link, .toggle-button-left-active:link, .toggle-button-right-active:link, .toggle-button-left:link, .toggle-button-right:link, .button-sensor:link, .button-question:link {
+    width: 60px;
     margin: 0;
-    padding: 6px 12px;
+    padding: 2px 2px;
     line-height: 100%;
     text-align: center;
     font-family: 'Open Sans', sans-serif;

@@ -25,7 +25,7 @@ class TemporalViewControls extends Component {
         return (
         <div className="reponav-controls container">
             <span className="controls">
-                <a href="" className="button-sensor">SENSOR {this.props.sensor}</a>
+                <a href="" className="button-sensor" onClick={this.toggleModal}>SENSOR {this.props.sensor}</a>
                 <a href="" className="button-question" onClick={this.toggleModal}>?</a>
             </span>
             <LogLinearToggle/>
