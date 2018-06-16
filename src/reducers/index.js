@@ -4,7 +4,7 @@ import {ALL, TEMPORAL, VECTORIAL} from "../constants";
 const initialState = {
     view: TEMPORAL,
     chemical: null,
-    month: ALL,
+    month: null,
     sensor: 1,
     daily: true,
     linearly: true,

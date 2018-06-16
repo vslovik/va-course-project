@@ -20,18 +20,11 @@ import Statistics from "../../statistics";
 
 class Plots extends Component {
 
-    vectorialViewDraw(rows, winds) {
-        new MultiChart('.plot-map', rows, winds);
+    WindChartDraw(winddata, month) {
 
-        let wcd = (new WindChartData());
+        let wcd = new WindChartData(winddata, month);
 
-        winds.slice(1).forEach(function (row) {
-            wcd.collectDataItem(row, DECEMBER)
-        });
-
-        for (let i = 0; i < wcd.cells; i++) wcd.data[i] = wcd.data[i] / wcd.mMax;
-
-        let data = Object.values(wcd.data);
+        let data = wcd.getData();
 
         new CircularHeatChart('.plot-wind', [data])
             .setInnerRadius(20)
@@ -60,19 +53,36 @@ class Plots extends Component {
         let me = this;
 
         const obj = (new Data(rows));
-        const data = obj.getData('SenMon');
+
         const stats = obj.getStats();
 
         this.props.saveStats(stats); //ToDo Do I need it?
 
         const scale = this.props.linearly ? LINEAR : LOG;
 
-        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-            new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
-        });
+        if (this.props.chemical === null) {
 
-        for (let i = 0; i < 9; i++) {
-            new ChartSen('.plot' + (i + 1), data[i + 1], scale);
+            const data = obj.getData('SenMon');
+
+            [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+                new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
+            });
+
+            for (let i = 0; i < 9; i++) {
+                new ChartSen('.plot' + (i + 1), data[i + 1], scale);
+            }
+        } else {
+
+            const data = obj.getData('SenCheMon');
+
+            [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+                new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);
+            });
+
+            for (let i = 0; i < 9; i++) {
+                new ChartSen('.plot' + (i + 1), data[i + 1][this.props.chemical], scale);
+            }
+
         }
 
         new Statistics('.plot-stat', stats)
@@ -84,11 +94,14 @@ class Plots extends Component {
             || this.props.linearly !== prevProps.linearly
         ) {
 
-            if(this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly)
-                selectAll("svg").remove();
-
-            if(this.props.sensor !== prevProps.sensor)
+            if(this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
                 selectAll("svg.sensor").remove();
+                selectAll("svg.sensor-month").remove();
+            }
+
+            if(this.props.sensor !== prevProps.sensor) {
+                selectAll("svg.sensor").remove();
+            }
 
             let me = this;
 
@@ -118,7 +131,6 @@ class Plots extends Component {
                 });
 
 
-
                 if (this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
 
                     for (let i = 0; i < 9; i++) {
@@ -126,8 +138,6 @@ class Plots extends Component {
                     }
                 }
             }
-
-            new Statistics('.plot-stat', this.props.stats);
         }
     }
 
@@ -138,7 +148,7 @@ class Plots extends Component {
         request(sensorCsv)
             .mimeType("text/csv")
             .get(function (response) {
-                let rows = csvParseRows(response.responseText);
+                let rows = csvParseRows(response.responseText).slice(1);
 
                 if (me.props.view === TEMPORAL) {
                     me.temporalViewDraw(rows)
@@ -149,11 +159,13 @@ class Plots extends Component {
                 request(meteoCsv)
                     .mimeType("text/csv")
                     .get(function (r) {
-                        let winds = csvParseRows(r.responseText);
+                        let winds = csvParseRows(r.responseText).slice(1);
                         me.props.loadWindData(winds);
 
                         if (me.props.view === VECTORIAL) {
-                            me.vectorialViewDraw(rows, winds)
+
+                            new MultiChart('.plot-map', rows, winds);
+                            me.WindChartDraw(winds, me.props.month)
                         }
 
                     });
@@ -163,7 +175,8 @@ class Plots extends Component {
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
         if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
-            this.vectorialViewDraw(this.props.data, this.props.winddata)
+            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
+            this.WindChartDraw(this.props.winddata, this.props.month)
         }
 
         if(this.props.view === prevProps.view && this.props.view === TEMPORAL) {
@@ -174,19 +187,17 @@ class Plots extends Component {
             this.temporalViewDraw(this.props.data)
         }
 
-        if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
-            selectAll("svg.multi_chart").remove();
-            new MultiChart('.plot-map', this.props.data, this.props.winddata);
-        }
-
         if(this.props.chemical !== prevProps.chemical && this.props.view === VECTORIAL) {
             selectAll("svg.multi_chart").remove();
-            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical);
+            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
         }
 
         if(this.props.month !== prevProps.month && this.props.view === VECTORIAL) {
             selectAll("svg.multi_chart").remove();
             new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
+
+            selectAll("svg.wind-chart").remove();
+            this.WindChartDraw(this.props.winddata, this.props.month);
         }
     }
 

@@ -173,20 +173,19 @@ export default class MultiChart {
 
         let chart = this;
 
-        this.centers.forEach(function(entry, i) {
+        this.centers.forEach(function (entry, i) {
 
             let sel = chart.svg.selectAll("point")
                 .data(data[i + 1])
                 .enter()
-                .append("circle");
-
-                if(chart.chemical !== null) {
-                    sel.filter(function(d) {
-                        return d[2] === chart.chemical;
-                    });
-                }
-
-                sel.attr("class", "point")
+                .append("circle")
+                .filter(function (d) {
+                    return chart.chemical === null ? true : d[2] === chart.chemical;
+                })
+                .filter(function (d) {
+                    return chart.month === null ? true : d[3] === chart.month;
+                })
+                .attr("class", "point")
                 .attr("transform", function (d) {
 
                     const coors = line([d]).slice(1).slice(0, -1);

@@ -81,8 +81,6 @@ export default class WindDirectionCalendar
             return windDir;
         }
 
-        console.log('Key ' + key + ' missing in calendar');
-
         return null;
     }
 

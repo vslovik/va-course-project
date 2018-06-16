@@ -30,6 +30,7 @@ export default class ChartSen {
         [APRIL, AUGUST, DECEMBER].forEach(function(mon){
             chart.svgs[mon] = select(selector)
                 .append("svg")
+                .attr("class", "sensor")
                 .attr("width", chart.w)
                 .attr("height", chart.h);
         });

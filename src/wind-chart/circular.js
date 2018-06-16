@@ -36,6 +36,7 @@ export default class CircularHeatChart {
 
         this.svg = select(this.selector)
             .append('svg')
+            .attr('class', 'wind-chart')
             .attr('width', 220)
             .attr('height', 250)
             .data([chart.data])
@@ -125,8 +126,10 @@ export default class CircularHeatChart {
         this.svg.append("g")
             .classed("circular-heat", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")")
-            .selectAll("path").data(chart.data)
-            .enter().append("path")
+            .selectAll("path")
+            .data(chart.data)
+            .enter()
+            .append("path")
             .attr("d", this.getArc())
             .attr("fill", function(d) {return color(d);});
 

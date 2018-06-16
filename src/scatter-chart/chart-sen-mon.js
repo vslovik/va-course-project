@@ -24,7 +24,7 @@ export default class ChartSenMon {
 
         this.svg = select(selector)
             .append("svg")
-            .attr('class', 'sensor')
+            .attr('class', 'sensor-month')
             .attr("width", this.w)
             .attr("height", this.h);
 

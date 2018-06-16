@@ -92,7 +92,9 @@ export default class MultiChartData {
                 dataset[sen] = [];
             }
 
-            dataset[sen].push([Math.PI * angle / 180, val / max, che]);
+            let t = WindDirectionCalendar.parseMeasureDate(dt);
+
+            dataset[sen].push([Math.PI * angle / 180, val / max, che, t.getMonth()]);
         }
 
         return dataset;

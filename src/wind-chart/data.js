@@ -2,25 +2,33 @@ import {csvParseRows, timeParse} from 'd3'
 
 export default class WindChartData {
 
-    constructor() {
+    constructor(winds, month) {
+
+        this.month = month;
         this.aSegments = 36;
         this.angleStep = 10.0;
         this.mStep     = 1.0;
         this.mSegments = 7;
         this.cells     = this.aSegments * this.mSegments;
-        this.mMax      = 0;
 
-        this.init();
-    }
+        this.data = [];
+        for(let i = 0; i < this.cells; i++) {
+            this.data.push(0);
+        }
 
-    init() {
-        let data = {};
+        let me = this;
 
-        [...Array(this.cells).keys()].forEach(function (i) {
-            data[i] = 0;
+        winds.forEach(function (row) {
+            me.collectDataItem(row, month)
         });
 
-        this.data = data;
+        this.normalize();
+    }
+
+    normalize() {
+        let mMax = Math.max(...this.data);
+
+        for (let i = 0; i < this.cells; i++) this.data[i] = this.data[i] / mMax;
     }
 
     getMixMaxMeasure(rows) {
@@ -74,35 +82,26 @@ export default class WindChartData {
         return Math.ceil(mSegment * this.aSegments + aSegment) - 1;
     }
 
-    getData(response, month) {
+    getData() {
 
-        let chart = this;
-
-        csvParseRows(response.responseText).slice(1).forEach(function (row) {
-            chart.collectDataItem(row, month)
-        });
-
-        for (let i = 0; i < this.cells; i++) this.data[i] = this.data[i] / this.mMax;
-
-        return Object.values(this.data);
+        return this.data;
     }
 
-    collectDataItem(row, month) {
+    collectDataItem(row, month = null) {
 
         let [dt, angle, value] = row;
+        if (dt !== '' && angle !== '' && value !== '') {
 
-        if (dt !== '' && angle !== '' && value !== ''
-            && WindChartData.parseMeasureDate(dt).getMonth() === month) {
 
-            let i = this.getCellIndex(angle, value);
 
-            // Update data
-            this.data[i] += 1;
+            if((WindChartData.parseMeasureDate(dt).getMonth() === month) || (month === null)) {
 
-            // Update mMax
-            if (this.data[i] > this.mMax) {
-                this.mMax = this.data[i];
+                let i = this.getCellIndex(angle, value);
+
+                // Update data
+                this.data[i] += 1;
             }
+
         }
     }
 

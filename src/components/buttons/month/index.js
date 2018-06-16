@@ -8,21 +8,17 @@ class MonthButton extends Component {
     constructor() {
         super();
 
-        this.state = {
-            month: ALL
-        };
-
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick(event) {
         event.preventDefault();
-        this.props.selectMonth(this.props.name);
+        this.props.selectMonth(this.props.value);
     }
 
     render = () => {
 
-        const text = this.props.name === this.props.month ? '< ' + this.props.name + ' >' : this.props.name;
+        const text = this.props.value === this.props.month ? '< ' + this.props.name + ' >' : this.props.name;
 
         return (
             <a href="" className={this.props.className} onClick={this.handleClick}>{text}</a>
