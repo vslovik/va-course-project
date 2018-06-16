@@ -83,8 +83,8 @@ export default class MultiChartData {
             che = chemicals[che];
             val = parseFloat(val.replace(',', '.'));
 
-            let angle = WindDirectionCalendar.getWindDirection(dt, calendar);
-            if(null === angle) {
+            let azimuth = WindDirectionCalendar.getWindDirection(dt, calendar);
+            if(null === azimuth) {
                 continue;
             }
 
@@ -94,7 +94,7 @@ export default class MultiChartData {
 
             let t = WindDirectionCalendar.parseMeasureDate(dt);
 
-            dataset[sen].push([Math.PI * angle / 180, val / max, che, t.getMonth()]);
+            dataset[sen].push([Math.PI * azimuth / 180, val / max, che, t.getMonth()]);
         }
 
         return dataset;

@@ -81,11 +81,11 @@ export default class CircularHeatChart {
     };
 
     sa(d, i) {
-        return (i * 2 * Math.PI) / this.numSegments;
+        return Math.PI/this.numSegments + (i * 2 * Math.PI) / this.numSegments;
     };
 
     ea(d, i) {
-        return ((i + 1) * 2 * Math.PI) / this.numSegments;
+        return Math.PI/this.numSegments + ((i + 1) * 2 * Math.PI) / this.numSegments;
     };
 
     getColorCallback(data)
@@ -131,7 +131,9 @@ export default class CircularHeatChart {
             .enter()
             .append("path")
             .attr("d", this.getArc())
-            .attr("fill", function(d) {return color(d);});
+            .attr("fill", function(d, i) {
+                return color(d);
+            });
 
         return this;
     }
@@ -155,7 +157,7 @@ export default class CircularHeatChart {
 
         let offset = chart.innerRadius + Math.ceil(chart.data.length / chart.numSegments) * chart.segmentHeight;
 
-        let lsa = 0.01; //Label start angle
+        let lsa = 0.0; //Label start angle
         this.labels = this.svg.append("g")
             .classed("labels", true)
             .classed("radial", true)

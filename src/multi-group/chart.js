@@ -164,12 +164,12 @@ export default class MultiChart {
         let data = MultiChartData.getData(this.data, this.winddata);
 
         const r = scaleLinear()
-            .domain([0, 1])
+            .domain([0, 1.])
             .range([10, 43]); //ToDo remove magic constant
 
         const line = radialLine()
             .radius(function(d) { return r(d[1]); })
-            .angle(function(d) { return Math.PI - d[0]; });
+            .angle(function(d) { return d[0]; });
 
         let chart = this;
 

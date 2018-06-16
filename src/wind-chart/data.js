@@ -79,7 +79,7 @@ export default class WindChartData {
         let mSegment = Math.ceil(measure / this.mStep) - 1;
 
         // Get i - segment index: i = <angle segment index> * <number of measure segments> + <measure segment index>
-        return Math.ceil(mSegment * this.aSegments + aSegment) - 1;
+        return Math.ceil(mSegment * this.aSegments + aSegment);
     }
 
     getData() {
@@ -89,14 +89,12 @@ export default class WindChartData {
 
     collectDataItem(row, month = null) {
 
-        let [dt, angle, value] = row;
-        if (dt !== '' && angle !== '' && value !== '') {
-
-
+        let [dt, azimuth, value] = row;
+        if (dt !== '' && azimuth !== '' && value !== '') {
 
             if((WindChartData.parseMeasureDate(dt).getMonth() === month) || (month === null)) {
 
-                let i = this.getCellIndex(angle, value);
+                let i = this.getCellIndex(azimuth, value);
 
                 // Update data
                 this.data[i] += 1;

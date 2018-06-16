@@ -82,12 +82,12 @@ class SensorDetails extends Component {
                 che = this.chemicals[che];
                 val = parseFloat(val.replace(',', '.'));
 
-                let angle = WindDirectionCalendar.getWindDirection(dt, this.calendar);
-                if (null === angle) {
+                let azimuth = WindDirectionCalendar.getWindDirection(dt, this.calendar);
+                if (null === azimuth) {
                     continue;
                 }
 
-                sd.push([Math.PI * angle / 180, val / max, che, mon])
+                sd.push([Math.PI * azimuth / 180, val / max, che, mon])
             }
         }
 

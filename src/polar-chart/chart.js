@@ -85,7 +85,7 @@ export default class Chart {
         this.radius = Math.min(this.width, this.height) / 2 - 30;
 
         this.r = scaleLinear()
-            .domain([0, .5])
+            .domain([0, 1.0])
             .range([0, this.radius]);
 
         return this;
@@ -95,9 +95,10 @@ export default class Chart {
         this.ga = this.svg.append("g")
             .attr("class", "a axis")
             .selectAll("g")
-            .data(range(0, 360, 30))
+            .data(range(0, 360, 60))
             .enter().append("g")
-            .attr("transform", function(d) { return "rotate(" + -d + ")"; });
+            .attr("transform", function(d) { return "rotate(" - d + ")"; })
+        ;
 
         return this;
     }
