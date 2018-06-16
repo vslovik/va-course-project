@@ -72,8 +72,6 @@ export default class MultiChart {
             .domain([-7, 55]) //62
             .range([this.height, 0]);
 
-        this.drawCircles().drawPoints();
-
         return this;
     }
 
