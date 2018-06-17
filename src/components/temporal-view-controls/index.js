@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ChemicalFilter from '../filter/chemical'
 import LogLinearToggle from '../toggle/loglinear'
-import DayHourToggle from '../toggle/dayhour'
 import {connect} from "react-redux";
 import Modal from './../modal'
 import SensorDetails from './../sensor-details'

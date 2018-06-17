@@ -1,4 +1,4 @@
-import {csvParseRows, timeParse} from 'd3'
+import {timeParse} from 'd3'
 
 export default class WindChartData {
 
@@ -101,15 +101,5 @@ export default class WindChartData {
             }
 
         }
-    }
-
-    getSegmentLabels() {
-        let chart = this;
-        return [...Array(this.aSegments).keys()]
-            .map(function(x) { return x * chart.angleStep });
-    }
-
-    getRadialLabels(){
-        return [...Array(this.mSegments).keys()];
     }
 }

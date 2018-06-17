@@ -12,15 +12,15 @@ export default class WindDirectionCalendar
             [t, angle, speed] = row;
 
             dt = WindDirectionCalendar.parseMeasureDate(t);
-            if(null != dt) {
+            if(null === dt) {
+                console.log('Invalid date: ' + t)
+            }
 
-                key = [
-                    dt.getFullYear(),
-                    dt.getMonth(),
-                    dt.getDate()
-                ].join('-');
+            if(null !== dt) {
 
-                if(!calendar[key]) {
+                key = WindDirectionCalendar.getDataKey(dt);
+
+                if(!(key in calendar)) {
                     calendar[key] = {};
                 }
 
@@ -28,11 +28,19 @@ export default class WindDirectionCalendar
                     angle: parseFloat(angle.replace(',','.')),
                     speed: parseFloat(speed.replace(',','.'))
                 };
-
             }
         });
 
         return calendar;
+    }
+
+    static getDataKey(dt)
+    {
+        return [
+            dt.getFullYear(),
+            dt.getMonth(),
+            dt.getDate()
+        ].join('-');
     }
 
     static parseMeasureDate(dt) {
@@ -54,34 +62,29 @@ export default class WindDirectionCalendar
     static getWindDirection(dt, calendar) {
 
         let t = WindDirectionCalendar.parseMeasureDate(dt);
-
         if(null === t) {
+            console.log('Invalid date: ' + dt);
             return null;
         }
 
-        let key = [
-            t.getFullYear(),
-            t.getMonth(),
-            t.getDate()
-        ].join('-');
+        let key = WindDirectionCalendar.getDataKey(t);
 
-        let hour = t.getHours();
-        if (calendar[key]) {
-
-            let windDir;
-
-            for (let h of Object.keys(calendar[key])) {
-                if (hour < h) {
-                    break;
-                } else {
-                    windDir = calendar[key][h].angle;
-                }
-            }
-
-            return windDir;
+        if (!(key in calendar)) {
+            //console.log('Key ' + key + 'not found in wind calendar', 'dt: ', dt, 't: ', t);
+            return null;
         }
 
-        return null;
+        let windDir, hour = t.getHours();
+
+        for (let h of Object.keys(calendar[key])) {
+            if (hour < h) {
+                break;
+            } else {
+                windDir = calendar[key][h].angle;
+            }
+        }
+
+        return windDir;
     }
 
 }

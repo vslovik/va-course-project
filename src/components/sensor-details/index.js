@@ -65,64 +65,76 @@ class SensorDetails extends Component {
                         <tr>
                             <td>
                                 <table className="sensors">
+                                    <tbody>
                                     <tr>
                                         <th>April</th>
                                     </tr>
                                     <tr>
                                         <td className={'plot-circular-mon-' + (APRIL + 1)}/>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </td>
                             <td>
                                 <table className="sensors">
+                                    <tbody>
                                     <tr>
                                         <th>August</th>
                                     </tr>
                                     <tr>
                                         <td className={'plot-circular-mon-' + (AUGUST + 1)}/>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </td>
                             <td>
                                 <table className="sensors">
+                                    <tbody>
                                     <tr>
                                         <th>Decembre</th>
                                     </tr>
                                     <tr>
                                         <td className={'plot-circular-mon-' + (DECEMBER + 1)}/>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <table className="sensors">
+                                    <tbody>
                                     <tr>
                                         <th>April</th>
                                     </tr>
                                     <tr>
                                         <td className={'plot-scatter-mon-' + (APRIL + 1)}/>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </td>
                             <td>
                                 <table className="sensors">
+                                    <tbody>
                                     <tr>
                                         <th>August</th>
                                     </tr>
                                     <tr>
                                         <td className={'plot-scatter-mon-' + (AUGUST + 1)}/>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </td>
                             <td>
                                 <table className="sensors">
+                                    <tbody>
                                     <tr>
                                         <th>Decembre</th>
                                     </tr>
                                     <tr>
                                         <td className={'plot-scatter-mon-' + (DECEMBER + 1)}/>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </td>
                         </tr>

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import {ALL} from "../../../constants";
 import {selectChemical} from "../../../actions";
 import {connect} from "react-redux";
 

@@ -25,7 +25,7 @@ class LogLinearToggle extends Component {
         this.props.toggleLogLinear(false);
     }
 
-    emptyClick(event) {
+    static emptyClick(event) {
         event.preventDefault();
         return false;
     }
@@ -36,7 +36,7 @@ class LogLinearToggle extends Component {
         if(this.props.linearly) {
             links = (
                 <span className="controls">
-                    <a href="" className="toggle-button-left-active" onClick={this.emptyClick}>Linear</a>
+                    <a href="" className="toggle-button-left-active" onClick={LogLinearToggle.emptyClick}>Linear</a>
                     <a href="" className="toggle-button-right" onClick={this.handleLog}>Log</a>
                 </span>
             )
@@ -44,7 +44,7 @@ class LogLinearToggle extends Component {
             links = (
                 <span className="controls">
                     <a href="" className="toggle-button-left" onClick={this.handleLinear}>Linear</a>
-                    <a href="" className="toggle-button-right-active" onClick={this.emptyClick}>Log</a>
+                    <a href="" className="toggle-button-right-active" onClick={LogLinearToggle.emptyClick}>Log</a>
                 </span>
             )
         }

@@ -1,9 +1,6 @@
-import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
-    timeFormat, axisLeft, axisBottom, scaleBand} from "d3";
-import {APRIL, AUGUST, DECEMBER} from './../constants'
+import {select} from "d3";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
-import {LOG, LINEAR} from './../constants'
 import {WEEKDAY, WEEKEND, DAY, NIGHT} from "../constants";
 
 export default class Statistics {
@@ -15,16 +12,12 @@ export default class Statistics {
         this.h       = 200;
         this.padding = 0;
 
-        let barWidth  = 50;
-
         const colorMap = {};
 
         colorMap[AGO] = ORANGE;
         colorMap[APP] = RED;
         colorMap[CHL] = BLUE;
         colorMap[MET] = GREEN;
-
-        this.colorMap =  colorMap;
 
         let w = 160;
         let h = 240;
@@ -90,7 +83,7 @@ export default class Statistics {
                 .attr("height", function(d) {
                     return d * 16;
                 })
-                .attr("fill", function(d) {
+                .attr("fill", function() {
                     return colorMap[i + 1];
                 });
 

@@ -1,18 +1,11 @@
 import React, {Component} from 'react'
-
-import PropTypes from "prop-types";
 import {connect} from 'react-redux'
 
 import Tabs from './../tabs'
 import VectorialViewControls from "../vectorial-view-controls";
 import TemporalViewControls from "../temporal-view-controls";
 
-import {VECTORIAL, TEMPORAL} from '../../constants'
-import {AGOG, APPL, CHLO, METH, ALL} from '../../constants';
-import {APR, AUG, DEC}  from '../../constants';
-
-
-import store from "../../store/index";
+import {VECTORIAL} from '../../constants'
 
 class Header extends Component {
 

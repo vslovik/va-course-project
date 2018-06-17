@@ -65,7 +65,7 @@ export default class MultiChartData {
             val = parseFloat(val.replace(',', '.'));
 
             let azimuth = WindDirectionCalendar.getWindDirection(dt, calendar);
-            if(null === azimuth) {
+            if(isNaN(azimuth)) {
                 continue;
             }
 

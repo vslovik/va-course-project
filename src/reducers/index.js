@@ -1,5 +1,5 @@
 import {VIEW, CHEMICAL, MONTH, SENSOR, DAYHOUR, LOGLINEAR, DATA, WINDDATA, STATS} from './../actions/'
-import {ALL, TEMPORAL, VECTORIAL} from "../constants";
+import {TEMPORAL} from "../constants";
 
 const initialState = {
     view: TEMPORAL,

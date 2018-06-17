@@ -1,4 +1,4 @@
-import {radialLine, scaleLinear, select, on, selectAll} from "d3";
+import {radialLine, scaleLinear, select, selectAll} from "d3";
 import MultiChartData from "./data";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
@@ -193,6 +193,12 @@ export default class MultiChart {
 
                     x = parseFloat(x) + chart.xScale(parseFloat(centerX));
                     y = parseFloat(y) + chart.yScale(parseFloat(centerY));
+
+                    if(!x || !y)
+                        console.log(d);
+
+                    if(isNaN(x) || isNaN(y))
+                        return null;
 
                     return "translate(" + x + ',' + y + ")"
                 })

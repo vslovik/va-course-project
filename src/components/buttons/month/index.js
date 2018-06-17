@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux";
 import {selectMonth} from "../../../actions";
-import {ALL} from "../../../constants";
 
 class MonthButton extends Component {
 

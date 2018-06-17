@@ -81,7 +81,13 @@ export default class ComboChart extends CircularHeatChart {
                 x = parseFloat(x);
                 y = parseFloat(y);
 
-                return "translate(" + x + ',' + y + ")"
+                if(isNaN(x) || isNaN(y)) {
+                    console.log(d);
+                    return null;
+                }
+
+                return "translate(" + x + ',' + y + ")";
+
             })
             .attr("r", 1) // ToDo sqrt scale?
             .attr("fill", function (d) {

@@ -2,7 +2,7 @@ import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
     timeFormat, axisLeft, axisBottom} from "d3";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {AGO, APP, CHL, MET} from './../constants'
-import {LOG, LINEAR} from './../constants'
+import {LINEAR} from './../constants'
 
 export default class ChartSenMon {
     constructor(selector, data, scale = LINEAR){
@@ -69,7 +69,7 @@ export default class ChartSenMon {
             .attr("fill", function (d) {
                 return chart.colorMap[d.che];
             })
-            .attr("cx", function (d, i) {
+            .attr("cx", function (d) {
                 return chart.xScale(d.t);
             })
             .attr("cy", function (d) {

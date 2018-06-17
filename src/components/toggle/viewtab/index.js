@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
 import {selectView} from "../../../actions";
 import {connect} from "react-redux";
-import {ALL} from "../../../constants";
 
 class ViewTab extends Component {
 
     constructor() {
         super();
-
-        this.state = {
-            view: ALL
-        };
 
         this.handleClick = this.handleClick.bind(this);
     }

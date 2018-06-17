@@ -213,7 +213,7 @@ class Plots extends Component {
 
             let titles = [];
             for(let i = 0; i < 9; i++) {
-                titles.push(<SensorControl value={i + 1}/>)
+                titles.push(<SensorControl key={i + 1} value={i + 1}/>)
             }
 
             return (
@@ -224,52 +224,62 @@ class Plots extends Component {
                             <tr>
                                 <td>
                                     <table className="sensors">
+                                        <tbody>
                                         <tr>
                                             <th>April</th>
                                         </tr>
                                         <tr>
                                             <td className={'plot-mon-' + (APRIL + 1)}/>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </td>
                                 <td>
                                     <table className="sensors">
+                                        <tbody>
                                         <tr>
                                             <th>August</th>
                                         </tr>
                                         <tr>
                                             <td className={'plot-mon-' + (AUGUST + 1)}/>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </td>
                                 <td>
                                     <table className="sensors">
+                                        <tbody>
                                         <tr>
                                             <th>Decembre</th>
                                         </tr>
                                         <tr>
                                             <td className={'plot-mon-' + (DECEMBER + 1)}/>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </td>
                                 <td>
                                     <table>
+                                        <tbody>
                                         <tr>
                                             <th/>
                                         </tr>
                                         <tr>
                                             <td/>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </td>
                                 <td>
                                     <table className="sensors">
+                                        <tbody>
                                         <tr>
                                             <th>Statistics</th>
                                         </tr>
                                         <tr>
                                             <td className="plot-stat"/>
                                         </tr>
+                                        </tbody>
                                     </table>
                                 </td>
                             </tr>

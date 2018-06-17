@@ -3,7 +3,7 @@ import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
 import {APRIL, AUGUST, DECEMBER} from './../constants'
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
-import {LOG, LINEAR} from './../constants'
+import {LINEAR} from './../constants'
 
 export default class ChartSen {
     constructor(selector, data, scale = LINEAR){
