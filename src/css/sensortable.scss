@@ -33,3 +33,12 @@ svg.multi_chart {
   margin: 0 10px;
   background-color: lighten(#000, 95)
 }
+
+svg.wind-chart {
+  @extend .multi_chart;
+  margin: 0;
+}
+
+div.plot-wind {
+  background-color: lighten(#000, 95)
+}

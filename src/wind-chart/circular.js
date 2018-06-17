@@ -36,8 +36,8 @@ export default class CircularHeatChart {
         this.svg = select(this.selector)
             .append('svg')
             .attr('class', 'wind-chart')
-            .attr('width', 220)
-            .attr('height', 250)
+            .attr('width', this.width)
+            .attr('height', this.height)
             .data([chart.data])
         ;
 
@@ -212,7 +212,7 @@ export default class CircularHeatChart {
 
         this.ga.append("text")
             .attr("x", this.radius + 6)
-            .attr("dy", ".10em")
+            .attr("dy", ".6em")
             .style("text-anchor", function(d) { return d < 270 && d > 90 ? "end" : null; })
             .attr("transform", function(d) { return d < 270 && d > 90 ? "rotate(180 " + (chart.radius + 6) + ",0)" : null; })
             .text(function(d) { return (d <= 90 ? 90 - d : (360 + 90 - d)) + "°"; });

@@ -83,6 +83,36 @@ export default class MultiChart {
 
             let [centerX, centerY] = entry;
 
+
+            let tan = (chart.yScale(parseFloat(centerY)) -  chart.yScale(parseFloat(y))) / (chart.xScale(parseFloat(centerX)) -  chart.xScale(parseFloat(x)));
+
+
+            let xx = chart.xScale(parseFloat(centerX)) +  45 * Math.sin(Math.atan(tan) + ((x > centerX) ? Math.PI/2 : (-Math.PI/2)) );
+
+            let yy = chart.yScale(parseFloat(centerY)) - 45 * Math.cos(Math.atan(tan) + ((x > centerX) ? Math.PI/2 : (-Math.PI/2)));
+
+            //Draw the Circle
+            let circle = chart.svg.append("circle")
+                                     .attr("cx", xx)
+                                    .attr("cy", yy)
+                                     .attr("r", 4)
+                .attr("fill", "red");
+
+
+            //Draw the Circle
+            chart.svg.append("circle")
+                .attr("cx", chart.xScale(parseFloat(centerX)))
+                .attr("cy", chart.yScale(parseFloat(centerY)))
+                .attr("r", 4)
+                .attr("fill", "blue");
+
+            chart.svg.append("circle")
+                .attr("cx", chart.xScale(parseFloat(x)))
+                .attr("cy", chart.yScale(parseFloat(y)))
+                .attr("r", 4)
+                .attr("fill", "green");
+
+
             chart.svg.append("line")
                 .style("stroke", "black")
                 .attr("x1", chart.xScale(parseFloat(x)))

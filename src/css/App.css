@@ -14,7 +14,7 @@
   stroke: #000; }
 
 .axis text {
-  font: 10px sans-serif; }
+  font: 6px sans-serif; }
 
 .axis line,
 .axis circle {
@@ -225,8 +225,14 @@ svg {
   margin-bottom: -2px;
   background-color: #fafafa; }
 
-svg.multi_chart {
+svg.multi_chart, svg.wind-chart {
   margin: 0 10px;
+  background-color: #f2f2f2; }
+
+svg.wind-chart {
+  margin: 0; }
+
+div.plot-wind {
   background-color: #f2f2f2; }
 
 .repohead.experiment-repo-nav {
