@@ -1,4 +1,4 @@
-import {radialLine, scaleLinear, select, timeParse, range, scaleOrdinal, max, scaleBand, on, selectAll} from "d3";
+import {radialLine, scaleLinear, select, on, selectAll} from "d3";
 import MultiChartData from "./data";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
@@ -61,8 +61,6 @@ export default class MultiChart {
     }
 
     createScales() {
-        const w = 80;
-        const h = 100;
 
         this.xScale = scaleLinear()
             .domain([42, 139]) //97
@@ -119,7 +117,7 @@ export default class MultiChart {
             .attr('color', 'grey')
             .attr('x', function(d){return chart.xScale(d[0]) + 8})
             .attr('y', function(d){return chart.yScale(d[1]) + 4})
-            .text((d, i)=> d[2]);
+            .text((d)=> d[2]);
 
         return this;
     }
@@ -175,7 +173,7 @@ export default class MultiChart {
 
         this.centers.forEach(function (entry, i) {
 
-            let sel = chart.svg.selectAll("point")
+            chart.svg.selectAll("point")
                 .data(data[i + 1])
                 .enter()
                 .append("circle")
@@ -199,7 +197,7 @@ export default class MultiChart {
                     return "translate(" + x + ',' + y + ")"
                 })
                 .attr("r", 1) // ToDo sqrt scale?
-                .attr("fill", function (d, i) {
+                .attr("fill", function (d) {
                     return chart.colorMap[d[2]];
                 })
 

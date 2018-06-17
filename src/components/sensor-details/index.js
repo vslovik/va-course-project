@@ -1,97 +1,38 @@
 import React, { Component } from 'react'
-import {AGO, APP, APRIL, AUGUST, CHL, DECEMBER, LINEAR, LOG, MET, TEMPORAL} from "../../constants";
+import {APRIL, AUGUST, DECEMBER, LINEAR, LOG} from "../../constants";
 import {connect} from "react-redux";
 import ChartSenMon from "../../scatter-chart/chart-sen-mon";
 import Data from "../../scatter-chart/data";
-import Chart from "../../polar-chart/chart";
-import WindDirectionCalendar from "../../polar-chart/direction";
+import MultiChartData from "../../multi-group/data";
+import WindChartData from "../../wind-chart/data";
+import ComboChart from "../../wind-chart/combo-chart";
 
 class SensorDetails extends Component {
 
-    constructor() {
-        super();
+    componentDidMount() {
 
-        this.chemicals = {
-            "AGOC-3A": AGO,
-            "Appluimonia": APP,
-            "Chlorodinine": CHL,
-            "Methylosmolene": MET
-        };
-    }
-
-    setWindCalendar() {
-        let key, dt, t, angle, speed;
         let chart = this;
 
-        this.calendar = {};
-        this.props.winddata.forEach(function (row) {
-
-            [t, angle, speed] = row;
-
-            dt = WindDirectionCalendar.parseMeasureDate(t); // ToDo use the same method for date parsing
-            if (null != dt) {
-
-                key = [
-                    dt.getFullYear(),
-                    dt.getMonth(),
-                    dt.getDate()
-                ].join('-');
-
-                if (!chart.calendar[key]) {
-                    chart.calendar[key] = {};
-                }
-
-                chart.calendar[key][dt.getHours()] = {
-                    angle: parseFloat(angle.replace(',', '.')),
-                    speed: parseFloat(speed.replace(',', '.'))
-                };
-            }
+        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+            chart.drawComboCharts(mon);
         });
+
+        this.drawScatterCharts();
     }
 
-    drawCircularCharts(mon) {
-        this.setWindCalendar();
+    drawComboCharts(mon)
+    {
+        let wcd = new WindChartData(this.props.winddata, this.props.month);
 
-        let max = 0.0, _;
-        this.props.data.forEach(function (row) {
-            [_, _, _, val] = row;
-            val = parseFloat(val.replace(',', '.'));
-            if (max < val) {
-                max = val;
-            }
-        });
+        let wcddata = wcd.getData();
 
-        let che, sen, val, dt;
-        let sd = [];
-        for(let i = 0; i < this.props.data.length; i++) {
-            [che, sen, dt, val] = this.props.data[i];
-            // ToDo month filtering
+        let pdata = MultiChartData.getData(this.props.data, this.props.winddata);
 
-            let t = WindDirectionCalendar.parseMeasureDate(dt);
-
-            if(t === null) {
-                continue;
-            }
-
-            let mon = t.getMonth();
-
-            sen = parseInt(sen);
-
-            if(sen === this.props.sensor) {
-
-                che = this.chemicals[che];
-                val = parseFloat(val.replace(',', '.'));
-
-                let azimuth = WindDirectionCalendar.getWindDirection(dt, this.calendar);
-                if (null === azimuth) {
-                    continue;
-                }
-
-                sd.push([Math.PI * azimuth / 180, val / max, che, mon])
-            }
-        }
-
-        new Chart('.plot-circular-mon-' + (mon + 1) , sd, this.props.chemical, this.props.month);
+        (new ComboChart('.plot-circular-mon-' + (mon + 1), wcddata))
+            .setPointsData(pdata)
+            .setChemical(this.props.chemical)
+            .setMonth(mon)
+            .addPoints();
     }
 
     drawScatterCharts() {
@@ -115,31 +56,9 @@ class SensorDetails extends Component {
         }
     }
 
-    componentDidMount(state) {
-
-        let chart = this;
-
-        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-            chart.drawCircularCharts(mon);
-        });
-
-        this.drawScatterCharts();
-    }
-
     render = () => {
-        let text = JSON.stringify(
-            {
-                view: this.props.view,
-                chemical: this.props.chemical,
-                month: this.props.month,
-                daily: this.props.daily,
-                linearly: this.props.linearly,
-                sensor: this.props.sensor
-            }, true, 2);
-
         return (
             <div>
-                {/*<div>state: {text}</div>*/}
                 <div className="markdown-body">
                     <table className="wrapper">
                         <tbody>

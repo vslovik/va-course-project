@@ -1,45 +1,42 @@
 import React, { Component } from 'react'
 import {csvParseRows, select, selectAll} from 'd3';
 import {request} from 'd3-request';
+
 import sensorCsv from '../../data/SensorData.csv';
 import meteoCsv from '../../data/MeteorologicalData.csv';
+import {loadData, loadWindData, saveStats} from "../../actions";
 
 import {VECTORIAL, TEMPORAL, DECEMBER, APRIL, AUGUST} from '../../constants'
 import {LOG, LINEAR} from '../../constants';
 
 import {connect} from 'react-redux'
 import SensorControl from './../buttons/sensor'
+
 import Data from "../../scatter-chart/data";
-import {loadData, loadWindData, saveStats} from "../../actions";
 import ChartSenMon from "../../scatter-chart/chart-sen-mon";
 import ChartSen from "../../scatter-chart/chart-sen";
-import MultiChart from "../../multi-group/chart";
-import WindChartData from "../../wind-chart/data";
-import CircularHeatChart from "../../wind-chart/circular";
 import Statistics from "../../statistics";
+
+import WindChartData from "../../wind-chart/data";
+import MultiChartData from "../../multi-group/data";
+import MultiChart from "../../multi-group/chart";
+import CircularHeatChart from "../../wind-chart/circular";
+import ComboChart from "../../wind-chart/combo-chart";
 
 class Plots extends Component {
 
-    WindChartDraw(winddata, month) {
+    static WindChartDraw(winddata, month) {
+        new CircularHeatChart('.plot-wind', new WindChartData(winddata, month).getData());
+    }
 
-        let wcd = new WindChartData(winddata, month);
-
-        let data = wcd.getData();
-
-        new CircularHeatChart('.plot-wind', [data])
-            .setInnerRadius(20)
-            .setRange(["white", "steelblue"])
-            .setRadialLabels(wcd.getRadialLabels())
-            .setSegmentLabels(wcd.getSegmentLabels())
-            .draw();
+    static ComboChartDraw(data, winddata, chemical = null, month = null) {
 
         // ToDo substitute with sensor plot legend
-        new CircularHeatChart('.plot-sensor', [data])
-            .setInnerRadius(20)
-            .setRange(["white", "steelblue"])
-            .setRadialLabels(wcd.getRadialLabels())
-            .setSegmentLabels(wcd.getSegmentLabels())
-            .draw();
+        (new ComboChart('.plot-sensor', new WindChartData(winddata, month).getData()))
+            .setPointsData(MultiChartData.getData(data, winddata))
+            .setChemical(chemical)
+            .setMonth(month)
+            .addPoints();
     }
 
     temporalViewDraw(rows) {
@@ -100,7 +97,7 @@ class Plots extends Component {
             }
 
             if(this.props.sensor !== prevProps.sensor) {
-                selectAll("svg.sensor").remove();
+                selectAll("svg.sensor-month").remove();
             }
 
             let me = this;
@@ -141,10 +138,32 @@ class Plots extends Component {
         }
     }
 
-    componentDidMount(state) {
+    vectorialViewDraw(rows, winds) {
+        new MultiChart('.plot-map', rows, winds, this.props.chemical, this.props.month);
+        Plots.WindChartDraw(winds, this.props.month);
+        Plots.ComboChartDraw(rows, winds, this.props.chemical, this.props.month);
+    }
+
+    vectorialViewUpdate(prevProps) {
+        if(this.props.chemical !== prevProps.chemical && this.props.view === VECTORIAL) {
+            selectAll("svg.multi_chart").remove();
+            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
+        }
+
+        if(this.props.month !== prevProps.month && this.props.view === VECTORIAL) {
+            selectAll("svg.multi_chart").remove();
+            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
+
+            selectAll("svg.wind-chart").remove();
+            Plots.WindChartDraw(this.props.winddata, this.props.month);
+            Plots.ComboChartDraw(this.props.data, this.props.winddata, this.props.chemical, this.props.month);
+        }
+    }
+
+    componentDidMount() {
 
         let me = this;
-
+        // ToDo: loading control
         request(sensorCsv)
             .mimeType("text/csv")
             .get(function (response) {
@@ -163,55 +182,32 @@ class Plots extends Component {
                         me.props.loadWindData(winds);
 
                         if (me.props.view === VECTORIAL) {
-
-                            new MultiChart('.plot-map', rows, winds);
-                            me.WindChartDraw(winds, me.props.month)
+                            me.vectorialViewDraw(rows, winds);
                         }
-
                     });
             });
     }
 
     componentDidUpdate(prevProps) {
-        // Typical usage (don't forget to compare props):
-        if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
-            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
-            this.WindChartDraw(this.props.winddata, this.props.month)
+
+        if(this.props.view !== prevProps.view && this.props.view === TEMPORAL) {
+            this.temporalViewDraw(this.props.data)
         }
 
         if(this.props.view === prevProps.view && this.props.view === TEMPORAL) {
             this.temporalViewUpdate(prevProps)
         }
 
-        if(this.props.view !== prevProps.view && this.props.view === TEMPORAL) {
-            this.temporalViewDraw(this.props.data)
+        if(this.props.view !== prevProps.view && this.props.view === VECTORIAL) {
+            this.vectorialViewDraw(this.props.data, this.props.winddata);
         }
 
-        if(this.props.chemical !== prevProps.chemical && this.props.view === VECTORIAL) {
-            selectAll("svg.multi_chart").remove();
-            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
-        }
-
-        if(this.props.month !== prevProps.month && this.props.view === VECTORIAL) {
-            selectAll("svg.multi_chart").remove();
-            new MultiChart('.plot-map', this.props.data, this.props.winddata, this.props.chemical, this.props.month);
-
-            selectAll("svg.wind-chart").remove();
-            this.WindChartDraw(this.props.winddata, this.props.month);
+        if(this.props.view === prevProps.view && this.props.view === VECTORIAL) {
+            this.vectorialViewUpdate(prevProps);
         }
     }
 
     render = () => {
-        let text = JSON.stringify(
-            {
-                view: this.props.view,
-                chemical: this.props.chemical,
-                month: this.props.month,
-                daily: this.props.daily,
-                linearly: this.props.linearly,
-                sensor: this.props.sensor
-            }, true, 2);
-
 
         if (this.props.view === TEMPORAL) {
 
@@ -222,7 +218,6 @@ class Plots extends Component {
 
             return (
                 <div>
-                    {/*<div>state: {text}</div>*/}
                     <div className="markdown-body">
                         <table className="wrapper">
                             <tbody>
@@ -295,7 +290,6 @@ class Plots extends Component {
 
         return (
             <div>
-                {/*<div>state: {text}</div>*/}
                 <div className="markdown-body">
                     <table>
                         <tbody>
@@ -332,11 +326,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        loadData: data => dispatch(loadData(data)),
+        loadData: data     => dispatch(loadData(data)),
         loadWindData: data => dispatch(loadWindData(data)),
-        saveStats: stats => dispatch(saveStats(stats))
+        saveStats: stats   => dispatch(saveStats(stats))
     };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Plots);

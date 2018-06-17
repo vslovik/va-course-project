@@ -1,26 +1,7 @@
-import {csvParseRows, timeParse} from "d3";
-import WindDirectionCalendar from "../polar-chart/direction";
+import WindDirectionCalendar from "../wind-chart/direction";
 import {AGO, APP, CHL, MET} from './../constants'
 
 export default class MultiChartData {
-    static parseMeasureDate(dt) {
-        let parser;
-
-        if (dt.length === '2016/01/01'.length) {
-            parser = timeParse("%Y/%m/%d");
-            dt = parser(dt)
-        }
-
-        if (dt.length === "2016/04/01 08:00:00".length) {
-            parser = timeParse("%Y/%m/%d %H:%M:%S");
-            dt = parser(dt)
-        }
-
-        if(null === dt)
-            console.log('Value: "' + dt + '" is not a date');
-
-        return dt;
-    }
 
     static getWindCalendar(winddata) {
         let key, dt, t, angle, speed;

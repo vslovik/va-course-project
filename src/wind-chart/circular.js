@@ -4,14 +4,14 @@
  * http://prcweb.co.uk/lab/circularheat
  *
  */
-import {select, extent, arc, selectAll, scaleLinear, range} from 'd3'
+import {select, extent, arc, scaleLinear, range} from 'd3'
 
 export default class CircularHeatChart {
 
     constructor(selector, data)
     {
         this.selector = selector;
-        [this.data]     = data;
+        this.data     = data;
 
         this.margin = {
             top: 20,
@@ -20,21 +20,17 @@ export default class CircularHeatChart {
             left: 20
         };
 
-        this.innerRadius   = 50;
+        this.innerRadius   = 20;
         this.numSegments   = 36;
         this.segmentHeight = 10;
-        this.range         = ["white", "red"];
+        this.range         = ["white", "grey"]; // "steelblue"
 
         this.radialLabels  = [];
-        this.segmentLabels = [];
         this.domain        = null;
 
         this.width  = 220;
         this.height = 250;
 
-    }
-
-    draw() {
         let chart = this;
 
         this.svg = select(this.selector)
@@ -43,34 +39,16 @@ export default class CircularHeatChart {
             .attr('width', 220)
             .attr('height', 250)
             .data([chart.data])
-            ;
+        ;
 
-        this.svg.call(function(selection) { return chart.chart(selection)} );
+        this.id = Math.random().toString(36).substr(2, 9);
+
+        this
+            .createSegments()
+            .addAngleLabels()
+            .addRadialLabels()
+            .addWindRadialLabels()
     }
-
-    setInnerRadius(innerRadius){
-        this.innerRadius = innerRadius;
-
-        return this;
-    };
-
-    setRange(range){
-        this.range = range;
-
-        return this;
-    };
-
-    setRadialLabels(radialLabels){
-        this.radialLabels = radialLabels;
-
-        return this;
-    };
-
-    setSegmentLabels(segmentLabels) {
-        this.segmentLabels = segmentLabels;
-
-        return this;
-    };
 
     ir(d, i) {
 
@@ -134,7 +112,7 @@ export default class CircularHeatChart {
             .enter()
             .append("path")
             .attr("d", this.getArc())
-            .attr("fill", function(d, i) {
+            .attr("fill", function(d) {
                 return color(d);
             });
 
