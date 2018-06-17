@@ -4,7 +4,7 @@
  * http://prcweb.co.uk/lab/circularheat
  *
  */
-import {select, extent, arc, selectAll, scaleLinear} from 'd3'
+import {select, extent, arc, selectAll, scaleLinear, range} from 'd3'
 
 export default class CircularHeatChart {
 
@@ -28,6 +28,9 @@ export default class CircularHeatChart {
         this.radialLabels  = [];
         this.segmentLabels = [];
         this.domain        = null;
+
+        this.width  = 220;
+        this.height = 250;
 
     }
 
@@ -81,11 +84,11 @@ export default class CircularHeatChart {
     };
 
     sa(d, i) {
-        return Math.PI/this.numSegments + (i * 2 * Math.PI) / this.numSegments;
+        return (i * 2 * Math.PI) / this.numSegments;
     };
 
     ea(d, i) {
-        return Math.PI/this.numSegments + ((i + 1) * 2 * Math.PI) / this.numSegments;
+        return ((i + 1) * 2 * Math.PI) / this.numSegments;
     };
 
     getColorCallback(data)
@@ -146,13 +149,15 @@ export default class CircularHeatChart {
 
             chart.id = Math.random().toString(36).substr(2, 9);
 
-            chart.createSegments()
-                .createRadialLabels()
-                .createSegmentLabels()
+            chart
+                .createSegments()
+                .addAngleLabels()
+                .addRadialLabels()
+                .addWindRadialLabels()
         });
     }
 
-    createRadialLabels() {
+    addWindRadialLabels() {
         let chart = this;
 
         let offset = chart.innerRadius + Math.ceil(chart.data.length / chart.numSegments) * chart.segmentHeight;
@@ -185,33 +190,54 @@ export default class CircularHeatChart {
         return this;
     }
 
-    createSegmentLabels() {
+    addRadialLabels() {
 
         let chart = this;
 
-        let offset = chart.innerRadius + Math.ceil(chart.data.length / chart.numSegments) * chart.segmentHeight;
+        this.radius = Math.min(this.width, this.height) / 2 - 22;
 
-        let segmentLabelOffset = 2;
-        let r = offset + segmentLabelOffset;
+        this.r = scaleLinear()
+            .domain([0, 1.2])
+            .range([chart.innerRadius, chart.innerRadius + 6*this.segmentHeight]);
 
-        this.labels = this.svg.append("g")
-            .classed("labels", true)
-            .classed("segment", true)
-            .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
+        this.gr = this.svg.append("g")
+            .attr("transform", "translate(" + (this.width / 2) + "," + (-15 + this.height / 2) + ")")
+            .attr("class", "r axis")
+            .selectAll("g")
+            .data(this.r.ticks(5))
+            .enter().append("g");
 
-        this.labels.append("def")
-            .append("path")
-            .attr("id", "segment-label-path-" + this.id)
-            .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
+        this.gr.append("text")
+            .attr("y", function(d) { return -chart.r(d) - 2; })
+            .attr("transform", "rotate(30)")
+            .style("font-size", 0.6 * this.segmentHeight + 'px')
+            .text(function(d) { return d; });
 
-        this.labels.selectAll("text")
-            .data(this.segmentLabels).enter()
-            .append("text")
-            .append("textPath")
-            .attr("xlink:href", "#segment-label-path-" + this.id)
-            .attr("startOffset", function(d, i) {return i * 100 / chart.numSegments + "%";})
-            .text(function(d) {return d;})
-            .attr("font-size", "8px");
+        return this;
+    }
+
+
+    addAngleLabels() {
+
+        let chart = this;
+
+        this.radius = Math.min(this.width, this.height) / 2 - 22;
+
+        this.ga = this.svg.append("g")
+            .attr("transform", "translate(" + (this.width / 2) + "," + (-15 + this.height / 2) + ")")
+            .attr("class", "a axis")
+            .selectAll("g")
+            .data(range(0, 360, 30))
+            .enter().append("g")
+            .attr("transform", function(d) { return "rotate(" + -d + ")"; })
+        ;
+
+        this.ga.append("text")
+            .attr("x", this.radius + 6)
+            .attr("dy", ".10em")
+            .style("text-anchor", function(d) { return d < 270 && d > 90 ? "end" : null; })
+            .attr("transform", function(d) { return d < 270 && d > 90 ? "rotate(180 " + (chart.radius + 6) + ",0)" : null; })
+            .text(function(d) { return (d <= 90 ? 90 - d : (360 + 90 - d)) + "°"; });
 
         return this;
     }

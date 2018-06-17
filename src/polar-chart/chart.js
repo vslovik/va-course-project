@@ -95,9 +95,9 @@ export default class Chart {
         this.ga = this.svg.append("g")
             .attr("class", "a axis")
             .selectAll("g")
-            .data(range(0, 360, 60))
+            .data(range(0, 360, 10))
             .enter().append("g")
-            .attr("transform", function(d) { return "rotate(" - d + ")"; })
+            .attr("transform", function(d) { return "rotate(" + -d + ")"; })
         ;
 
         return this;
