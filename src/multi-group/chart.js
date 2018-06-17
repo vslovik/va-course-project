@@ -52,12 +52,15 @@ export default class MultiChart {
             .attr("width", this.width)
             .attr("height",this.height);
 
+        this.circleRadius = 45;
+
         this.createScales()
             .pointFactories()
             .drawCircles()
             .drawPoints();
 
         this.connectFactory(this.factories[0]);
+
     }
 
     createScales() {
@@ -79,48 +82,55 @@ export default class MultiChart {
 
         let chart = this;
 
+        selectAll("text.sensor-factory").remove();
         this.centers.forEach(function(entry) {
+
+            chart.drawSensorFactory(entry, fentry);
 
             let [centerX, centerY] = entry;
 
-
-            let tan = (chart.yScale(parseFloat(centerY)) -  chart.yScale(parseFloat(y))) / (chart.xScale(parseFloat(centerX)) -  chart.xScale(parseFloat(x)));
-
-
-            let xx = chart.xScale(parseFloat(centerX)) +  45 * Math.sin(Math.atan(tan) + ((x > centerX) ? Math.PI/2 : (-Math.PI/2)) );
-
-            let yy = chart.yScale(parseFloat(centerY)) - 45 * Math.cos(Math.atan(tan) + ((x > centerX) ? Math.PI/2 : (-Math.PI/2)));
-
-            //Draw the Circle
-            let circle = chart.svg.append("circle")
-                                     .attr("cx", xx)
-                                    .attr("cy", yy)
-                                     .attr("r", 4)
-                .attr("fill", "red");
-
-
-            //Draw the Circle
-            chart.svg.append("circle")
-                .attr("cx", chart.xScale(parseFloat(centerX)))
-                .attr("cy", chart.yScale(parseFloat(centerY)))
-                .attr("r", 4)
-                .attr("fill", "blue");
-
-            chart.svg.append("circle")
-                .attr("cx", chart.xScale(parseFloat(x)))
-                .attr("cy", chart.yScale(parseFloat(y)))
-                .attr("r", 4)
-                .attr("fill", "green");
-
-
             chart.svg.append("line")
-                .style("stroke", "black")
+                .style("stroke", "#eee")
                 .attr("x1", chart.xScale(parseFloat(x)))
                 .attr("y1", chart.yScale(parseFloat(y)))
                 .attr("x2", chart.xScale(parseFloat(centerX)))
                 .attr("y2", chart.yScale(parseFloat(centerY)));
         });
+    }
 
+    drawSensorFactory(sensorCoors, factoryCoors){
+
+        let chart = this;
+
+        let [x, y, name]       = factoryCoors;
+        let [centerX, centerY] = sensorCoors;
+
+        let sX = chart.xScale(parseFloat(centerX));
+        let sY = chart.yScale(parseFloat(centerY));
+
+        let sx = chart.xScale(parseFloat(x));
+        let sy = chart.yScale(parseFloat(y));
+
+        let tan    = (sY - sy)/(sX - sx);
+
+        let halfPi = (x > centerX) ? Math.PI/2 : (-Math.PI/2);
+
+        let xx = sX + chart.circleRadius * Math.sin(Math.atan(tan) + halfPi);
+        let yy = sY - chart.circleRadius * Math.cos(Math.atan(tan) + halfPi);
+
+        chart.svg.append("circle")
+            .attr("cx", xx)
+            .attr("cy", yy)
+            .attr("r", 1)
+            .attr("fill", "black");
+
+        this.svg.append("text")
+            .attr('class', 'sensor-factory')
+            .style("font-size", '6px')
+            .attr('color', 'grey')
+            .attr('x', xx + 4)
+            .attr('y', yy + 4)
+            .text(name);
     }
 
     pointFactories() {
@@ -161,7 +171,7 @@ export default class MultiChart {
             .enter().append("circle")
             .attr("cx", function(d){return chart.xScale(d[0])})
             .attr("cy", function(d){return chart.yScale(d[1])})
-            .attr("r", 45)
+            .attr("r", chart.circleRadius)
             .attr("fill", "white")
             .attr("fill-opacity", "0.9");
 
