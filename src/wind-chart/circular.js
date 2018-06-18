@@ -25,7 +25,6 @@ export default class CircularHeatChart {
         this.segmentHeight = 10;
         this.range         = ["white", "grey"]; // "steelblue"
 
-        this.radialLabels  = [];
         this.domain        = null;
 
         this.width  = 220;

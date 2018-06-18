@@ -36,7 +36,6 @@ export default class ComboChart extends CircularHeatChart {
             .addAngleLabels()
             .addRadialLabels()
             .addWindRadialLabels()
-            .drawSensorFactory()
     }
 
     setPointsData(data) {
@@ -94,8 +93,6 @@ export default class ComboChart extends CircularHeatChart {
 
                 let [x, y] = coors.split(',');
 
-                console.log('x', x, 'y', y);
-
                 x = parseFloat(x);
                 y = parseFloat(y);
 
@@ -116,8 +113,6 @@ export default class ComboChart extends CircularHeatChart {
     }
 
     drawSensorFactory(){
-        return this; // ToDo
-
         let chart = this;
 
         const xScale = scaleLinear()
@@ -143,7 +138,7 @@ export default class ComboChart extends CircularHeatChart {
         factories.forEach(function(factory){
 
             let [x, y, name] = factory;
-            let [centerX, centerY] = sensors[6];
+            let [centerX, centerY] = sensors[chart.sensor - 1];
 
             let sX = xScale(parseFloat(centerX));
             let sY = yScale(parseFloat(centerY));
@@ -153,7 +148,16 @@ export default class ComboChart extends CircularHeatChart {
 
             let tan = (sY - sy) / (sX - sx);
 
-            fpoints.push([Math.atan(tan), radius, name]);
+            let angle = 180 * Math.atan(tan)/Math.PI;
+
+            let azimuth;
+            if(sx > sX) {
+                azimuth = 90 - angle;
+            } else {
+                azimuth = 270 - angle;
+            }
+
+            fpoints.push([Math.PI * azimuth / 180, radius, name]);
 
         });
 
@@ -197,13 +201,10 @@ export default class ComboChart extends CircularHeatChart {
 
                 let [x, y] = coors.split(',');
 
-                console.log('x', x, 'y', y);
-
                 x = parseFloat(x);
                 y = parseFloat(y);
 
                 if(isNaN(x) || isNaN(y)) {
-                    console.log(d);
                     return null;
                 }
 

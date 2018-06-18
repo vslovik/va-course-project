@@ -6,6 +6,7 @@ import Data from "../../scatter-chart/data";
 import MultiChartData from "../../multi-group/data";
 import WindChartData from "../../wind-chart/data";
 import ComboChart from "../../wind-chart/combo-chart";
+import {extent} from "d3";
 
 class SensorDetails extends Component {
 
@@ -33,7 +34,23 @@ class SensorDetails extends Component {
             .setChemical(this.props.chemical)
             .setMonth(mon)
             .setSensor(this.props.sensor)
-            .addPoints();
+            .addPoints()
+            .drawSensorFactory();
+    }
+
+    getSensorDomain(sensorData) {
+
+        let mn = Number.POSITIVE_INFINITY;
+        let mx = 0.0;
+        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+            let [min, max] = extent(sensorData[mon], function(d){return d.val;});
+            if(min < mn)
+                mn = min;
+            if(max > mx)
+                mx = max;
+        });
+
+        return [mn, mx];
     }
 
     drawScatterCharts() {
@@ -44,13 +61,14 @@ class SensorDetails extends Component {
         if(this.props.chemical === null) {
             const data = (new Data(this.props.data)).getData('SenMon');
 
+            const sensorDomain = me.getSensorDomain(data[me.props.sensor]);
             [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-                new ChartSenMon('.plot-scatter-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
+                new ChartSenMon('.plot-scatter-mon-' + (mon + 1), data[me.props.sensor][mon], scale, sensorDomain);
             });
 
         } else {
             const data = (new Data(this.props.data)).getData('SenCheMon');
-
+            const sensorDomain = me.getSensorDomain(data[me.props.sensor][me.props.chemical]);
             [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
                 new ChartSenMon('.plot-scatter-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);
             });
