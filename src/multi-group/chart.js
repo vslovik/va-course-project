@@ -2,6 +2,7 @@ import {radialLine, scaleLinear, select, selectAll} from "d3";
 import MultiChartData from "./data";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
+import {sensors, factories} from './../constants'
 /**
  *
  * @see https://spin.atomicobject.com/2015/06/12/objects-around-svg-circle-d3-js/
@@ -24,25 +25,6 @@ export default class MultiChart {
         this.data     = data;
         this.winddata = winddata;
 
-        this.factories = [
-            [89, 27, 'Roadrunner'],
-            [90, 21, 'Kasios'],
-            [109, 26, 'Radiance'],
-            [120, 22, 'Indigo']
-        ];
-
-        this.centers = [
-            [62, 21],
-            [66, 35],
-            [76, 41],
-            [88, 45],
-            [103, 43],
-            [102, 22],
-            [89, 3],
-            [74, 7],
-            [119, 42]
-        ];
-
         this.width  = 500 * 97/62;
         this.height = 500;
 
@@ -59,7 +41,7 @@ export default class MultiChart {
             .drawCircles()
             .drawPoints();
 
-        this.connectFactory(this.factories[0]);
+        this.connectFactory(factories[0]);
 
     }
 
@@ -83,7 +65,7 @@ export default class MultiChart {
         let chart = this;
 
         selectAll("text.sensor-factory").remove();
-        this.centers.forEach(function(entry) {
+        sensors.forEach(function(entry) {
 
             chart.drawSensorFactory(entry, fentry);
 
@@ -124,7 +106,7 @@ export default class MultiChart {
             .attr("r", 1)
             .attr("fill", "black");
 
-        this.svg.append("text")
+        chart.svg.append("text")
             .attr('class', 'sensor-factory')
             .style("font-size", '6px')
             .attr('color', 'grey')
@@ -137,7 +119,7 @@ export default class MultiChart {
         let chart = this;
 
         this.svg.selectAll(".circle")
-            .data(this.factories)
+            .data(factories)
             .enter().append("circle")
             .attr("cx", function(d){return chart.xScale(d[0])})
             .attr("cy", function(d){return chart.yScale(d[1])})
@@ -151,7 +133,7 @@ export default class MultiChart {
             });
 
         this.svg.selectAll(".factory-labels")
-            .data(this.factories)
+            .data(factories)
             .enter()
             .append("text")
             .attr('color', 'grey')
@@ -167,7 +149,7 @@ export default class MultiChart {
         let chart = this;
 
         this.svg.selectAll(".circle")
-            .data(this.centers)
+            .data(sensors)
             .enter().append("circle")
             .attr("cx", function(d){return chart.xScale(d[0])})
             .attr("cy", function(d){return chart.yScale(d[1])})
@@ -176,7 +158,7 @@ export default class MultiChart {
             .attr("fill-opacity", "0.9");
 
         this.svg.selectAll(".circle")
-            .data(this.centers)
+            .data(sensors)
             .enter().append("circle")
             .attr("cx", function(d){return chart.xScale(d[0])})
             .attr("cy", function(d){return chart.yScale(d[1])})
@@ -186,7 +168,7 @@ export default class MultiChart {
             // .style("stroke-width", '2px');
 
         this.svg.selectAll(".sensor-labels")
-            .data(this.centers)
+            .data(sensors)
             .enter()
             .append("text")
             .attr('color', 'grey')
@@ -211,7 +193,7 @@ export default class MultiChart {
 
         let chart = this;
 
-        this.centers.forEach(function (entry, i) {
+        sensors.forEach(function (entry, i) {
 
             chart.svg.selectAll("point")
                 .data(data[i + 1])
@@ -246,7 +228,6 @@ export default class MultiChart {
                 .attr("fill", function (d) {
                     return chart.colorMap[d[2]];
                 })
-
         });
 
         return this;

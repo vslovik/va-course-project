@@ -36,7 +36,8 @@ class Plots extends Component {
             .setPointsData(MultiChartData.getData(data, winddata))
             .setChemical(chemical)
             .setMonth(month)
-            .addPoints();
+            .addPoints()
+            .drawSensorFactory();
     }
 
     temporalViewDraw(rows) {

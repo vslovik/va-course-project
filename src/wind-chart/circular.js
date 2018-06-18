@@ -43,6 +43,10 @@ export default class CircularHeatChart {
 
         this.id = Math.random().toString(36).substr(2, 9);
 
+        this.init();
+    }
+
+    init() {
         this
             .createSegments()
             .addAngleLabels()
@@ -119,35 +123,22 @@ export default class CircularHeatChart {
         return this;
     }
 
-    chart(selection) {
-
-        let chart = this;
-
-        selection.each(function() {
-
-            chart.id = Math.random().toString(36).substr(2, 9);
-
-            chart
-                .createSegments()
-                .addAngleLabels()
-                .addRadialLabels()
-                .addWindRadialLabels()
-        });
-    }
-
     addWindRadialLabels() {
         let chart = this;
 
         let offset = chart.innerRadius + Math.ceil(chart.data.length / chart.numSegments) * chart.segmentHeight;
 
-        let lsa = 0.0; //Label start angle
+        const lsa = 0.0; //Label start angle
+
+        const radiallabels = [0, 1, 2, 3, 4, 5, 6];
+
         this.labels = this.svg.append("g")
             .classed("labels", true)
             .classed("radial", true)
             .attr("transform", "translate(" + parseInt(this.margin.left + offset) + "," + parseInt(this.margin.top + offset) + ")");
 
         this.labels.selectAll("def")
-            .data(this.radialLabels).enter()
+            .data(radiallabels).enter()
             .append("def")
             .append("path")
             .attr("id", function(d, i) {return "radial-label-path-" + chart.id + "-" + i;})
@@ -158,7 +149,7 @@ export default class CircularHeatChart {
             });
 
         this.labels.selectAll("text")
-            .data(this.radialLabels).enter()
+            .data(radiallabels).enter()
             .append("text")
             .append("textPath")
             .attr("xlink:href", function(d, i) {return "#radial-label-path-" + chart.id + "-" + i;})
@@ -186,7 +177,7 @@ export default class CircularHeatChart {
             .enter().append("g");
 
         this.gr.append("text")
-            .attr("y", function(d) { return -chart.r(d) - 2; })
+            .attr("y", function(d) { return - chart.r(d) - 2; })
             .attr("transform", "rotate(30)")
             .style("font-size", 0.6 * this.segmentHeight + 'px')
             .text(function(d) { return d; });

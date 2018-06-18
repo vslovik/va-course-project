@@ -35,3 +35,22 @@ export const WEEKDAY = 1;
 export const WEEKEND = 2;
 export const DAY     = 3;
 export const NIGHT   = 4;
+
+export const factories = [
+    [89, 27, 'Roadrunner'],
+    [90, 21, 'Kasios'],
+    [109, 26, 'Radiance'],
+    [120, 22, 'Indigo']
+];
+
+export const sensors = [
+    [62, 21],
+    [66, 35],
+    [76, 41],
+    [88, 45],
+    [103, 43],
+    [102, 22],
+    [89, 3],
+    [74, 7],
+    [119, 42]
+];
