@@ -1,18 +1,19 @@
 import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
-    timeFormat, axisLeft, axisBottom} from "d3";
+    timeFormat, axisLeft, axisBottom, extent} from "d3";
 import {APRIL, AUGUST, DECEMBER} from './../constants'
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
 import {LINEAR} from './../constants'
 
 export default class ChartSen {
-    constructor(selector, data, scale = LINEAR){
+    constructor(selector, data, scale = LINEAR, domain){
 
         this.data    = data;
         this.scale   = scale;
+        this.domain  = domain;
         this.w       = 36;
         this.h       = 240;
-        this.padding = 0;
+        this.padding = 2;
 
         const colorMap = {};
 
@@ -44,30 +45,27 @@ export default class ChartSen {
         let chart = this;
 
         this.xScales = {};
-        this.yScales = {};
-        this.aScales = {};
+
+        let xDomain;
 
         [APRIL, AUGUST, DECEMBER].forEach(function(mon){
+
+            xDomain = extent(chart.data[mon], function(d) { return d.t });
+
             chart.xScales[mon] = scaleTime()
-                .domain([
-                    min(chart.data[mon], function(d) { return d.t; }),
-                    max(chart.data[mon], function(d) { return d.t; })
-                ])
+                .domain(xDomain)
                 .range([chart.padding, chart.w - chart.padding])
                 .nice();
-
-            chart.yScales[mon] = (chart.scale === LINEAR ? scaleLinear() : scaleLog())
-                .domain([
-                    min(chart.data[mon], function(d) { return d.val; }),
-                    max(chart.data[mon], function(d) { return d.val; })
-                ])
-                .rangeRound([chart.h - chart.padding, chart.padding])
-                .nice();
-
-            chart.aScales[mon] = scaleSqrt()
-                .domain([0, max(chart.data[mon], function(d) { return d.val; })])
-                .range([0, 2.0]);
         });
+
+        this.yScale = (chart.scale === LINEAR ? scaleLinear() : scaleLog())
+            .domain(chart.domain)
+            .rangeRound([chart.h - chart.padding, chart.padding])
+            .nice();
+
+        this.aScale = scaleSqrt()
+            .domain(chart.domain)
+            .range([0.2, 2.5]);
 
         return this;
     }
@@ -87,10 +85,10 @@ export default class ChartSen {
                     return chart.xScales[mon](d.t);
                 })
                 .attr("cy", function (d) {
-                    return chart.yScales[mon](d.val);
+                    return chart.yScale(d.val);
                 })
                 .attr("r", function (d) {
-                    return chart.aScales[mon](d.val);
+                    return chart.aScale(d.val);
                 });
         });
 

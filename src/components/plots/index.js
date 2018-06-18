@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {csvParseRows, select, selectAll} from 'd3';
+import {csvParseRows, select, selectAll, extent} from 'd3';
 import {request} from 'd3-request';
 
 import sensorCsv from '../../data/SensorData.csv';
@@ -41,6 +41,21 @@ class Plots extends Component {
             .drawSensorFactory();
     }
 
+    getSensorDomain(sensorData) {
+
+        let mn = Number.POSITIVE_INFINITY;
+        let mx = 0.0;
+        [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
+            let [min, max] = extent(sensorData[mon], function(d){return d.val;});
+            if(min < mn)
+                mn = min;
+            if(max > mx)
+                mx = max;
+        });
+
+        return [mn, mx];
+    }
+
     temporalViewDraw(rows) {
 
         let tr = select(".nine");
@@ -63,25 +78,28 @@ class Plots extends Component {
 
             const data = obj.getData('SenMon');
 
+            const sensorDomain = me.getSensorDomain(data[me.props.sensor]);
             [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-                new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
+                new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale, sensorDomain);
             });
 
             for (let i = 0; i < 9; i++) {
-                new ChartSen('.plot' + (i + 1), data[i + 1], scale);
+                const allSensorsDomain = obj.getDomain();
+                new ChartSen('.plot' + (i + 1), data[i + 1], scale, allSensorsDomain);
             }
         } else {
 
             const data = obj.getData('SenCheMon');
 
+            const sensorDomain = me.getSensorDomain(data[me.props.sensor][me.props.chemical]);
             [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-                new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);
+                new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale, sensorDomain);
             });
 
             for (let i = 0; i < 9; i++) {
-                new ChartSen('.plot' + (i + 1), data[i + 1][this.props.chemical], scale);
+                const allSensorsDomain = obj.getDomain();
+                new ChartSen('.plot' + (i + 1), data[i + 1][this.props.chemical], scale, allSensorsDomain);
             }
-
         }
 
         new Statistics('.plot-stat', stats)
@@ -105,35 +123,37 @@ class Plots extends Component {
             let me = this;
 
             const scale = this.props.linearly ? LINEAR : LOG;
+            let obj = (new Data(this.props.data));
 
             if (this.props.chemical === null) {
 
-                const data = (new Data(this.props.data)).getData('SenMon');
+                const data = obj.getData('SenMon');
 
+                const sensorDomain = me.getSensorDomain(data[me.props.sensor]);
                 [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-                    new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale);
+                    new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][mon], scale, sensorDomain);
                 });
 
                 if (this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
-
+                    const allSensorsDomain = obj.getDomain();
                     for (let i = 0; i < 9; i++) {
-                        new ChartSen('.plot' + (i + 1), data[i + 1], scale);
+                        new ChartSen('.plot' + (i + 1), data[i + 1], scale, allSensorsDomain);
                     }
                 }
 
             } else {
 
-                let data = (new Data(this.props.data)).getData('SenCheMon');
+                let data = obj.getData('SenCheMon');
 
+                const sensorDomain = me.getSensorDomain(data[me.props.sensor][me.props.chemical]);
                 [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-                    new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale);
+                    new ChartSenMon('.plot-mon-' + (mon + 1), data[me.props.sensor][me.props.chemical][mon], scale, sensorDomain);
                 });
 
-
                 if (this.props.chemical !== prevProps.chemical || this.props.linearly !== prevProps.linearly) {
-
+                    const allSensorsDomain = obj.getDomain();
                     for (let i = 0; i < 9; i++) {
-                        new ChartSen('.plot' + (i + 1), data[i + 1][this.props.chemical], scale);
+                        new ChartSen('.plot' + (i + 1), data[i + 1][this.props.chemical], scale, allSensorsDomain);
                     }
                 }
             }

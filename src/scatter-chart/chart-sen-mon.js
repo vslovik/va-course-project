@@ -5,10 +5,11 @@ import {AGO, APP, CHL, MET} from './../constants'
 import {LINEAR} from './../constants'
 
 export default class ChartSenMon {
-    constructor(selector, data, scale = LINEAR){
+    constructor(selector, data, scale = LINEAR, domain){
 
         this.data    = data;
         this.scale   = scale;
+        this.domain  = domain;
         this.w       = 240;
         this.h       = 200;
         this.padding = 0;
@@ -45,16 +46,13 @@ export default class ChartSenMon {
             .nice();
 
         this.yScale = (this.scale === LINEAR ? scaleLinear() : scaleLog())
-            .domain([
-                min(this.data, function(d) { return d.val; }),
-                max(chart.data, function(d) { return d.val; })
-            ])
+            .domain(this.domain)
             .rangeRound([this.h - this.padding, this.padding])
             .nice();
 
         this.aScale = scaleSqrt()
-            .domain([0, max(this.data, function(d) { return d.val; })])
-            .range([0, 4]);
+            .domain(this.domain)
+            .range([0.4, 5]);
 
         return this;
     }

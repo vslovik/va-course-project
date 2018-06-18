@@ -17,6 +17,9 @@ export default class Data {
         this.stats = {};
 
         this.statInit();
+
+        this.min = Number.POSITIVE_INFINITY;
+        this.max = 0.0;
     }
 
     statInit() {
@@ -64,6 +67,13 @@ export default class Data {
         this.stats[che][slot]['num'] += 1;
     }
 
+    collectMinMax(val) {
+        if(val > this.max)
+            this.max = val;
+        if(val < this.min)
+            this.min = val;
+    }
+
     collectStructuredData(row, structure, dataset) {
 
         let [che, sen, dt, val] = row;
@@ -75,6 +85,7 @@ export default class Data {
         let t = Data.parseMeasureDate(dt);
 
         this.collectChemicalTimeStat(che, val, t);
+        this.collectMinMax(val);
 
         let mon = t.getMonth();
 
@@ -126,5 +137,9 @@ export default class Data {
 
     getStats() {
         return this.stats;
+    }
+
+    getDomain() {
+        return [this.min, this.max];
     }
 }
