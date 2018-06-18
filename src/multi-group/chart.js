@@ -1,4 +1,4 @@
-import {max, radialLine, scaleLinear, scaleSqrt, select, selectAll} from "d3";
+import {radialLine, scaleLinear, scaleSqrt, select, selectAll} from "d3";
 import MultiChartData from "./data";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'

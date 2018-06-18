@@ -1,5 +1,4 @@
-import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
-    timeFormat, axisLeft, axisBottom, extent} from "d3";
+import {scaleLinear, scaleLog, scaleSqrt, scaleTime, select, extent} from "d3";
 import {APRIL, AUGUST, DECEMBER} from './../constants'
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
@@ -37,8 +36,8 @@ export default class ChartSen {
         });
 
         this.createScales()
-            .drawPoints();
-            //.addAxes();
+            .drawPoints()
+            .addLevels();
     }
 
     createScales() {
@@ -95,31 +94,36 @@ export default class ChartSen {
         return this;
     }
 
-    addAxes() {
+    addLevels() {
 
         let chart = this;
 
         [APRIL, AUGUST, DECEMBER].forEach(function (mon) {
-            let yAxis = axisLeft()
-                .scale(chart.yScales[mon])
-                .ticks(10);
+            let y, val;
+            [0, 1, 2].forEach(function(i){
 
-            let xAxis = axisBottom()
-                .scale(chart.xScales[mon])
-                .tickFormat(timeFormat("%e"));
-            // .ticks(10)
+                y = (i + 1) * chart.h / 4.;
 
-            chart.svgs[mon].append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(0," + (chart.h - chart.padding) + ")")
-                .call(xAxis);
+                chart.svgs[mon].append("line")
+                    .attr("x1",0)
+                    .attr("y1", y)
+                    .attr("x2", chart.w)
+                    .attr("y2", y)
+                    .style("stroke", "#eee");
 
-            chart.svgs[mon].append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(" + chart.padding + ",0)")
-                .call(yAxis);
+                if(mon === DECEMBER) {
+                    val = chart.domain[1] - ((i + 1) * chart.domain[1] / 4.);
+                    chart.svgs[mon].append("text")
+                        .attr("x", 0.3 * chart.w)
+                        .attr("y", y - 4)
+                        .style("font-size", "7px")
+                        .style('fill', '#aaa')
+                        .text(Math.round(100 * val) / 100);
+                }
+
+            });
+
         });
-
-        return this;
     }
+
 }

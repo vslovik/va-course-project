@@ -4,7 +4,7 @@
  * http://prcweb.co.uk/lab/circularheat
  *
  */
-import {radialLine, scaleLinear, scaleSqrt} from 'd3'
+import {radialLine, scaleLinear} from 'd3'
 import CircularHeatChart from "./circular";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
@@ -75,10 +75,6 @@ export default class ComboChart extends CircularHeatChart {
                 return d[0];
             });
 
-        let aScale = scaleSqrt()
-            .domain([0, 0.8])
-            .range([0, 2.0]);
-
         this.svg.append("g")
             .attr("transform", "translate(" + (this.width / 2) + "," + (-15 + this.height / 2) + ")")
             .selectAll("point")
@@ -111,8 +107,7 @@ export default class ComboChart extends CircularHeatChart {
                 return "translate(" + x + ',' + y + ")";
 
             })
-            // .attr("r", function (d) {return aScale(d[1])})
-            .attr("r", function (d) {return 2.0})
+            .attr("r", function () {return 2.0})
             .attr("fill", function (d) {
                 return chart.colorMap[d[2]];
             });

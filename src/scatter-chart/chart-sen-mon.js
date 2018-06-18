@@ -1,5 +1,4 @@
-import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select,
-    timeFormat, axisLeft, axisBottom} from "d3";
+import {max, min, scaleLinear, scaleLog, scaleSqrt, scaleTime, select} from "d3";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {AGO, APP, CHL, MET} from './../constants'
 import {LINEAR} from './../constants'
@@ -30,12 +29,11 @@ export default class ChartSenMon {
             .attr("height", this.h);
 
         this.createScales()
-            .drawPoints();
-            //.addAxes();
+            .drawPoints()
+            .addLevels();
     }
 
     createScales() {
-        let chart = this;
 
         this.xScale = scaleTime()
             .domain([
@@ -80,26 +78,29 @@ export default class ChartSenMon {
         return this;
     }
 
-    addAxes() {
-        let yAxis = axisLeft()
-            .scale(this.yScale)
-            .ticks(10);
+    addLevels() {
 
-        let xAxis = axisBottom()
-            .scale(this.xScale)
-            .tickFormat(timeFormat("%e"));
-        // .ticks(10)
+        let chart = this;
+        let y, val;
+        [0, 1, 2].forEach(function (i) {
 
-        this.svg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + (this.h - this.padding) + ")")
-            .call(xAxis);
+            y = (i + 1) * chart.h / 4.;
+            val = chart.domain[1] - ((i + 1) * chart.domain[1] / 4.);
 
-        this.svg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(" + this.padding + ",0)")
-            .call(yAxis);
+            chart.svg.append("line")
+                .attr("x1", 0)
+                .attr("y1", y)
+                .attr("x2", chart.w)
+                .attr("y2", y)
+                .style("stroke", "#eee");
 
-        return this;
+            chart.svg.append("text")
+                .attr("x", 0.9*chart.w)
+                .attr("y", y - 4)
+                .style("font-size", "7px")
+                .style('fill', '#aaa')
+                .text(Math.round(100*val)/100);
+
+        });
     }
 }
