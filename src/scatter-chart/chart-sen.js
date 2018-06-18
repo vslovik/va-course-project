@@ -66,7 +66,7 @@ export default class ChartSen {
 
             chart.aScales[mon] = scaleSqrt()
                 .domain([0, max(chart.data[mon], function(d) { return d.val; })])
-                .range([0, 2.5]);
+                .range([0, 2.0]);
         });
 
         return this;

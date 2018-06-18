@@ -32,6 +32,7 @@ class SensorDetails extends Component {
             .setPointsData(pdata)
             .setChemical(this.props.chemical)
             .setMonth(mon)
+            .setSensor(this.props.sensor)
             .addPoints();
     }
 

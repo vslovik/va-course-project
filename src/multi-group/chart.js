@@ -1,4 +1,4 @@
-import {radialLine, scaleLinear, select, selectAll} from "d3";
+import {max, radialLine, scaleLinear, scaleSqrt, select, selectAll} from "d3";
 import MultiChartData from "./data";
 import {ORANGE, RED, BLUE, GREEN} from './../constants'
 import {APP, CHL, MET, AGO} from './../constants'
@@ -193,6 +193,10 @@ export default class MultiChart {
 
         let chart = this;
 
+        let aScale = scaleSqrt()
+            .domain([0, 0.8])
+            .range([0, 2]);
+
         sensors.forEach(function (entry, i) {
 
             chart.svg.selectAll("point")
@@ -224,7 +228,7 @@ export default class MultiChart {
 
                     return "translate(" + x + ',' + y + ")"
                 })
-                .attr("r", 1) // ToDo sqrt scale?
+                .attr("r", function (d) {return aScale(d[1])})
                 .attr("fill", function (d) {
                     return chart.colorMap[d[2]];
                 })

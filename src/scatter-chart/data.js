@@ -22,10 +22,10 @@ export default class Data {
     statInit() {
         let stat = {};
 
-        stat[WEEKDAY] = {sum: 0, num: 0};
-        stat[WEEKEND] = {sum: 0, num: 0};
-        stat[DAY]     = {sum: 0, num: 0};
-        stat[NIGHT]   = {sum: 0, num: 0};
+        stat[WEEKDAY] = {sum: 0.0, num: 0};
+        stat[WEEKEND] = {sum: 0.0, num: 0};
+        stat[DAY]     = {sum: 0.0, num: 0};
+        stat[NIGHT]   = {sum: 0.0, num: 0};
 
         this.stats[AGO] = stat;
         this.stats[APP] = stat;

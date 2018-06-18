@@ -54,7 +54,7 @@ export default class ChartSenMon {
 
         this.aScale = scaleSqrt()
             .domain([0, max(this.data, function(d) { return d.val; })])
-            .range([0, 5]);
+            .range([0, 4]);
 
         return this;
     }

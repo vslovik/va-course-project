@@ -29,13 +29,14 @@ class Plots extends Component {
         new CircularHeatChart('.plot-wind', new WindChartData(winddata, month).getData());
     }
 
-    static ComboChartDraw(data, winddata, chemical = null, month = null) {
+    static ComboChartDraw(data, winddata, chemical = null, month = null, sensor = 1) {
 
         // ToDo substitute with sensor plot legend
         (new ComboChart('.plot-sensor', new WindChartData(winddata, month).getData()))
             .setPointsData(MultiChartData.getData(data, winddata))
             .setChemical(chemical)
             .setMonth(month)
+            .setSensor(sensor)
             .addPoints()
             .drawSensorFactory();
     }
@@ -142,7 +143,7 @@ class Plots extends Component {
     vectorialViewDraw(rows, winds) {
         new MultiChart('.plot-map', rows, winds, this.props.chemical, this.props.month);
         Plots.WindChartDraw(winds, this.props.month);
-        Plots.ComboChartDraw(rows, winds, this.props.chemical, this.props.month);
+        Plots.ComboChartDraw(rows, winds, this.props.chemical, this.props.month, this.props.sensor);
     }
 
     vectorialViewUpdate(prevProps) {
@@ -157,7 +158,7 @@ class Plots extends Component {
 
             selectAll("svg.wind-chart").remove();
             Plots.WindChartDraw(this.props.winddata, this.props.month);
-            Plots.ComboChartDraw(this.props.data, this.props.winddata, this.props.chemical, this.props.month);
+            Plots.ComboChartDraw(this.props.data, this.props.winddata, this.props.chemical, this.props.month, this.props.sensor);
         }
     }
 
