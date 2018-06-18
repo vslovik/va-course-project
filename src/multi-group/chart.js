@@ -72,7 +72,7 @@ export default class MultiChart {
             let [centerX, centerY] = entry;
 
             chart.svg.append("line")
-                .style("stroke", "#eee")
+                .style("stroke", "#aaa")
                 .attr("x1", chart.xScale(parseFloat(x)))
                 .attr("y1", chart.yScale(parseFloat(y)))
                 .attr("x2", chart.xScale(parseFloat(centerX)))
